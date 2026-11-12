@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Trilha Inteligente • Governança de IA | SEST SENAT</title>
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  
+  <!-- Estilos -->
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/telas.css">
+
+  <!-- Bibliotecas CDN (somente CDN, sem npm/build) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+</head>
+<body>
+  <div id="app">
+    <header class="app-header">
+      <div class="header-conteudo">
+        <div class="header-titulos">
+          <h1>Trilha Inteligente</h1>
+          <p class="subtitulo">Governança de IA • SEST SENAT</p>
+        </div>
+        <button id="btn-toggle-audio" class="btn-audio-mute" aria-label="Desativar som" title="Desativar som">🔊</button>
+      </div>
+    </header>
+
+    <main id="tela-container">
+      <!-- Telas renderizadas dinamicamente via JS -->
+    </main>
+  </div>
+
+  <!-- Ponto de entrada modular ES Modules -->
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>

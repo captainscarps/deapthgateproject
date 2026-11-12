@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trilha Inteligente - Testes de Lógica Pura (Etapa 2)</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, monospace;
+      background: #071426;
+      color: #E2E8F0;
+      padding: 24px;
+      line-height: 1.5;
+    }
+    .container {
+      max-width: 840px;
+      margin: 0 auto;
+      background: #0B1F3A;
+      border: 1px solid rgba(0, 180, 216, 0.3);
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+    }
+    h1 {
+      color: #00B4D8;
+      font-size: 1.6rem;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    p.sub {
+      color: #94A3B8;
+      font-size: 0.95rem;
+      margin-bottom: 20px;
+    }
+    .placar {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 20px;
+      padding: 12px 16px;
+      background: #132E54;
+      border-radius: 8px;
+      font-weight: bold;
+    }
+    .placar .pass-total { color: #06D6A0; }
+    .placar .fail-total { color: #EF476F; }
+    .test-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .test-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 12px 14px;
+      border-radius: 6px;
+      background: #102644;
+      border-left: 4px solid #94A3B8;
+    }
+    .test-item.pass {
+      border-left-color: #06D6A0;
+    }
+    .test-item.fail {
+      border-left-color: #EF476F;
+      background: rgba(239, 71, 111, 0.1);
+    }
+    .badge {
+      font-size: 0.8rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .badge.pass { background: #06D6A0; color: #071426; }
+    .badge.fail { background: #EF476F; color: #FFFFFF; }
+    .detalhe {
+      font-size: 0.85rem;
+      color: #94A3B8;
+      margin-top: 4px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Trilha Inteligente • Suíte de Testes</h1>
+    <p class="sub">Etapa 2: Validação de Lógica Pura (sem dependência de DOM)</p>
+
+    <div class="placar" id="placar">
+      <span>Executando testes...</span>
+    </div>
+
+    <div class="test-list" id="lista-testes"></div>
+  </div>
+
+  <script type="module">
+    import { cyrb53, mulberry32, criarRng } from './js/rng.js';
+    import { CONSTANTES, limitarPosicao, verificarCheckpoints, aplicarEfeito, calcularPontuacao, isFimDePartida } from './js/regras.js';
+    import { semanaAtual, validarCarta, gerarTabuleiro, DeckManager, CATEGORIAS_VALIDAS } from './js/deck.js';
+    import { state } from './js/state.js';
+
+    const testes = [];
+
+    function registrarTeste(nome, sucesso, detalhe = '') {
+      testes.push({ nome, sucesso, detalhe });
+      console.log(`${sucesso ? '✅ [PASS]' : '❌ [FAIL]'} ${nome} ${detalhe ? '-> ' + detalhe : ''}`);
+    }
+
+    try {
+      // 1. MESMA SEMANA = MESMO TABULEIRO E MESMOS DADOS
+      const tabA1 = gerarTabuleiro("2026-W46");
+      const tabA2 = gerarTabuleiro("2026-W46");
+      const mesmoTab = JSON.stringify(tabA1) === JSON.stringify(tabA2);
+
+      const rngA1 = criarRng("2026-W46_dado");
+      const rngA2 = criarRng("2026-W46_dado");
+      const dadosA1 = [rngA1.inteiro(1, 6), rngA1.inteiro(1, 6), rngA1.inteiro(1, 6), rngA1.inteiro(1, 6)];
+      const dadosA2 = [rngA2.inteiro(1, 6), rngA2.inteiro(1, 6), rngA2.inteiro(1, 6), rngA2.inteiro(1, 6)];
+      const mesmosDados = JSON.stringify(dadosA1) === JSON.stringify(dadosA2);
+
+      registrarTeste(
+        "1. Mesma semana = mesmo tabuleiro e mesmos dados",
+        mesmoTab && mesmosDados,
+        `Tabuleiros idênticos: ${mesmoTab}. Sequência de dados: [${dadosA1.join(',')}]`
+      );
+
+      // 2. SEMANAS DIFERENTES = DIFERENTES
+      const tabB1 = gerarTabuleiro("2026-W46");
+      const tabB2 = gerarTabuleiro("2026-W47");
+      const tabsDiferentes = JSON.stringify(tabB1) !== JSON.stringify(tabB2);
+
+      const rngB1 = criarRng("2026-W46_dado");
+      const rngB2 = criarRng("2026-W47_dado");
+      const dadosB1 = Array.from({ length: 8 }, () => rngB1.inteiro(1, 6));
+      const dadosB2 = Array.from({ length: 8 }, () => rngB2.inteiro(1, 6));
+      const dadosDiferentes = JSON.stringify(dadosB1) !== JSON.stringify(dadosB2);
+
+      registrarTeste(
+        "2. Semanas diferentes = diferentes",
+        tabsDiferentes && dadosDiferentes,
+        `Tabuleiros divergem: ${tabsDiferentes}. Dados divergem: ${dadosDiferentes}`
+      );
+
+      // 3. MÁX. 5 POR CATEGORIA
+      const tabContagem = gerarTabuleiro("2026-W46");
+      const contagens = {};
+      CATEGORIAS_VALIDAS.forEach(c => contagens[c] = 0);
+      for (let i = 1; i <= 30; i++) {
+        if (i === 10 || i === 20 || i === 30) continue;
+        const cat = tabContagem[i];
+        contagens[cat] = (contagens[cat] || 0) + 1;
+      }
+      const max5Ok = Object.entries(contagens).every(([cat, qtd]) => qtd <= 5);
+      registrarTeste(
+        "3. Máx. 5 por categoria no tabuleiro",
+        max5Ok,
+        `Contagens: ${JSON.stringify(contagens)}`
+      );
+
+      // 4. SEM ARMADILHAS SEGUIDAS
+      let semArmadilhasSeguidas = true;
+      let detalheArmadilha = "Nenhuma colisão encontrada";
+      // Testamos em 5 semanas distintas para garantir robustez estatística
+      for (const sem of ["2026-W44", "2026-W45", "2026-W46", "2026-W47", "2026-W48"]) {
+        const tab = gerarTabuleiro(sem);
+        for (let i = 1; i < 30; i++) {
+          if (tab[i] === "armadilha") {
+            let prox = i + 1;
+            if (prox === 10 || prox === 20 || prox === 30) prox++;
+            if (prox < 30 && tab[prox] === "armadilha") {
+              semArmadilhasSeguidas = false;
+              detalheArmadilha = `Armadilhas seguidas em ${i} e ${prox} na semana ${sem}`;
+              break;
+            }
+          }
+        }
+        if (!semArmadilhasSeguidas) break;
+      }
+      registrarTeste(
+        "4. Sem armadilhas seguidas na trilha",
+        semArmadilhasSeguidas,
+        detalheArmadilha
+      );
+
+      // 5. PONTUAÇÃO COM CASOS DE EXEMPLO
+      // Caso A: tokens=20, acertos=3, pense_antes=2, armadilhas=0 -> 200 + 150 + 60 + 100 = 510
+      const p1 = calcularPontuacao({ tokens: 20, acertos: 3, bonusPenseAntes: 2, armadilhas: 0 });
+      // Caso B: tokens=15, acertos=1, pense_antes=0, armadilhas=2 (perde bônus 100) -> 150 + 50 + 0 + 0 = 200
+      const p2 = calcularPontuacao({ tokens: 15, acertos: 1, bonusPenseAntes: 0, armadilhas: 2 });
+      // Caso C: tokens=0, acertos=0, pense_antes=0, armadilhas=1 -> 0
+      const p3 = calcularPontuacao({ tokens: 0, acertos: 0, bonusPenseAntes: 0, armadilhas: 1 });
+      const pontuacaoOk = (p1 === 510) && (p2 === 200) && (p3 === 0);
+      registrarTeste(
+        "5. Pontuação com casos de exemplo auditados",
+        pontuacaoOk,
+        `Caso A: ${p1} (esperado 510) | Caso B: ${p2} (esperado 200) | Caso C: ${p3} (esperado 0)`
+      );
+
+      // 6. NÃO PASSA DE 0
+      const limNegativo = limitarPosicao(-8);
+      const est1 = { posicao: 2, tokens: 20, checkpoints_passados: [] };
+      const resEfeitoRecuo = aplicarEfeito(est1, { mover: -10 });
+      const naoPassaZero = (limNegativo === 0) && (resEfeitoRecuo.posicao === 0);
+      registrarTeste(
+        "6. Não passa de 0 ao voltar casas",
+        naoPassaZero,
+        `limitarPosicao(-8) = ${limNegativo}, recuo de 2 com mover=-10 = ${resEfeitoRecuo.posicao}`
+      );
+
+      // 7. CHECKPOINT NÃO REPETE BÔNUS
+      const estInicial = {
+        posicao: 8,
+        tokens: 20,
+        checkpoints_passados: []
+      };
+      // Avança de 8 para 12 (cruza CP 10 -> ganha +3)
+      const resPasso1 = aplicarEfeito(estInicial, { mover: 4 });
+      const tokensPasso1 = resPasso1.tokens; // 23
+      const cpPasso1 = [...resPasso1.checkpoints_passados]; // [10]
+
+      // Recua de 12 para 9 (volta antes do checkpoint 10)
+      const resPasso2 = aplicarEfeito(resPasso1, { mover: -3 });
+      const tokensPasso2 = resPasso2.tokens; // 23
+
+      // Avança novamente de 9 para 14 (cruza o CP 10 de novo: NÃO pode ganhar bônus novamente)
+      const resPasso3 = aplicarEfeito(resPasso2, { mover: 5 });
+      const tokensPasso3 = resPasso3.tokens; // deve continuar 23
+
+      const semRepetirCp = (tokensPasso1 === 23) && (tokensPasso2 === 23) && (tokensPasso3 === 23);
+      registrarTeste(
+        "7. Checkpoint não repete bônus ao recuar e avançar",
+        semRepetirCp,
+        `Tokens: Inicial=20 -> Passo 1=+4 (Tokens: ${tokensPasso1}) -> Passo 2=-3 (Tokens: ${tokensPasso2}) -> Passo 3=+5 (Tokens: ${tokensPasso3})`
+      );
+
+      // 8. REEMBARALHO QUANDO ESGOTA
+      const deckMini = [
+        { id: "arm_01", categoria: "armadilha", tema: "T1", texto: "X1", efeito: { tokens: -3 } },
+        { id: "arm_02", categoria: "armadilha", tema: "T2", texto: "X2", efeito: { tokens: -4 } }
+      ];
+      const manager = new DeckManager(deckMini, "teste_seed");
+      const c1 = manager.comprarCarta("armadilha");
+      const c2 = manager.comprarCarta("armadilha");
+      // 3ª compra deve disparar reembaralho automático das usadas sem falhar nem retornar nulo
+      const c3 = manager.comprarCarta("armadilha");
+      const reembaralhoOk = (c1 !== null) && (c2 !== null) && (c3 !== null) && (["arm_01", "arm_02"].includes(c3.id));
+      registrarTeste(
+        "8. Reembaralho automático quando categoria esgota",
+        reembaralhoOk,
+        `Compra 1: ${c1?.id}, Compra 2: ${c2?.id}, Compra 3 (após esgotar): ${c3?.id}`
+      );
+
+    } catch (e) {
+      registrarTeste("Exceção não tratada na suíte de testes", false, e.stack || e.message);
+    }
+
+    // Renderização visual no DOM
+    const totalSucessos = testes.filter(t => t.sucesso).length;
+    const totalFalhas = testes.filter(t => !t.sucesso).length;
+    const placar = document.getElementById('placar');
+    placar.innerHTML = `
+      <span class="pass-total">✅ ${totalSucessos} PASSOU</span>
+      ${totalFalhas > 0 ? `<span class="fail-total">❌ ${totalFalhas} FALHOU</span>` : '<span style="color:#94A3B8;">| 100% de sucesso</span>'}
+    `;
+
+    const lista = document.getElementById('lista-testes');
+    lista.innerHTML = testes.map(t => `
+      <div class="test-item ${t.sucesso ? 'pass' : 'fail'}">
+        <span class="badge ${t.sucesso ? 'pass' : 'fail'}">${t.sucesso ? 'PASS' : 'FAIL'}</span>
+        <div>
+          <div style="font-weight: 600;">${t.nome}</div>
+          ${t.detalhe ? `<div class="detalhe">${t.detalhe}</div>` : ''}
+        </div>
+      </div>
+    `).join('');
+  </script>
+</body>
+</html>

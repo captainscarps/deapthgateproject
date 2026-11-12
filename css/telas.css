@@ -1,0 +1,1127 @@
+/* css/telas.css - Estilos específicos das telas do Trilha Inteligente */
+
+/* ==============================================================================
+   TELA DE INÍCIO
+   ============================================================================== */
+.tela-inicio {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+}
+
+.inicio-hero {
+  text-align: center;
+  padding: 18px 14px;
+  background: linear-gradient(180deg, var(--navy-panel) 0%, rgba(17, 40, 74, 0.4) 100%);
+  border-radius: 14px;
+  border: 1px solid var(--border);
+}
+
+.semana-tag {
+  font-size: 1rem;
+  color: var(--cyan);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.status-partida-box {
+  margin: 10px 0 14px 0;
+}
+
+.inicio-desc {
+  color: var(--text-muted);
+  font-size: 1.05rem;
+  line-height: 1.4;
+  margin-bottom: 6px;
+}
+
+/* Card de Conta / Colaborador */
+.colaborador-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: var(--navy-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.colaborador-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.colaborador-nome {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-white);
+}
+
+.colaborador-area-lock {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.95rem;
+  color: var(--cyan);
+}
+
+.lock-icon {
+  font-size: 0.85rem;
+  opacity: 0.8;
+}
+
+/* Ações Principais de Início */
+.inicio-acoes {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 4px;
+}
+
+.inicio-links-secundarios {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 6px;
+}
+
+/* ==============================================================================
+   TUTORIAL MODAL (3 PASSOS)
+   ============================================================================== */
+.tutorial-slide {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.tutorial-icone {
+  font-size: 3rem;
+  background: rgba(0, 180, 216, 0.15);
+  border: 2px solid var(--cyan);
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 20px var(--cyan-glow);
+}
+
+.tutorial-titulo {
+  font-size: 1.4rem;
+  color: var(--cyan);
+  text-transform: uppercase;
+}
+
+.tutorial-texto {
+  color: #E2E8F0;
+  font-size: 1.05rem;
+  line-height: 1.45;
+}
+
+.tutorial-indicadores {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin: 12px 0 6px 0;
+}
+
+.tutorial-ponto {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--navy-light);
+  transition: all 0.2s ease;
+}
+
+.tutorial-ponto.ativo {
+  background: var(--cyan);
+  width: 24px;
+  border-radius: 10px;
+}
+
+.tutorial-toggle-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  cursor: pointer;
+  user-select: none;
+}
+
+.tutorial-toggle-box input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--cyan);
+}
+
+/* ==============================================================================
+   MODAL DE TERMO DE PRIVACIDADE
+   ============================================================================== */
+.privacidade-texto-box {
+  background: var(--navy-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 14px;
+  max-height: 280px;
+  overflow-y: auto;
+  font-size: 0.95rem;
+  color: #CBD5E1;
+  line-height: 1.5;
+}
+
+.privacidade-texto-box h4 {
+  color: var(--cyan);
+  margin-top: 10px;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  font-size: 1rem;
+}
+
+.privacidade-texto-box p, .privacidade-texto-box ul {
+  margin-bottom: 8px;
+}
+
+.privacidade-texto-box ul {
+  padding-left: 20px;
+}
+
+.privacidade-dpo-box {
+  background: rgba(0, 180, 216, 0.1);
+  border-left: 3px solid var(--cyan);
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  margin-top: 8px;
+}
+
+/* Transições Suaves */
+.fade-in {
+  animation: fadeIn 0.25s ease-out forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+
+/* ==============================================================================
+   TELA DO TABULEIRO (ETAPA 4)
+   ============================================================================== */
+.tela-tabuleiro {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+
+/* HUD Superior Fixo */
+.tabuleiro-hud {
+  position: sticky;
+  top: 60px;
+  z-index: 90;
+  background: var(--navy-panel);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 10px 14px;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.hud-linha-topo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.hud-jogador-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.hud-nome {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text-white);
+}
+
+.hud-area {
+  font-size: 0.8rem;
+  color: var(--cyan);
+}
+
+.hud-tokens-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+  background: rgba(0, 0, 0, 0.3);
+  padding: 4px 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 209, 102, 0.3);
+}
+
+.hud-tokens-valor {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--gold);
+}
+
+.flutuante-token {
+  position: absolute;
+  top: -16px;
+  right: 6px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  pointer-events: none;
+  opacity: 0;
+}
+
+.flutuante-token.positivo {
+  color: var(--green);
+}
+
+.flutuante-token.negativo {
+  color: var(--coral);
+}
+
+.hud-linha-status {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  padding-top: 6px;
+}
+
+.hud-checkpoint-aviso {
+  color: var(--gold);
+  font-weight: 600;
+}
+
+/* Área de Rolagem do Tabuleiro */
+.trilha-wrapper {
+  background: var(--navy-bg);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 12px;
+  overflow-y: auto;
+  max-height: calc(100vh - 300px);
+  position: relative;
+}
+
+/* Grade Serpente (6 colunas) */
+.tabuleiro-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 6px;
+  width: 100%;
+}
+
+.casa-tile {
+  min-height: 52px;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 2px;
+  position: relative;
+  border: 1.5px solid rgba(255, 255, 255, 0.12);
+  background: var(--navy-card);
+  transition: transform 0.2s, box-shadow 0.2s;
+  user-select: none;
+}
+
+.casa-tile.ativa {
+  border-color: var(--cyan);
+  box-shadow: 0 0 12px var(--cyan-glow);
+}
+
+.casa-num {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.6);
+  line-height: 1;
+}
+
+.casa-icone {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 24px;
+}
+
+.casa-icone svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* Cores por Categoria */
+.casa-inicio {
+  background: rgba(0, 180, 216, 0.2);
+  border-color: var(--cyan);
+}
+.casa-checkpoint {
+  background: linear-gradient(135deg, rgba(255, 209, 102, 0.25) 0%, rgba(255, 183, 3, 0.15) 100%);
+  border-color: var(--gold);
+  box-shadow: 0 0 8px rgba(255, 209, 102, 0.3);
+}
+.casa-boa_pratica {
+  background: rgba(6, 214, 160, 0.15);
+  border-color: rgba(6, 214, 160, 0.5);
+}
+.casa-pense_antes {
+  background: rgba(114, 9, 183, 0.2);
+  border-color: rgba(114, 9, 183, 0.6);
+}
+.casa-desafio {
+  background: rgba(244, 162, 97, 0.18);
+  border-color: rgba(244, 162, 97, 0.5);
+}
+.casa-armadilha {
+  background: rgba(239, 71, 111, 0.2);
+  border-color: rgba(239, 71, 111, 0.6);
+}
+.casa-conexao {
+  background: rgba(69, 123, 157, 0.2);
+  border-color: rgba(69, 123, 157, 0.5);
+}
+.casa-evento {
+  background: rgba(231, 111, 81, 0.2);
+  border-color: rgba(231, 111, 81, 0.5);
+}
+
+/* O Peão do Jogador */
+.peao-jogador {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 28px;
+  height: 28px;
+  background: radial-gradient(circle at 35% 35%, #00F0FF, #0077B6);
+  border: 2px solid #FFFFFF;
+  border-radius: 50%;
+  box-shadow: 0 0 12px rgba(0, 240, 255, 0.9), 0 4px 8px rgba(0,0,0,0.6);
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 900;
+  color: #FFFFFF;
+  pointer-events: none;
+}
+
+/* Barra de Ação do Dado */
+.tabuleiro-acoes {
+  background: var(--navy-panel);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.dado-display-box {
+  width: 56px;
+  height: 56px;
+  background: var(--navy-bg);
+  border: 2px solid var(--cyan);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.2rem;
+  box-shadow: 0 0 14px var(--cyan-glow);
+  user-select: none;
+}
+
+.alerta-pular-box {
+  background: rgba(239, 71, 111, 0.2);
+  border: 1px solid var(--coral);
+  color: #FFB3C1;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+/* Legenda das Categorias */
+.legenda-tabuleiro {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: center;
+  padding: 8px 0;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.legenda-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+
+/* ==============================================================================
+   MODAL DE CARTA (ETAPA 5) - FLIP 3D E FEEDBACK ACESSÍVEL
+   ============================================================================== */
+.modal-dialog-carta {
+  max-width: 440px;
+  width: 94%;
+  perspective: 1200px;
+}
+
+.carta-flip-conteudo {
+  transform-style: preserve-3d;
+  background: var(--navy-panel);
+  border: 2px solid var(--border-active);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.8);
+}
+
+.carta-header {
+  padding: 14px 18px;
+  background: var(--navy-card);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.carta-categoria-tag {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.carta-tema-tag {
+  font-size: 0.85rem;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  background: rgba(0, 0, 0, 0.25);
+  padding: 2px 8px;
+  border-radius: 6px;
+}
+
+.carta-body {
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+.carta-texto-situacao {
+  font-size: 1.12rem;
+  line-height: 1.5;
+  color: #FFFFFF;
+}
+
+/* Opções de Escolha */
+.carta-opcoes-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+}
+
+.btn-opcao-carta {
+  width: 100%;
+  text-align: left;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 14px;
+  font-size: 1.02rem;
+  line-height: 1.35;
+  font-weight: 500;
+  text-transform: none;
+  background: var(--navy-card);
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  color: #F1F5F9;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-opcao-carta:hover:not(:disabled) {
+  border-color: var(--cyan);
+  background: rgba(0, 180, 216, 0.15);
+  transform: translateY(-2px);
+}
+
+.btn-opcao-carta:focus-visible {
+  outline: 2px solid var(--cyan);
+  outline-offset: 2px;
+}
+
+.btn-opcao-carta .opcao-letra {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: rgba(0, 180, 216, 0.2);
+  color: var(--cyan);
+  font-weight: 700;
+  font-size: 0.85rem;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+/* Estados de Feedback após Escolha */
+.btn-opcao-carta.opcao-correta {
+  border-color: var(--green) !important;
+  background: rgba(6, 214, 160, 0.18) !important;
+  color: #FFFFFF !important;
+}
+
+.btn-opcao-carta.opcao-correta .opcao-letra {
+  background: var(--green) !important;
+  color: var(--navy-bg) !important;
+}
+
+.btn-opcao-carta.opcao-incorreta {
+  border-color: var(--amber) !important;
+  background: rgba(255, 183, 3, 0.16) !important;
+  color: #FFFFFF !important;
+}
+
+.btn-opcao-carta.opcao-incorreta .opcao-letra {
+  background: var(--amber) !important;
+  color: var(--navy-bg) !important;
+}
+
+.btn-opcao-carta.opcao-apagada {
+  opacity: 0.45;
+  cursor: default;
+}
+
+/* Painel de Explicação / Feedback */
+.carta-feedback-box {
+  border-radius: 10px;
+  padding: 12px 14px;
+  margin-top: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 0.98rem;
+  line-height: 1.45;
+  animation: fadeIn 0.25s ease-out;
+}
+
+.carta-feedback-box.sucesso {
+  border-left: 4px solid var(--green);
+  background: rgba(6, 214, 160, 0.12);
+  color: #E2E8F0;
+}
+
+.carta-feedback-box.alerta {
+  border-left: 4px solid var(--amber);
+  background: rgba(255, 183, 3, 0.12);
+  color: #E2E8F0;
+}
+
+.carta-feedback-box.perigo {
+  border-left: 4px solid var(--coral);
+  background: rgba(239, 71, 111, 0.15);
+  color: #E2E8F0;
+}
+
+/* Pílulas de Impacto */
+.impactos-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.impacto-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 14px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.impacto-positivo {
+  color: var(--green);
+  background: rgba(6, 214, 160, 0.18);
+  border: 1px solid rgba(6, 214, 160, 0.4);
+}
+
+.impacto-negativo {
+  color: var(--coral);
+  background: rgba(239, 71, 111, 0.18);
+  border: 1px solid rgba(239, 71, 111, 0.4);
+}
+
+.impacto-neutro {
+  color: var(--cyan);
+  background: rgba(0, 180, 216, 0.15);
+  border: 1px solid var(--border);
+}
+
+
+/* ==============================================================================
+   TELA DE RESULTADO (ETAPA 6)
+   ============================================================================== */
+.tela-resultado {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  width: 100%;
+}
+
+.pontos-contador-box {
+  margin: 14px 0 10px 0;
+  background: rgba(0, 0, 0, 0.35);
+  border-radius: 14px;
+  padding: 14px;
+  border: 1.5px solid var(--border);
+  box-shadow: inset 0 2px 10px rgba(0,0,0,0.5);
+  text-align: center;
+}
+
+.pontos-contador {
+  font-size: 3.2rem;
+  font-weight: 800;
+  color: var(--cyan);
+  line-height: 1;
+  letter-spacing: 1px;
+}
+
+.resumo-metricas-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin: 8px 0;
+}
+
+.metrica-card {
+  background: var(--navy-card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 6px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.metrica-card-valor {
+  font-size: 1.45rem;
+  font-weight: 700;
+  color: var(--text-white);
+}
+
+.metrica-card-rotulo {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+/* Status de Envio de Partida */
+.envio-status-box {
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 4px;
+  transition: all 0.3s ease;
+}
+
+.envio-status-box.enviando {
+  background: rgba(0, 180, 216, 0.12);
+  border: 1px solid var(--cyan);
+  color: var(--cyan-hover);
+}
+
+.envio-status-box.sucesso {
+  background: rgba(6, 214, 160, 0.15);
+  border: 1px solid var(--green);
+  color: #72F2D1;
+}
+
+.envio-status-box.aviso {
+  background: rgba(255, 183, 3, 0.15);
+  border: 1px solid var(--amber);
+  color: #FFE699;
+}
+
+.spinner-circulo {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(0, 180, 216, 0.3);
+  border-top-color: var(--cyan);
+  border-radius: 50%;
+  animation: girar 0.8s linear infinite;
+}
+
+@keyframes girar {
+  to { transform: rotate(360deg); }
+}
+
+/* Card Checklist Pense Antes */
+.card-pense-antes {
+  background: linear-gradient(180deg, rgba(19, 46, 84, 0.7) 0%, rgba(11, 31, 58, 0.9) 100%);
+  border: 1.5px solid rgba(114, 9, 183, 0.5);
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.card-pense-antes-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.checklist-pense-antes {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.checklist-pense-antes li {
+  background: rgba(0, 0, 0, 0.2);
+  border-left: 3px solid var(--cyan);
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 0.92rem;
+  line-height: 1.4;
+  color: #E2E8F0;
+}
+
+.checklist-pense-antes li strong {
+  color: var(--cyan);
+  display: block;
+  font-size: 0.95rem;
+  margin-bottom: 2px;
+}
+
+/* ==============================================================================
+   TELA DE RANKING (ETAPA 8)
+   ============================================================================== */
+.tela-ranking {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  width: 100%;
+}
+
+.ranking-top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 4px;
+}
+
+.ranking-seletor-semana {
+  background: var(--navy-panel);
+  color: var(--cyan);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-family: var(--font-main);
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  outline: none;
+  min-height: 38px;
+  transition: all 0.2s ease;
+}
+
+.ranking-seletor-semana:hover,
+.ranking-seletor-semana:focus {
+  border-color: var(--cyan);
+  box-shadow: 0 0 8px var(--cyan-glow);
+}
+
+/* Abas de Navegação */
+.ranking-tabs-nav {
+  display: flex;
+  background: rgba(11, 31, 58, 0.8);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 4px;
+  gap: 4px;
+}
+
+.ranking-tab-btn {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-family: var(--font-main);
+  font-size: 1.05rem;
+  font-weight: 600;
+  padding: 10px 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-height: var(--min-touch);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.ranking-tab-btn:hover {
+  color: var(--text-white);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.ranking-tab-btn.active {
+  background: linear-gradient(180deg, var(--navy-panel) 0%, var(--navy-card) 100%);
+  color: var(--cyan);
+  font-weight: 700;
+  border: 1px solid var(--border-active);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Aviso de Quórum Mínimo (< 3 jogadores) */
+.ranking-aviso-quorum {
+  background: rgba(255, 183, 3, 0.12);
+  border: 1.5px solid var(--amber);
+  border-radius: 10px;
+  padding: 12px 14px;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  color: #FFE3A8;
+  font-size: 0.95rem;
+  line-height: 1.4;
+}
+
+.ranking-aviso-quorum .aviso-icone {
+  font-size: 1.3rem;
+  line-height: 1;
+}
+
+.ranking-aviso-quorum strong {
+  color: var(--amber);
+}
+
+/* Lista e Cards de Ranking */
+.ranking-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+
+.ranking-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--navy-card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 14px;
+  transition: all 0.2s ease;
+}
+
+.ranking-card:hover {
+  border-color: rgba(0, 180, 216, 0.5);
+  transform: translateY(-1px);
+}
+
+.ranking-card.destaque {
+  border: 1.5px solid var(--cyan);
+  background: linear-gradient(90deg, rgba(0, 180, 216, 0.2) 0%, rgba(24, 56, 102, 0.95) 100%);
+  box-shadow: 0 0 14px var(--cyan-glow);
+}
+
+/* Posição / Medalha */
+.ranking-posicao-badge {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.15rem;
+  font-weight: 800;
+  flex-shrink: 0;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.posicao-1 {
+  background: radial-gradient(circle, #FFD166 0%, #B8860B 100%);
+  color: #071426;
+  border-color: #FFE082;
+  box-shadow: 0 0 10px rgba(255, 209, 102, 0.5);
+}
+
+.posicao-2 {
+  background: radial-gradient(circle, #E2E8F0 0%, #718096 100%);
+  color: #071426;
+  border-color: #CBD5E1;
+  box-shadow: 0 0 8px rgba(226, 232, 240, 0.4);
+}
+
+.posicao-3 {
+  background: radial-gradient(circle, #F39C12 0%, #A0522D 100%);
+  color: #FFFFFF;
+  border-color: #E67E22;
+  box-shadow: 0 0 8px rgba(243, 156, 18, 0.4);
+}
+
+.posicao-outros {
+  color: var(--text-muted);
+}
+
+/* Detalhes do Card */
+.ranking-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.ranking-nome-principal {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-white);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.ranking-nome-sub {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-top: 2px;
+}
+
+.badge-tag-voce {
+  background: var(--cyan);
+  color: var(--navy-bg);
+  font-size: 0.72rem;
+  font-weight: 800;
+  padding: 2px 6px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.badge-tag-sua-area {
+  background: var(--gold);
+  color: var(--navy-bg);
+  font-size: 0.72rem;
+  font-weight: 800;
+  padding: 2px 6px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Pontos */
+.ranking-pontos-box {
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.ranking-pontos-valor {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--gold);
+  line-height: 1.1;
+}
+
+.ranking-pontos-label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Estados da Tela: Carregando, Vazio e Erro */
+.ranking-estado-box {
+  padding: 36px 16px;
+  text-align: center;
+  background: var(--navy-panel);
+  border: 1px dashed var(--border);
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.ranking-estado-box.erro {
+  border-color: var(--coral);
+  background: rgba(239, 71, 111, 0.08);
+}
+
+.ranking-estado-msg {
+  color: var(--text-muted);
+  font-size: 1rem;
+  max-width: 320px;
+  line-height: 1.4;
+}
+
+/* ==============================================================================
+   ACESSIBILIDADE: PREFERS-REDUCED-MOTION NAS TELAS
+   ============================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  .dado-cubo,
+  .dado-cubo.rolando,
+  .peao-tabuleiro,
+  .spinner-circulo,
+  .badge-pular-aviso,
+  .token-float-popup {
+    animation: none !important;
+    transition: none !important;
+    transform: none !important;
+  }
+}
+

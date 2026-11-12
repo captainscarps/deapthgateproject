@@ -1,0 +1,13 @@
+# Dependências e caches
+node_modules/
+.DS_Store
+Thumbs.db
+*.log
+
+# Projeto Legado Godot 4.x (preservado localmente para histórico, excluído do deploy web)
+godot-legado/
+.godot/
+
+# Arquivo de configuração com credenciais de desenvolvimento local (opcional)
+# NOTA: No GitHub Pages de produção, js/config.js é versionado com a anon key pública (protegida por RLS).
+js/config.local.js
