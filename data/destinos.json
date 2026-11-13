@@ -1,0 +1,44 @@
+[
+  {
+    "id": "dest_ia_publica",
+    "nome": "Ferramenta pública gratuita de IA generativa na web",
+    "tipo": "externo_desprotegido",
+    "adequado": false,
+    "risco": "Os dados inseridos podem ser reutilizados para treinamento público da IA e expostos a terceiros."
+  },
+  {
+    "id": "dest_nuvem_homologada",
+    "nome": "Ambiente corporativo seguro em nuvem homologado pelo SEST SENAT",
+    "tipo": "interno_seguro",
+    "adequado": true,
+    "risco": "Nenhum risco. Possui isolamento de locatário, criptografia em repouso e termo de sigilo ativo."
+  },
+  {
+    "id": "dest_drive_pessoal",
+    "nome": "Conta pessoal em serviço gratuito de nuvem ou e-mail pessoal",
+    "tipo": "externo_desprotegido",
+    "adequado": false,
+    "risco": "Quebra de custódia institucional, ausência de logs de auditoria e violação direta da LGPD."
+  },
+  {
+    "id": "dest_servidor_interno",
+    "nome": "Servidor de banco de dados institucional com perfil restrito e MFA",
+    "tipo": "interno_seguro",
+    "adequado": true,
+    "risco": "Segurança máxima com controle RBAC e auditoria completa de acessos."
+  },
+  {
+    "id": "dest_grupo_mensagens",
+    "nome": "Grupo de aplicativo de mensagens instantâneas em smartphone",
+    "tipo": "externo_desprotegido",
+    "adequado": false,
+    "risco": "Risco de vazamento em backups desprotegidos, capturas de tela e aparelhos extraviados."
+  },
+  {
+    "id": "dest_datalake_governado",
+    "nome": "Repositório governado da Gerência de TI com mascaramento de dados",
+    "tipo": "interno_seguro",
+    "adequado": true,
+    "risco": "Tratamento de acordo com a política de governança de dados e LGPD."
+  }
+]

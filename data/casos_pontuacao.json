@@ -25,11 +25,11 @@
     "resultado_esperado": {
       "status": 200,
       "sucesso": true,
-      "tokens": 35,
+      "tokens": 27,
       "acertos": 1,
       "bonus_pense_antes": 1,
       "armadilhas": 1,
-      "pontos": 430
+      "pontos": 60
     }
   },
   {
@@ -58,11 +58,11 @@
     "resultado_esperado": {
       "status": 200,
       "sucesso": true,
-      "tokens": 19,
+      "tokens": 11,
       "acertos": 0,
       "bonus_pense_antes": 0,
       "armadilhas": 3,
-      "pontos": 190
+      "pontos": 0
     }
   },
   {
@@ -140,11 +140,11 @@
     "resultado_esperado": {
       "status": 200,
       "sucesso": true,
-      "tokens": 47,
+      "tokens": 39,
       "acertos": 0,
       "bonus_pense_antes": 4,
       "armadilhas": 0,
-      "pontos": 690
+      "pontos": 130
     }
   },
   {
@@ -195,10 +195,1470 @@
   },
   {
     "id": "caso_08_excesso_jogadas",
-    "nome": "8. Excesso de Jogadas (>35)",
-    "descricao": "Partida com 36 jogadas, violando a regra de limite de turnos.",
+    "nome": "8. Excesso de Jogadas (>400)",
+    "descricao": "Partida com mais de 400 jogadas é rejeitada preventivamente pelo teto de segurança.",
     "semana": "2026-W46",
     "historico": [
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
       {
         "carta_id": "bp_001",
         "opcao_index": 0
@@ -347,7 +1807,7 @@
     "resultado_esperado": {
       "status": 400,
       "sucesso": false,
-      "erro": "Número de jogadas excede o limite máximo permitido por partida (35)."
+      "erro": "Número de jogadas excede o teto de segurança permitido por partida (400)."
     }
   },
   {
@@ -380,11 +1840,11 @@
     "resultado_esperado": {
       "status": 200,
       "sucesso": true,
-      "tokens": 42,
+      "tokens": 34,
       "acertos": 1,
       "bonus_pense_antes": 0,
       "armadilhas": 0,
-      "pontos": 570
+      "pontos": 60
     }
   },
   {
@@ -417,11 +1877,11 @@
     "resultado_esperado": {
       "status": 200,
       "sucesso": true,
-      "tokens": 48,
+      "tokens": 40,
       "acertos": 4,
       "bonus_pense_antes": 0,
       "armadilhas": 0,
-      "pontos": 780
+      "pontos": 210
     }
   }
 ]

@@ -1,7 +1,7 @@
 // js/state.js - Estado da partida, ações e pub/sub de mudanças
 // NUNCA ACESSA O DOM
 
-import { CONSTANTES, limitarPosicao, verificarCheckpoints, aplicarEfeito, isFimDePartida, calcularPontuacao } from './regras.js';
+import { CONSTANTES, CONSTANTES_PONTUACAO, limitarPosicao, verificarCheckpoints, aplicarEfeito, isFimDePartida, calcularPontuacao, calcularCustoRolagem, calcularBonusCheckpoint } from './regras.js';
 import { semanaAtual, gerarTabuleiro, DeckManager, gerarSementeConvidado, GRAFO_PADRAO, gerarTabuleiroGrafo } from './deck.js';
 import { criarRng } from './rng.js';
 import { AVATAR_PADRAO, validarAvatar } from './avatar.js';
@@ -46,6 +46,20 @@ class StateManager {
       grafoTabuleiro: GRAFO_PADRAO,
       bifurcacaoPendente: null,
       hubEventosSorteados: [],
+      voltas_completas: 0,
+      casas_avancadas: 0,
+      boas_praticas: 0,
+      checkpoints_volta_atual: [],
+      custo_proxima_rolagem: 1,
+      tokens_baixos_notificado: false,
+      
+      // Nova regra: trilha em loop contínuo e escalada
+      voltas_completas: 0,
+      casas_avancadas: 0,
+      boas_praticas: 0,
+      checkpoints_volta_atual: [],
+      custo_proxima_rolagem: 1,
+      tokens_baixos_notificado: false,
       
       tutorial_visto: false,
       termo_privacidade_aceito: false,
@@ -210,6 +224,10 @@ class StateManager {
    */
   rolarDado() {
     if (this.state.partida_finalizada) return 0;
+
+    // Custo de rolagem por volta: Volta 1 = 1 token, Volta 2 = 2 tokens, Volta 3+ = 3 tokens
+    const custo = calcularCustoRolagem(this.state.voltas_completas || 0);
+    const tokensAposCusto = Math.max(0, (this.state.tokens || 0) - custo);
     
     let face = 1;
     if (this.rngDado) {
@@ -218,7 +236,22 @@ class StateManager {
       face = Math.floor(Math.random() * (CONSTANTES.DADO_MAX - CONSTANTES.DADO_MIN + 1)) + CONSTANTES.DADO_MIN;
     }
 
-    this.set({ dado_ultimo: face, rodada: this.state.rodada + 1 });
+    const item = {
+      tipo: 'rolagem_dado',
+      face,
+      custo_rolagem: custo,
+      tokens_apos_custo: tokensAposCusto,
+      jogada_em: new Date().toISOString(),
+      timestamp: Date.now()
+    };
+
+    this.set({
+      dado_ultimo: face,
+      rodada: this.state.rodada + 1,
+      tokens: tokensAposCusto,
+      custo_proxima_rolagem: custo,
+      historico: [...this.state.historico, item]
+    });
     return face;
   }
 
@@ -239,6 +272,7 @@ class StateManager {
       let parouEmBifurcacao = false;
       let bifurcacaoPendente = null;
       let hubAtivado = false;
+      let voltaCompletada = false;
       let bonusTokensAcumulado = 0;
       const visitados = new Set(this.state.checkpoints_passados || []);
       const caminhoPercorrido = [currId];
@@ -286,6 +320,29 @@ class StateManager {
           currId = proxId;
           caminhoPercorrido.push(currId);
           passos--;
+          this.state.casas_avancadas = (this.state.casas_avancadas || 0) + 1;
+
+          // Passagem pelo Portal Final (Nó 60) -> Volta completa! Continua para a Casa 0
+          if (currId === 60) {
+            voltaCompletada = true;
+            const novaVolta = (this.state.voltas_completas || 0) + 1;
+            this.state.voltas_completas = novaVolta;
+            this.state.checkpoints_volta_atual = [];
+            this.state.custo_proxima_rolagem = calcularCustoRolagem(novaVolta);
+            const bonusVolta = calcularBonusCheckpoint(60, novaVolta - 1);
+            bonusTokensAcumulado += bonusVolta;
+
+            // Recalcula grafo com armadilha extra da nova volta se houver
+            try {
+              const novoTabGrafo = gerarTabuleiroGrafo(this.state.semana_partida, grafo, novaVolta);
+              this.state.tabuleiro = novoTabGrafo;
+            } catch (_) {}
+
+            // O peão segue imediatamente para o nó 0 no percurso em loop
+            currId = 0;
+            caminhoPercorrido.push(currId);
+            this.emit('volta_completa', { voltas: novaVolta, bonus: bonusVolta });
+          }
 
           // Verifica passagem pelo Hub Central (Nó 33)
           if (currId === 33 && !visitados.has(33)) {
@@ -293,25 +350,27 @@ class StateManager {
             visitados.add(33);
           }
 
-          // Verifica checkpoints no grafo (20: CP1, 40: CP2, 60: CP3 - compatível com 27 e 53)
-          if ((currId === 20 || currId === 27) && !visitados.has(currId)) {
-            bonusTokensAcumulado += CONSTANTES.BONUS_CHECKPOINT_1;
-            visitados.add(currId);
+          // Checkpoints: dão bônus 1 vez por volta (com valor reduzido pela metade a cada volta)
+          const cpVolta = this.state.checkpoints_volta_atual || [];
+          if ((currId === 20 || currId === 27) && !cpVolta.includes(20) && !cpVolta.includes(27)) {
+            const b = calcularBonusCheckpoint(20, this.state.voltas_completas || 0);
+            bonusTokensAcumulado += b;
+            cpVolta.push(20);
+            visitados.add(20);
           }
-          if ((currId === 40 || currId === 53) && !visitados.has(currId)) {
-            bonusTokensAcumulado += CONSTANTES.BONUS_CHECKPOINT_2;
-            visitados.add(currId);
+          if ((currId === 40 || currId === 53) && !cpVolta.includes(40) && !cpVolta.includes(53)) {
+            const b = calcularBonusCheckpoint(40, this.state.voltas_completas || 0);
+            bonusTokensAcumulado += b;
+            cpVolta.push(40);
+            visitados.add(40);
           }
-          if (currId >= 60 && !visitados.has(60)) {
-            bonusTokensAcumulado += CONSTANTES.BONUS_CHECKPOINT_3;
-            visitados.add(60);
-            break;
-          }
+          this.state.checkpoints_volta_atual = cpVolta;
         }
       }
 
       const novosTokens = Math.max(0, this.state.tokens + bonusTokensAcumulado);
-      const fimDePartida = currId >= 60 || isFimDePartida({ posicao: currId, tokens: novosTokens, rodada: this.state.rodada });
+      // Fim de partida SOMENTE quando tokens chegam a 0 ou limite de segurança
+      const fimDePartida = isFimDePartida({ tokens: novosTokens, encerrouVoluntariamente: this.state.partida_finalizada, rodada: this.state.rodada });
 
       const atualizacoes = {
         posicao: currId,
@@ -335,7 +394,8 @@ class StateManager {
         fimDePartida,
         parouEmBifurcacao,
         bifurcacaoPendente,
-        hubAtivado
+        hubAtivado,
+        voltaCompletada
       };
     }
 
@@ -483,9 +543,11 @@ class StateManager {
     if (this.state.partida_finalizada) return this.state.pontuacao_final;
 
     const pontos = calcularPontuacao({
-      tokens: this.state.tokens,
+      casas_avancadas: this.state.casas_avancadas,
+      voltas: this.state.voltas_completas,
       acertos: this.state.acertos_desafio,
       bonusPenseAntes: this.state.bonus_pense_antes,
+      boasPraticas: this.state.boas_praticas,
       armadilhas: this.state.armadilhas
     });
 
@@ -496,6 +558,13 @@ class StateManager {
 
     this.emit('partida_terminou', pontos);
     return pontos;
+  }
+
+  /**
+   * Encerramento voluntário da partida pelo jogador (garante os pontos atuais)
+   */
+  encerrarPartidaVoluntariamente() {
+    return this.finalizarPartida();
   }
 
   // --- PERSISTÊNCIA LOCAL SEGURA COM TRY/CATCH ---

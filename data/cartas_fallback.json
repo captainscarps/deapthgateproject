@@ -22,7 +22,8 @@
         "bonus_pense_antes": false,
         "feedback": "Isso cria duplicação de custos e ferramentas paralelas na instituição. Sempre consulte o catálogo interno antes."
       }
-    ]
+    ],
+    "nivel": 1
   },
   {
     "id": "pa_002",
@@ -47,7 +48,8 @@
         "bonus_pense_antes": false,
         "feedback": "Custo e esforço desproporcionais para o volume de dados. Nem todo problema requer inteligência artificial."
       }
-    ]
+    ],
+    "nivel": 1
   },
   {
     "id": "pa_003",
@@ -72,7 +74,8 @@
         "bonus_pense_antes": false,
         "feedback": "Criar silos de dados gera inconsistência de métricas entre setores. Prefira dados unificados."
       }
-    ]
+    ],
+    "nivel": 1
   },
   {
     "id": "pa_004",
@@ -97,7 +100,8 @@
         "bonus_pense_antes": false,
         "feedback": "Desperdício de tempo de trabalho e recursos computacionais. Tarefas rotineiras ficam mais ágeis com modelos prontos."
       }
-    ]
+    ],
+    "nivel": 2
   },
   {
     "id": "pa_005",
@@ -122,7 +126,8 @@
         "bonus_pense_antes": false,
         "feedback": "Complexidade desnecessária para o volume da tarefa. Reserve IA para padrões não determinísticos e escala."
       }
-    ]
+    ],
+    "nivel": 2
   },
   {
     "id": "pa_006",
@@ -147,7 +152,8 @@
         "bonus_pense_antes": false,
         "feedback": "Contratar plataformas redundantes sobrecarrega a governança e dispersa recursos. Estimule a colaboração."
       }
-    ]
+    ],
+    "nivel": 3
   },
   {
     "id": "pa_007",
@@ -172,7 +178,8 @@
         "bonus_pense_antes": false,
         "feedback": "Risco gravíssimo de vazamento de dados estratégicos e alucinações técnicas em órgãos de controle."
       }
-    ]
+    ],
+    "nivel": 3
   },
   {
     "id": "bp_001",
@@ -186,7 +193,8 @@
       "armadilha": false,
       "feedback": "Excelente conduta! Aplicar a anonimização reduz riscos de vazamento e atende integralmente à LGPD."
     },
-    "opcoes": []
+    "opcoes": [],
+    "nivel": 1
   },
   {
     "id": "bp_002",
@@ -200,7 +208,8 @@
       "armadilha": false,
       "feedback": "Muito bem! O princípio do 'Human-in-the-loop' evita que alucinações da IA cheguem aos relatórios de gestão."
     },
-    "opcoes": []
+    "opcoes": [],
+    "nivel": 1
   },
   {
     "id": "bp_003",
@@ -214,7 +223,8 @@
       "armadilha": false,
       "feedback": "Ótima iniciativa! Reconhecer os custodiantes dos dados garante alinhamento de critérios e autorizações adequadas."
     },
-    "opcoes": []
+    "opcoes": [],
+    "nivel": 1
   },
   {
     "id": "bp_004",
@@ -228,7 +238,8 @@
       "armadilha": false,
       "feedback": "Perfeito! Ferramentas corporativas garantem cláusulas de confidencialidade e não utilizam seus dados para treinar modelos abertos."
     },
-    "opcoes": []
+    "opcoes": [],
+    "nivel": 2
   },
   {
     "id": "bp_005",
@@ -242,7 +253,8 @@
       "armadilha": false,
       "feedback": "Trabalho essencial! Tratar a qualidade na origem melhora a precisão de todos os indicadores institucionais."
     },
-    "opcoes": []
+    "opcoes": [],
+    "nivel": 2
   },
   {
     "id": "bp_006",
@@ -256,7 +268,8 @@
       "armadilha": false,
       "feedback": "Correta aplicação de classificação da informação! Ajuda os destinatários a entenderem os limites de circulação do arquivo."
     },
-    "opcoes": []
+    "opcoes": [],
+    "nivel": 3
   },
   {
     "id": "bp_007",
@@ -270,7 +283,8 @@
       "armadilha": false,
       "feedback": "Ganho expressivo de tempo! Compartilhar conhecimento entre regionais padroniza a qualidade dos serviços."
     },
-    "opcoes": []
+    "opcoes": [],
+    "nivel": 3
   },
   {
     "id": "arm_001",
@@ -284,7 +298,8 @@
       "armadilha": true,
       "feedback": "Incidente grave de segurança! Dados sensíveis de saúde nunca podem ser expostos a plataformas abertas na internet."
     },
-    "opcoes": []
+    "opcoes": [],
+    "nivel": 1
   },
   {
     "id": "arm_002",
@@ -298,7 +313,8 @@
       "armadilha": true,
       "feedback": "Alucinação em ambiente executivo! Apresentar dados sem validação prévia compromete a credibilidade da sua área."
     },
-    "opcoes": []
+    "opcoes": [],
+    "nivel": 1
   },
   {
     "id": "arm_003",
@@ -312,7 +328,8 @@
       "armadilha": true,
       "feedback": "Descumprimento direto da LGPD. Qualquer repasse a terceiros exige respaldo contratual e consentimento."
     },
-    "opcoes": []
+    "opcoes": [],
+    "nivel": 1
   },
   {
     "id": "arm_004",
@@ -326,7 +343,8 @@
       "armadilha": true,
       "feedback": "Base defasada! Decisões táticas baseadas em arquivos locais desatualizados distorcem a alocação de recursos."
     },
-    "opcoes": []
+    "opcoes": [],
+    "nivel": 2
   },
   {
     "id": "arm_005",
@@ -340,7 +358,8 @@
       "armadilha": true,
       "feedback": "Falha grave de controle de acessos. Permissões devem seguir o princípio do privilégio mínimo e fluxo auditável."
     },
-    "opcoes": []
+    "opcoes": [],
+    "nivel": 2
   },
   {
     "id": "arm_006",
@@ -354,7 +373,8 @@
       "armadilha": true,
       "feedback": "Shadow IT arriscado! Plugins e extensões desconhecidas podem interceptar credenciais e sessões de trabalho."
     },
-    "opcoes": []
+    "opcoes": [],
+    "nivel": 3
   },
   {
     "id": "arm_007",
@@ -368,7 +388,8 @@
       "armadilha": true,
       "feedback": "Falta de governança semântica. Sem um dicionário único de métricas, cada setor calcula sua própria verdade."
     },
-    "opcoes": []
+    "opcoes": [],
+    "nivel": 3
   },
   {
     "id": "des_001",
@@ -401,7 +422,8 @@
         "bonus_pense_antes": false,
         "feedback": "Incorreto. Informações funcionais cadastrais são dados pessoais ordinários, não sensíveis."
       }
-    ]
+    ],
+    "nivel": 1
   },
   {
     "id": "des_002",
@@ -434,7 +456,8 @@
         "bonus_pense_antes": false,
         "feedback": "Incorreto. Uma IA pode endossar erros da outra. A checagem factual deve ser humana na fonte original."
       }
-    ]
+    ],
+    "nivel": 1
   },
   {
     "id": "des_003",
@@ -467,7 +490,8 @@
         "bonus_pense_antes": false,
         "feedback": "Incorreto. Ter uma cópia local não concede direitos sobre as diretrizes institucionais do dado."
       }
-    ]
+    ],
+    "nivel": 1
   },
   {
     "id": "des_004",
@@ -492,7 +516,8 @@
         "bonus_pense_antes": false,
         "feedback": "Incorreto. O dicionário de dados define a semântica, regras de negócio e estrutura das métricas analíticas."
       }
-    ]
+    ],
+    "nivel": 2
   },
   {
     "id": "des_005",
@@ -517,7 +542,8 @@
         "bonus_pense_antes": false,
         "feedback": "Incorreto. Popularidade em mídias não atesta conformidade com segurança da informação e legislação brasileira."
       }
-    ]
+    ],
+    "nivel": 2
   },
   {
     "id": "des_006",
@@ -542,7 +568,8 @@
         "bonus_pense_antes": false,
         "feedback": "Conduta gravíssima! Omitir incidentes impede ações mitigadoras e expõe a instituição a penalidades legais severas."
       }
-    ]
+    ],
+    "nivel": 3
   },
   {
     "id": "des_007",
@@ -567,7 +594,8 @@
         "bonus_pense_antes": false,
         "feedback": "Erro comum! Divulgar picos anômalos sem auditoria prévia causa desinformação e retrabalho desnecessário."
       }
-    ]
+    ],
+    "nivel": 3
   },
   {
     "id": "con_001",
@@ -581,7 +609,8 @@
       "armadilha": false,
       "feedback": "Excelente alinhamento intersetorial! A padronização conceitual entre áreas viabiliza relatórios limpos e confiáveis."
     },
-    "opcoes": []
+    "opcoes": [],
+    "nivel": 1
   },
   {
     "id": "con_002",
@@ -595,7 +624,8 @@
       "armadilha": false,
       "feedback": "Privacidade por padrão (Privacy by Design) na prática! O apoio do DPO evita adequações de emergência no futuro."
     },
-    "opcoes": []
+    "opcoes": [],
+    "nivel": 1
   },
   {
     "id": "con_003",
@@ -609,7 +639,8 @@
       "armadilha": false,
       "feedback": "Planejamento integrado exemplar! Garantir capacidade técnica prévia evita lentidões e indisponibilidade de serviços."
     },
-    "opcoes": []
+    "opcoes": [],
+    "nivel": 1
   },
   {
     "id": "con_004",
@@ -623,7 +654,8 @@
       "armadilha": false,
       "feedback": "Conexão de alto valor! Reutilizar entregas maduras economiza semanas de esforço e incentiva a cooperação em rede."
     },
-    "opcoes": []
+    "opcoes": [],
+    "nivel": 2
   },
   {
     "id": "con_005",
@@ -637,7 +669,8 @@
       "armadilha": false,
       "feedback": "Conscientização da ponta operacional! Quem cadastra passa a entender a importância do dado para a decisão gerencial."
     },
-    "opcoes": []
+    "opcoes": [],
+    "nivel": 2
   },
   {
     "id": "con_006",
@@ -651,7 +684,8 @@
       "armadilha": false,
       "feedback": "Governança colaborativa de verdade! Soluções multidisciplinares nascem equilibradas e com menos barreiras de implantação."
     },
-    "opcoes": []
+    "opcoes": [],
+    "nivel": 3
   },
   {
     "id": "con_007",
@@ -665,7 +699,8 @@
       "armadilha": false,
       "feedback": "Uso consciente e ético da tecnologia! A tecnologia apoia o aprendizado sem substituir o papel formador do professor."
     },
-    "opcoes": []
+    "opcoes": [],
+    "nivel": 3
   },
   {
     "id": "evt_001",
@@ -679,7 +714,8 @@
       "armadilha": false,
       "feedback": "A engrenagem institucional se fortalece quando todos se engajam na cultura analítica e ética."
     },
-    "opcoes": []
+    "opcoes": [],
+    "nivel": 1
   },
   {
     "id": "evt_002",
@@ -693,7 +729,8 @@
       "armadilha": false,
       "feedback": "Bases de dados confiáveis aceleram atendimentos e trazem clareza para o planejamento orçamentário."
     },
-    "opcoes": []
+    "opcoes": [],
+    "nivel": 1
   },
   {
     "id": "evt_003",
@@ -707,7 +744,8 @@
       "armadilha": false,
       "feedback": "Diretrizes claras dão segurança jurídica para as equipes inovarem sem violar a privacidade dos cidadãos."
     },
-    "opcoes": []
+    "opcoes": [],
+    "nivel": 1
   },
   {
     "id": "evt_004",
@@ -721,7 +759,8 @@
       "armadilha": false,
       "feedback": "Cultura preventiva em ação! Equipes treinadas respondem com rapidez e minimizam potenciais danos."
     },
-    "opcoes": []
+    "opcoes": [],
+    "nivel": 2
   },
   {
     "id": "evt_005",
@@ -735,7 +774,8 @@
       "armadilha": false,
       "feedback": "Fim da reinvenção da roda! Transparência sobre o que já existe estimula o reuso contínuo."
     },
-    "opcoes": []
+    "opcoes": [],
+    "nivel": 2
   },
   {
     "id": "evt_006",
@@ -749,7 +789,8 @@
       "armadilha": false,
       "feedback": "Lembrete prático: a continuidade do atendimento ao cidadão deve estar resguardada mesmo sem conectividade com IA."
     },
-    "opcoes": []
+    "opcoes": [],
+    "nivel": 3
   },
   {
     "id": "evt_007",
@@ -763,6 +804,1294 @@
       "armadilha": false,
       "feedback": "Excelência reconhecida! Dados íntegros sustentam decisões assertivas em prol do setor de transporte."
     },
-    "opcoes": []
+    "opcoes": [],
+    "nivel": 3
+  },
+  {
+    "id": "pa_008",
+    "categoria": "pense_antes",
+    "nivel": 1,
+    "tema": "reuso",
+    "texto": "Um setor quer criar uma nova planilha na internet para acompanhar frequência em cursos, mas o SEST SENAT já possui o sistema TOTVS/RM homologado.",
+    "opcoes": [
+      {
+        "texto": "Utilizar o sistema oficial homologado pela instituição.",
+        "tokens": 3,
+        "mover": 1,
+        "correta": true,
+        "bonus_pense_antes": true,
+        "feedback": "Correto! Evita duplicidade de dados e retrabalho."
+      },
+      {
+        "texto": "Criar a planilha paralela sem informar a TI.",
+        "tokens": -2,
+        "mover": 0,
+        "correta": false,
+        "bonus_pense_antes": false,
+        "feedback": "Incorreto. Planilhas isoladas geram silos e falhas de conformidade."
+      }
+    ],
+    "explicacao": "Utilizar os sistemas oficiais garante integridade e histórico corporativo."
+  },
+  {
+    "id": "pa_009",
+    "categoria": "pense_antes",
+    "nivel": 1,
+    "tema": "ia",
+    "texto": "Para agendar salas de aula presenciais, cogitou-se desenvolver um agente autônomo com IA avançada.",
+    "opcoes": [
+      {
+        "texto": "Adotar o calendário integrado já disponível no Outlook corporativo.",
+        "tokens": 3,
+        "mover": 0,
+        "correta": true,
+        "bonus_pense_antes": true,
+        "feedback": "Excelente! Agendamento simples não justifica custo de IA."
+      },
+      {
+        "texto": "Contratar o desenvolvimento de um modelo customizado de IA.",
+        "tokens": -3,
+        "mover": -1,
+        "correta": false,
+        "bonus_pense_antes": false,
+        "feedback": "Desperdício de recursos. Pense antes de usar IA desnecessária."
+      }
+    ],
+    "explicacao": "Nem todo fluxo de trabalho requer inteligência artificial; ferramentas existentes resolvem com eficiência."
+  },
+  {
+    "id": "pa_010",
+    "categoria": "pense_antes",
+    "nivel": 1,
+    "tema": "governanca",
+    "texto": "Antes de compartilhar dados cadastrais de alunos com um fornecedor de software, qual o primeiro passo?",
+    "opcoes": [
+      {
+        "texto": "Consultar o Encarregado pelo Tratamento de Dados (DPO) e verificar o contrato.",
+        "tokens": 4,
+        "mover": 1,
+        "correta": true,
+        "bonus_pense_antes": true,
+        "feedback": "Muito bem! O compartilhamento com terceiros exige cláusula de privacidade."
+      },
+      {
+        "texto": "Enviar os dados por e-mail se o fornecedor prometer sigilo verbal.",
+        "tokens": -3,
+        "mover": 0,
+        "correta": false,
+        "bonus_pense_antes": false,
+        "feedback": "Grave risco à LGPD. Garantias devem ser contratuais e auditadas."
+      }
+    ],
+    "explicacao": "A governança de dados exige validação jurídica e do DPO antes de qualquer transferência externa."
+  },
+  {
+    "id": "pa_011",
+    "categoria": "pense_antes",
+    "nivel": 1,
+    "tema": "reuso",
+    "texto": "A equipe pedagógica deseja gerar certificados automáticos. A TI já possui um módulo institucional de certificação ativo.",
+    "opcoes": [
+      {
+        "texto": "Integrar a demanda ao módulo de certificação já existente.",
+        "tokens": 3,
+        "mover": 0,
+        "correta": true,
+        "bonus_pense_antes": true,
+        "feedback": "Ótima escolha! Reutilizar reduz custos e padroniza a marca institucional."
+      },
+      {
+        "texto": "Contratar uma plataforma terceira avulsa por assinatura mensal.",
+        "tokens": -2,
+        "mover": 0,
+        "correta": false,
+        "bonus_pense_antes": false,
+        "feedback": "Desperdício orçamentário quando já existe solução corporativa."
+      }
+    ],
+    "explicacao": "O catálogo interno de soluções deve ser consultado antes de qualquer nova contratação."
+  },
+  {
+    "id": "pa_012",
+    "categoria": "pense_antes",
+    "nivel": 2,
+    "tema": "lgpd",
+    "texto": "Uma unidade quer realizar pesquisa de satisfação perguntando religião e opinião política dos alunos de cursos de transporte.",
+    "opcoes": [
+      {
+        "texto": "Eliminar essas perguntas, coletando estritamente os dados necessários para o curso.",
+        "tokens": 4,
+        "mover": 1,
+        "correta": true,
+        "bonus_pense_antes": true,
+        "feedback": "Perfeito! Princípio da necessidade e minimização de dados sensíveis."
+      },
+      {
+        "texto": "Manter as perguntas com a justificativa de conhecer melhor o público.",
+        "tokens": -3,
+        "mover": -1,
+        "correta": false,
+        "bonus_pense_antes": false,
+        "feedback": "Violação da LGPD: dados sensíveis sem finalidade legítima."
+      }
+    ],
+    "explicacao": "Pelo princípio da minimização da LGPD, só colete o estritamente necessário para o serviço."
+  },
+  {
+    "id": "pa_013",
+    "categoria": "pense_antes",
+    "nivel": 2,
+    "tema": "ia",
+    "texto": "Pretende-se usar IA para filtrar currículos de candidatos a instrutores de direção. O que deve ser verificado primeiro?",
+    "opcoes": [
+      {
+        "texto": "Avaliar critérios de viés histórico e manter supervisão humana no processo seletivo.",
+        "tokens": 4,
+        "mover": 1,
+        "correta": true,
+        "bonus_pense_antes": true,
+        "feedback": "Fundamental! IA em seleção deve ter supervisão humana para evitar discriminação."
+      },
+      {
+        "texto": "Permitir que a IA aprove ou reprove candidatos de forma 100% autônoma.",
+        "tokens": -4,
+        "mover": -1,
+        "correta": false,
+        "bonus_pense_antes": false,
+        "feedback": "Risco de processos trabalhistas e decisões discriminatórias cegas."
+      }
+    ],
+    "explicacao": "Sistemas de IA de alto impacto em pessoas exigem controle humano estrito (*human-in-the-loop*)."
+  },
+  {
+    "id": "pa_014",
+    "categoria": "pense_antes",
+    "nivel": 2,
+    "tema": "seguranca",
+    "texto": "Um colaborador quer treinar um modelo de transcrição local usando áudios gravados de consultas odontológicas.",
+    "opcoes": [
+      {
+        "texto": "Suspender a iniciativa até validação do DPO e do Comitê de Governança de IA.",
+        "tokens": 4,
+        "mover": 1,
+        "correta": true,
+        "bonus_pense_antes": true,
+        "feedback": "Decisão prudente. Dados de saúde têm proteção legal especial."
+      },
+      {
+        "texto": "Subir os áudios diretamente em ferramentas de transcrição gratuitas.",
+        "tokens": -4,
+        "mover": -1,
+        "correta": false,
+        "bonus_pense_antes": false,
+        "feedback": "Grave infração de sigilo médico e quebra de dever ético."
+      }
+    ],
+    "explicacao": "Gravações médicas são dados extremamente sensíveis e jamais podem alimentar modelos sem governança."
+  },
+  {
+    "id": "pa_015",
+    "categoria": "pense_antes",
+    "nivel": 2,
+    "tema": "qualidade",
+    "texto": "Ao alimentar um dashboard de telemetria de trânsito, descobriu-se que 30% dos registros estão sem data e local.",
+    "opcoes": [
+      {
+        "texto": "Sanear e validar a qualidade dos dados na fonte antes de publicar relatórios.",
+        "tokens": 3,
+        "mover": 0,
+        "correta": true,
+        "bonus_pense_antes": true,
+        "feedback": "Correto! Dados corrompidos levam a decisões gerenciais erradas."
+      },
+      {
+        "texto": "Gerar o painel assim mesmo, ignorando as falhas de preenchimento.",
+        "tokens": -3,
+        "mover": 0,
+        "correta": false,
+        "bonus_pense_antes": false,
+        "feedback": "Risco de análises enganosas: dados de má qualidade induzem a erros operacionais."
+      }
+    ],
+    "explicacao": "A governança preza pela qualidade dos dados (*garbage in, garbage out*)."
+  },
+  {
+    "id": "pa_016",
+    "categoria": "pense_antes",
+    "nivel": 2,
+    "tema": "reuso",
+    "texto": "Duas unidades vizinhas planejam contratar empresas diferentes para desenvolver a mesma funcionalidade de triagem rápida.",
+    "opcoes": [
+      {
+        "texto": "Articular com a TI corporativa uma contratação única e escalável para ambas as unidades.",
+        "tokens": 4,
+        "mover": 1,
+        "correta": true,
+        "bonus_pense_antes": true,
+        "feedback": "Economia de escala e padronização corporativa exemplar!"
+      },
+      {
+        "texto": "Manter contratos separados para cada unidade ter seu fornecedor favorito.",
+        "tokens": -3,
+        "mover": 0,
+        "correta": false,
+        "bonus_pense_antes": false,
+        "feedback": "Custo duplo e incompatibilidade futura entre sistemas."
+      }
+    ],
+    "explicacao": "A visão centralizada evita redundâncias orçamentárias."
+  },
+  {
+    "id": "pa_017",
+    "categoria": "pense_antes",
+    "nivel": 3,
+    "tema": "ia_avancada",
+    "texto": "Um algoritmo generativo foi proposto para criar ementas pedagógicas para novos cursos de direção autônoma.",
+    "opcoes": [
+      {
+        "texto": "Exigir validação técnica por especialistas pedagógicos antes de qualquer publicação.",
+        "tokens": 4,
+        "mover": 1,
+        "correta": true,
+        "bonus_pense_antes": true,
+        "feedback": "Fundamental! IAs generativas sofrem de alucinação e necessitam de curadoria humana."
+      },
+      {
+        "texto": "Publicar ementas geradas pela IA diretamente no catálogo de cursos sem revisão.",
+        "tokens": -5,
+        "mover": -1,
+        "correta": false,
+        "bonus_pense_antes": false,
+        "feedback": "Risco institucional e de conformidade perante normas educacionais."
+      }
+    ],
+    "explicacao": "Conteúdos técnicos gerados por IA devem ser auditados por especialistas antes de irem a público."
+  },
+  {
+    "id": "pa_018",
+    "categoria": "pense_antes",
+    "nivel": 3,
+    "tema": "governanca_risco",
+    "texto": "Foi identificado que um modelo preditivo terceirizado possui taxa de erro 3x maior para motoristas com mais de 50 anos.",
+    "opcoes": [
+      {
+        "texto": "Suspender o modelo para reavaliação de viés etário e calibração da base de treino.",
+        "tokens": 5,
+        "mover": 1,
+        "correta": true,
+        "bonus_pense_antes": true,
+        "feedback": "Ética e responsabilidade! IAs não podem perpetuar viés ou discriminação."
+      },
+      {
+        "texto": "Ignorar a disparidade alegando que modelos matemáticos são neutros.",
+        "tokens": -5,
+        "mover": -1,
+        "correta": false,
+        "bonus_pense_antes": false,
+        "feedback": "Viés algorítmico é um risco real de governança e reputação."
+      }
+    ],
+    "explicacao": "A identificação de viés exige suspensão preventiva e readequação da base de dados."
+  },
+  {
+    "id": "pa_019",
+    "categoria": "pense_antes",
+    "nivel": 3,
+    "tema": "lgpd_sensivel",
+    "texto": "Um projeto prevê analisar padrões vocais de motoristas no simulador para predizer estresse psicológico crônico.",
+    "opcoes": [
+      {
+        "texto": "Submeter ao Comitê de Ética e Privacidade para Relatório de Impacto à Proteção de Dados (RIPD).",
+        "tokens": 5,
+        "mover": 1,
+        "correta": true,
+        "bonus_pense_antes": true,
+        "feedback": "Perfeito! Tratamento de dados biométricos/emocionais exige RIPD prévio."
+      },
+      {
+        "texto": "Iniciar a coleta imediata sem registro ou avaliação prévia de riscos.",
+        "tokens": -5,
+        "mover": -1,
+        "correta": false,
+        "bonus_pense_antes": false,
+        "feedback": "Infração gravíssima às diretrizes da LGPD e aos direitos dos trabalhadores."
+      }
+    ],
+    "explicacao": "Tecnologias de inferência emocional e biométrica requerem RIPD formal."
+  },
+  {
+    "id": "pa_020",
+    "categoria": "pense_antes",
+    "nivel": 3,
+    "tema": "governanca_ia",
+    "texto": "A instituição quer estabelecer diretrizes obrigatórias de compra de softwares que contenham recursos de IA.",
+    "opcoes": [
+      {
+        "texto": "Exigir cláusulas de transparência algorítmica, direito de auditoria e conformidade LGPD no edital.",
+        "tokens": 5,
+        "mover": 1,
+        "correta": true,
+        "bonus_pense_antes": true,
+        "feedback": "Excelente maturidade de governança em aquisições públicas e institucionais!"
+      },
+      {
+        "texto": "Comprar apenas pelo critério de menor preço, sem requisitos específicos de governança.",
+        "tokens": -4,
+        "mover": 0,
+        "correta": false,
+        "bonus_pense_antes": false,
+        "feedback": "Alto risco de aprisionamento tecnológico (*vendor lock-in*) e vulnerabilidade jurídica."
+      }
+    ],
+    "explicacao": "Contratos com componentes de IA devem garantir transparência e conformidade regulatória."
+  },
+  {
+    "id": "bp_008",
+    "categoria": "boa_pratica",
+    "nivel": 1,
+    "tema": "acesso",
+    "texto": "Você bloqueou a tela do seu computador institucional ao se levantar para buscar um café na unidade.",
+    "efeito": {
+      "tokens": 3
+    },
+    "explicacao": "Bloquear a estação de trabalho previne acesso indevido por terceiros."
+  },
+  {
+    "id": "bp_009",
+    "categoria": "boa_pratica",
+    "nivel": 1,
+    "tema": "senhas",
+    "texto": "Você ativou a autenticação em duas etapas (MFA) na sua conta institucional corporativa.",
+    "efeito": {
+      "tokens": 4
+    },
+    "explicacao": "O MFA adiciona uma barreira crucial de defesa contra roubo de credenciais."
+  },
+  {
+    "id": "bp_010",
+    "categoria": "boa_pratica",
+    "nivel": 1,
+    "tema": "phishing",
+    "texto": "Ao receber e-mail suspeito com cobrança urgente, você reportou para a equipe de TI antes de clicar.",
+    "efeito": {
+      "tokens": 4
+    },
+    "explicacao": "Reportar engenharia social protege toda a rede da instituição."
+  },
+  {
+    "id": "bp_011",
+    "categoria": "boa_pratica",
+    "nivel": 1,
+    "tema": "privacidade",
+    "texto": "Você utilizou o campo Cco (cópia oculta) ao enviar informativo externo para 200 alunos.",
+    "efeito": {
+      "tokens": 3
+    },
+    "explicacao": "Preserva a privacidade dos endereços de e-mail de todos os alunos."
+  },
+  {
+    "id": "bp_012",
+    "categoria": "boa_pratica",
+    "nivel": 2,
+    "tema": "lgpd",
+    "texto": "Você aplicou pseudonimização em uma planilha de avaliação pedagógica antes de exportá-la para estatísticas.",
+    "efeito": {
+      "tokens": 4
+    },
+    "explicacao": "A desidentificação reduz expressivamente os riscos de exposição de dados."
+  },
+  {
+    "id": "bp_013",
+    "categoria": "boa_pratica",
+    "nivel": 2,
+    "tema": "qualidade",
+    "texto": "Você padronizou a validação de CPF e datas nos formulários de cadastro de novos colaboradores.",
+    "efeito": {
+      "tokens": 4
+    },
+    "explicacao": "Validação na entrada assegura integridade ao longo de todo o ciclo de vida dos dados."
+  },
+  {
+    "id": "bp_014",
+    "categoria": "boa_pratica",
+    "nivel": 2,
+    "tema": "backup",
+    "texto": "Você manteve seus arquivos de trabalho sincronizados no repositório corporativo seguro em vez do disco C:.",
+    "efeito": {
+      "tokens": 3
+    },
+    "explicacao": "Garante recuperação rápida em caso de quebra ou perda de equipamento."
+  },
+  {
+    "id": "bp_015",
+    "categoria": "boa_pratica",
+    "nivel": 2,
+    "tema": "descarte",
+    "texto": "Você triturou rascunhos de impressões que continham dados de contato e CPF de colaboradores.",
+    "efeito": {
+      "tokens": 3
+    },
+    "explicacao": "O descarte físico seguro é tão essencial quanto o descarte digital."
+  },
+  {
+    "id": "bp_016",
+    "categoria": "boa_pratica",
+    "nivel": 2,
+    "tema": "ia_etica",
+    "texto": "Você adicionou uma nota informando claramente aos alunos que o resumo da aula foi gerado com apoio de IA.",
+    "efeito": {
+      "tokens": 4
+    },
+    "explicacao": "A transparência no uso de inteligência artificial é preceito ético obrigatório."
+  },
+  {
+    "id": "bp_017",
+    "categoria": "boa_pratica",
+    "nivel": 3,
+    "tema": "auditoria",
+    "texto": "Sua equipe documentou detalhadamente o dicionário de variáveis de um modelo de previsão de evasão.",
+    "efeito": {
+      "tokens": 5
+    },
+    "explicacao": "A documentação técnica permite auditoria independente e reprodutibilidade."
+  },
+  {
+    "id": "bp_018",
+    "categoria": "boa_pratica",
+    "nivel": 3,
+    "tema": "governanca_ia",
+    "texto": "Você estabeleceu testes de regressão para monitorar a degradação temporal da acurácia do modelo de IA.",
+    "efeito": {
+      "tokens": 5
+    },
+    "explicacao": "Modelos de IA sofrem *drift* e precisam de monitoramento contínuo em produção."
+  },
+  {
+    "id": "bp_019",
+    "categoria": "boa_pratica",
+    "nivel": 3,
+    "tema": "resposta_incidentes",
+    "texto": "Você seguiu o protocolo institucional e comunicou uma tentativa de invasão em menos de 15 minutos.",
+    "efeito": {
+      "tokens": 5
+    },
+    "explicacao": "A agilidade na resposta a incidentes reduz drasticamente possíveis danos."
+  },
+  {
+    "id": "bp_020",
+    "categoria": "boa_pratica",
+    "nivel": 3,
+    "tema": "conformidade",
+    "texto": "Você revisou os termos de tratamento de dados de uma API antes de sua integração com o portal oficial.",
+    "efeito": {
+      "tokens": 4
+    },
+    "explicacao": "A conformidade na cadeia de suprimentos de software protege a responsabilidade legal da instituição."
+  },
+  {
+    "id": "arm_008",
+    "categoria": "armadilha",
+    "nivel": 1,
+    "tema": "senhas",
+    "texto": "Armadilha! Anotou a senha do sistema em um post-it colado na lateral do monitor.",
+    "efeito": {
+      "tokens": -3,
+      "armadilha": true
+    },
+    "explicacao": "Exposição física de credenciais corporativas anula toda a segurança do sistema."
+  },
+  {
+    "id": "arm_009",
+    "categoria": "armadilha",
+    "nivel": 1,
+    "tema": "redes",
+    "texto": "Armadilha! Conectou o notebook institucional em rede Wi-Fi pública aberta sem VPN.",
+    "efeito": {
+      "tokens": -4,
+      "armadilha": true
+    },
+    "explicacao": "Redes públicas sem criptografia permitem interceptação de tráfego corporativo."
+  },
+  {
+    "id": "arm_010",
+    "categoria": "armadilha",
+    "nivel": 1,
+    "tema": "ia_publica",
+    "texto": "Armadilha! Colou a lista de colaboradores com salários em IA pública gratuita para gerar tabela.",
+    "efeito": {
+      "tokens": -5,
+      "armadilha": true
+    },
+    "explicacao": "Vazamento direto de dados internos em plataforma sem garantia de sigilo."
+  },
+  {
+    "id": "arm_011",
+    "categoria": "armadilha",
+    "nivel": 1,
+    "tema": "software_pirata",
+    "texto": "Armadilha! Instalou extensão não homologada no navegador para baixar vídeos da internet.",
+    "efeito": {
+      "tokens": -4,
+      "armadilha": true
+    },
+    "explicacao": "Extensões não auditadas podem conter spywares e capturar credenciais digitadas."
+  },
+  {
+    "id": "arm_012",
+    "categoria": "armadilha",
+    "nivel": 2,
+    "tema": "lgpd",
+    "texto": "Armadilha! Compartilhou lista com telefones particulares de alunos em grupo aberto de aplicativo de mensagens.",
+    "efeito": {
+      "tokens": -4,
+      "armadilha": true
+    },
+    "explicacao": "Quebra de privacidade e violação das diretrizes de consentimento da LGPD."
+  },
+  {
+    "id": "arm_013",
+    "categoria": "armadilha",
+    "nivel": 2,
+    "tema": "dados_desatualizados",
+    "texto": "Armadilha! Tomou decisão gerencial de corte de turmas baseando-se em relatório sem atualização há 6 meses.",
+    "efeito": {
+      "tokens": -3,
+      "armadilha": true
+    },
+    "explicacao": "Dados defasados geram tomadas de decisão errôneas e prejuízo operacional."
+  },
+  {
+    "id": "arm_014",
+    "categoria": "armadilha",
+    "nivel": 2,
+    "tema": "pendrive",
+    "texto": "Armadilha! Esqueceu um pendrive sem criptografia com cadastros de motoristas em uma sala de aula.",
+    "efeito": {
+      "tokens": -4,
+      "armadilha": true
+    },
+    "explicacao": "Mídias removíveis sem criptografia representam alto risco de vazamento de dados."
+  },
+  {
+    "id": "arm_015",
+    "categoria": "armadilha",
+    "nivel": 2,
+    "tema": "ia_alucinacao",
+    "texto": "Armadilha! Incluiu em material didático uma citação legal gerada por IA que não existe na legislação real.",
+    "efeito": {
+      "tokens": -4,
+      "armadilha": true
+    },
+    "explicacao": "Alucinações de modelos de linguagem devem ser sempre checadas na fonte oficial."
+  },
+  {
+    "id": "arm_016",
+    "categoria": "armadilha",
+    "nivel": 2,
+    "tema": "backup_falho",
+    "texto": "Armadilha! Deixou arquivos de controle somente na área de trabalho e o computador foi formatado.",
+    "efeito": {
+      "tokens": -3,
+      "armadilha": true
+    },
+    "explicacao": "A ausência de backup em pastas corporativas causa perda irreversível de dados."
+  },
+  {
+    "id": "arm_017",
+    "categoria": "armadilha",
+    "nivel": 3,
+    "tema": "vies_algoritmico",
+    "texto": "Armadilha! Manteve modelo em produção descartando automaticamente candidatas femininas a instrutoras.",
+    "efeito": {
+      "tokens": -5,
+      "armadilha": true
+    },
+    "explicacao": "Viés discriminatório algorítmico gera graves sanções legais e dano reputacional severo."
+  },
+  {
+    "id": "arm_018",
+    "categoria": "armadilha",
+    "nivel": 3,
+    "tema": "vazamento_api",
+    "texto": "Armadilha! Chave de API de acesso ao banco de dados foi commitada em repositório público na internet.",
+    "efeito": {
+      "tokens": -6,
+      "armadilha": true
+    },
+    "explicacao": "Exposição de credenciais críticas de infraestrutura exige revogação imediata."
+  },
+  {
+    "id": "arm_019",
+    "categoria": "armadilha",
+    "nivel": 3,
+    "tema": "overfitting",
+    "texto": "Armadilha! Modelo de predição de rotas decorou os trajetos antigos e falha totalmente em novas rodovias.",
+    "efeito": {
+      "tokens": -4,
+      "armadilha": true
+    },
+    "explicacao": "Falta de generalização (overfitting) invalida a aplicação prática em operações reais."
+  },
+  {
+    "id": "arm_020",
+    "categoria": "armadilha",
+    "nivel": 3,
+    "tema": "nao_conformidade",
+    "texto": "Armadilha! Descartou logs de auditoria antes do prazo legal de 5 anos exigido por órgãos reguladores.",
+    "efeito": {
+      "tokens": -5,
+      "armadilha": true
+    },
+    "explicacao": "Impossibilita a comprovação de conformidade durante fiscalizações formais."
+  },
+  {
+    "id": "des_008",
+    "categoria": "desafio",
+    "nivel": 1,
+    "tema": "lgpd_basica",
+    "texto": "O que caracteriza um Dado Pessoal segundo a Lei Geral de Proteção de Dados (LGPD)?",
+    "opcoes": [
+      {
+        "texto": "Qualquer informação relacionada a pessoa natural identificada ou identificável.",
+        "tokens": 4,
+        "correta": true,
+        "feedback": "Correto! Definição exata do art. 5º da LGPD."
+      },
+      {
+        "texto": "Somente documentos oficiais como CPF e RG registrados em cartório.",
+        "tokens": -2,
+        "correta": false,
+        "feedback": "Incompleto. E-mail, telefone e fotos também são dados pessoais."
+      },
+      {
+        "texto": "Apenas dados de colaboradores de empresas públicas.",
+        "tokens": -2,
+        "correta": false,
+        "feedback": "Incorreto. A lei se aplica a pessoas físicas em todo território nacional."
+      }
+    ],
+    "explicacao": "Dado pessoal é toda informação que permite identificar, direta ou indiretamente, uma pessoa viva."
+  },
+  {
+    "id": "des_009",
+    "categoria": "desafio",
+    "nivel": 1,
+    "tema": "engenharia_social",
+    "texto": "Alguém liga afirmando ser da TI e pede sua senha para uma manutenção emergencial. O que fazer?",
+    "opcoes": [
+      {
+        "texto": "Recusar o compartilhamento e reportar imediatamente pelo canal oficial de TI.",
+        "tokens": 4,
+        "correta": true,
+        "feedback": "Exatamente! A equipe oficial de TI nunca solicita sua senha pessoal."
+      },
+      {
+        "texto": "Fornecer a senha se a pessoa souber seu nome e cargo.",
+        "tokens": -3,
+        "correta": false,
+        "feedback": "Incorreto! Golpistas usam dados públicos para gerar falsa confiança."
+      },
+      {
+        "texto": "Criar uma senha temporária simples e passar para a pessoa.",
+        "tokens": -3,
+        "correta": false,
+        "feedback": "Perigoso. Senhas são de uso exclusivo e intransferível."
+      }
+    ],
+    "explicacao": "Senhas corporativas são pessoais e jamais devem ser ditas ou digitadas por terceiros."
+  },
+  {
+    "id": "des_010",
+    "categoria": "desafio",
+    "nivel": 1,
+    "tema": "ia_basica",
+    "texto": "O que significa 'alucinação' no contexto de Modelos de Linguagem Grande (LLMs)?",
+    "opcoes": [
+      {
+        "texto": "Geração de respostas falsas ou inventadas com aparência de certeza.",
+        "tokens": 4,
+        "correta": true,
+        "feedback": "Perfeito! A IA pode soar convincente mesmo estando completamente errada."
+      },
+      {
+        "texto": "O computador esquentar demais durante o processamento.",
+        "tokens": -2,
+        "correta": false,
+        "feedback": "Incorreto. Alucinação é um fenômeno semântico de predição estatística."
+      },
+      {
+        "texto": "A perda permanente da conexão com a internet.",
+        "tokens": -2,
+        "correta": false,
+        "feedback": "Incorreto. É um erro lógico na resposta gerada."
+      }
+    ],
+    "explicacao": "Modelos preditivos calculam probabilidades de palavras, podendo gerar afirmações incorretas com tom confiante."
+  },
+  {
+    "id": "des_011",
+    "categoria": "desafio",
+    "nivel": 1,
+    "tema": "privacidade",
+    "texto": "Qual o papel do Encarregado de Dados (DPO) na estrutura de governança do SEST SENAT?",
+    "opcoes": [
+      {
+        "texto": "Atuar como canal de comunicação entre a instituição, titulares e a ANPD.",
+        "tokens": 4,
+        "correta": true,
+        "feedback": "Correto! É a ponte oficial de governança e conformidade com a LGPD."
+      },
+      {
+        "texto": "Executar pessoalmente os backups diários dos servidores de rede.",
+        "tokens": -2,
+        "correta": false,
+        "feedback": "Incorreto. Essa é uma atribuição da equipe de infraestrutura de TI."
+      },
+      {
+        "texto": "Aprovar orçamentos financeiros de campanhas de publicidade.",
+        "tokens": -2,
+        "correta": false,
+        "feedback": "Incorreto. A atuação do DPO é restrita à proteção de dados e privacidade."
+      }
+    ],
+    "explicacao": "O DPO orienta a instituição e atende as demandas dos titulares e da autoridade nacional."
+  },
+  {
+    "id": "des_012",
+    "categoria": "desafio",
+    "nivel": 2,
+    "tema": "lgpd_principios",
+    "texto": "O princípio da 'Minimização de Dados' previsto no artigo 6º da LGPD determina que:",
+    "opcoes": [
+      {
+        "texto": "O tratamento deve se limitar aos dados estritamente necessários para a finalidade.",
+        "tokens": 4,
+        "correta": true,
+        "feedback": "Correto! Coletar apenas o indispensável protege titular e instituição."
+      },
+      {
+        "texto": "Os dados devem ser apagados todos os dias ao final do expediente.",
+        "tokens": -3,
+        "correta": false,
+        "feedback": "Incorreto. Prazos de retenção dependem de obrigação legal e finalidade."
+      },
+      {
+        "texto": "Nenhuma empresa pode coletar mais de dez informações por cliente.",
+        "tokens": -2,
+        "correta": false,
+        "feedback": "Incorreto. Não há limite numérico arbitrário, mas sim de pertinência."
+      }
+    ],
+    "explicacao": "Minimização significa coletar o mínimo indispensável para atingir o objetivo legítimo."
+  },
+  {
+    "id": "des_013",
+    "categoria": "desafio",
+    "nivel": 2,
+    "tema": "ia_etica",
+    "texto": "Por que o conceito de 'Human-in-the-loop' (humano no circuito) é vital em decisões automatizadas de saúde?",
+    "opcoes": [
+      {
+        "texto": "Para que profissionais qualificados revisem e validem diagnósticos ou triagens sugeridas por IA.",
+        "tokens": 4,
+        "correta": true,
+        "feedback": "Exato! A responsabilidade clínica final é indelegável do ser humano."
+      },
+      {
+        "texto": "Apenas para ligar e desligar os servidores físicos da clínica.",
+        "tokens": -3,
+        "correta": false,
+        "feedback": "Incorreto. O conceito diz respeito à supervisão cognitiva do modelo."
+      },
+      {
+        "texto": "Para diminuir a velocidade dos atendimentos aos pacientes.",
+        "tokens": -2,
+        "correta": false,
+        "feedback": "Incorreto. O objetivo é garantir segurança e precisão ética."
+      }
+    ],
+    "explicacao": "Em áreas críticas como saúde e segurança, a supervisão humana previne decisões automatizadas prejudiciais."
+  },
+  {
+    "id": "des_014",
+    "categoria": "desafio",
+    "nivel": 2,
+    "tema": "seguranca_dados",
+    "texto": "Qual a diferença entre dados Anonimizados e dados Pseudonimizados na LGPD?",
+    "opcoes": [
+      {
+        "texto": "Anonimizados não identificam a pessoa por meios razoáveis; pseudonimizados permitem reversão com chave controlada.",
+        "tokens": 5,
+        "correta": true,
+        "feedback": "Excelente domínio técnico! Anonimizados saem do escopo da LGPD se irreversíveis."
+      },
+      {
+        "texto": "Pseudonimizados são públicos e anonimizados são restritos ao governo.",
+        "tokens": -3,
+        "correta": false,
+        "feedback": "Incorreto. Ambos são técnicas de salvaguarda de privacidade."
+      },
+      {
+        "texto": "Não há nenhuma diferença, são termos sinônimos na legislação.",
+        "tokens": -3,
+        "correta": false,
+        "feedback": "Incorreto. A reversibilidade distingue fundamentalmente os dois estados."
+      }
+    ],
+    "explicacao": "A anonimização definitiva retira o dado da aplicação da LGPD; a pseudonimização ainda é dado pessoal regulado."
+  },
+  {
+    "id": "des_015",
+    "categoria": "desafio",
+    "nivel": 2,
+    "tema": "qualidade_dados",
+    "texto": "Qual o impacto do problema 'Data Drift' (deriva de dados) em modelos de IA em produção no transporte?",
+    "opcoes": [
+      {
+        "texto": "Mudanças nos hábitos de tráfego e vias fazem o modelo treinado com dados antigos perder precisão.",
+        "tokens": 4,
+        "correta": true,
+        "feedback": "Correto! O mundo real muda e o modelo precisa de retreinamento contínuo."
+      },
+      {
+        "texto": "Os dados se multiplicam espontaneamente até esgotar o disco rígido.",
+        "tokens": -2,
+        "correta": false,
+        "feedback": "Incorreto. Drift refere-se à mudança na distribuição estatística dos dados."
+      },
+      {
+        "texto": "O modelo passa a operar em velocidade excessiva nos computadores.",
+        "tokens": -2,
+        "correta": false,
+        "feedback": "Incorreto. Trata-se de descolamento entre treino e realidade operacional."
+      }
+    ],
+    "explicacao": "Com o passar do tempo, as condições do ambiente mudam, exigindo monitoramento e retreino da IA."
+  },
+  {
+    "id": "des_016",
+    "categoria": "desafio",
+    "nivel": 2,
+    "tema": "incidentes",
+    "texto": "Em caso de incidente de segurança relevante com dados pessoais de alunos, qual o prazo de comunicação à ANPD?",
+    "opcoes": [
+      {
+        "texto": "Em prazo razoável, conforme definido pela autoridade (geralmente até 3 dias úteis).",
+        "tokens": 4,
+        "correta": true,
+        "feedback": "Muito bem! A ANPD estabelece prazos ágeis para comunicação oficial."
+      },
+      {
+        "texto": "Apenas após 12 meses da conclusão de todas as investigações.",
+        "tokens": -3,
+        "correta": false,
+        "feedback": "Incorreto. A morosidade agrava sanções e penalidades administrativas."
+      },
+      {
+        "texto": "Não é necessário comunicar caso os dados já tenham vazado.",
+        "tokens": -4,
+        "correta": false,
+        "feedback": "Gravíssimo erro! A comunicação tempestiva é dever legal indeclinável."
+      }
+    ],
+    "explicacao": "A tempestividade na comunicação de incidentes mitiga danos aos titulares e sanções à instituição."
+  },
+  {
+    "id": "des_017",
+    "categoria": "desafio",
+    "nivel": 3,
+    "tema": "governanca_ia_avancada",
+    "texto": "O que constitui a 'Explicabilidade' (XAI - Explainable AI) em sistemas de governança institucional?",
+    "opcoes": [
+      {
+        "texto": "A capacidade de esclarecer em termos compreensíveis a lógica e os fatores que levaram à decisão da IA.",
+        "tokens": 5,
+        "correta": true,
+        "feedback": "Perfeito! O titular tem o direito de entender como decisões foram tomadas."
+      },
+      {
+        "texto": "A transcrição linha por linha do código binário em linguagem de máquina.",
+        "tokens": -3,
+        "correta": false,
+        "feedback": "Incorreto. Código de baixo nível não atende à transparência humana."
+      },
+      {
+        "texto": "O manual de instalação fornecido pela fabricante do hardware.",
+        "tokens": -2,
+        "correta": false,
+        "feedback": "Incorreto. Refere-se à transparência interpretável das inferências algorítmicas."
+      }
+    ],
+    "explicacao": "A explicabilidade garante que cidadãos e gestores possam auditar os motivos de uma recomendação da IA."
+  },
+  {
+    "id": "des_018",
+    "categoria": "desafio",
+    "nivel": 3,
+    "tema": "seguranca_avancada",
+    "texto": "O ataque de 'Injeção de Prompt' (Prompt Injection) contra uma IA corporativa busca:",
+    "opcoes": [
+      {
+        "texto": "Manipular as instruções originais da IA para extrair dados protegidos ou burlar regras de segurança.",
+        "tokens": 5,
+        "correta": true,
+        "feedback": "Exato! É uma das maiores vulnerabilidades de segurança em aplicações com LLMs."
+      },
+      {
+        "texto": "Injetar vírus que danificam fisicamente as placas de vídeo do servidor.",
+        "tokens": -3,
+        "correta": false,
+        "feedback": "Incorreto. Trata-se de manipulação de contexto linguístico e semântico."
+      },
+      {
+        "texto": "Aumentar a memória RAM do computador de forma ilegal.",
+        "tokens": -2,
+        "correta": false,
+        "feedback": "Incorreto. É um ataque de aplicação contra as diretrizes do sistema."
+      }
+    ],
+    "explicacao": "A sanitização de entradas é necessária para impedir que usuários externos forcem a IA a revelar dados internos."
+  },
+  {
+    "id": "des_019",
+    "categoria": "desafio",
+    "nivel": 3,
+    "tema": "lgpd_ripd",
+    "texto": "O Relatório de Impacto à Proteção de Dados Pessoais (RIPD) é expressamente exigido quando:",
+    "opcoes": [
+      {
+        "texto": "O tratamento envolver alto risco aos direitos fundamentais, dados sensíveis ou decisões automatizadas em larga escala.",
+        "tokens": 5,
+        "correta": true,
+        "feedback": "Brilhante! O RIPD detalha salvaguardas e riscos de operações complexas."
+      },
+      {
+        "texto": "A empresa comprar um novo lote de cadeiras para as salas de aula.",
+        "tokens": -3,
+        "correta": false,
+        "feedback": "Incorreto. Não se aplica a patrimônio sem tratamento de dados."
+      },
+      {
+        "texto": "Um colaborador mudar de ramal telefônico na mesma unidade.",
+        "tokens": -2,
+        "correta": false,
+        "feedback": "Incorreto. Movimentação administrativa simples não requer RIPD."
+      }
+    ],
+    "explicacao": "O RIPD é o principal instrumento de conformidade preventiva da LGPD para tratamentos de alto risco."
+  },
+  {
+    "id": "des_020",
+    "categoria": "desafio",
+    "nivel": 3,
+    "tema": "direito_revisao",
+    "texto": "Segundo o artigo 20 da LGPD, o titular dos dados tem direito a solicitar a revisão de:",
+    "opcoes": [
+      {
+        "texto": "Decisões tomadas unicamente com base em tratamento automatizado que afetem seus interesses.",
+        "tokens": 5,
+        "correta": true,
+        "feedback": "Excelente! O titular pode solicitar intervenção e revisão humana de decisões automatizadas."
+      },
+      {
+        "texto": "Qualquer prova de concurso público aplicada há mais de dez anos.",
+        "tokens": -3,
+        "correta": false,
+        "feedback": "Incorreto. Refere-se a decisões automatizadas algorítmicas."
+      },
+      {
+        "texto": "Todas as compras feitas pela instituição em anos fiscais anteriores.",
+        "tokens": -2,
+        "correta": false,
+        "feedback": "Incorreto. O direito é voltado à proteção de dados e perfilamento."
+      }
+    ],
+    "explicacao": "O titular pode requerer revisão humana de deliberações geradas por algoritmos que afetem sua vida."
+  },
+  {
+    "id": "con_008",
+    "categoria": "conexao",
+    "nivel": 1,
+    "tema": "integracao",
+    "texto": "Conexão estabelecida! A unidade móvel de saúde sincronizou seus prontuários com a base central do SEST SENAT.",
+    "efeito": {
+      "tokens": 3
+    },
+    "explicacao": "Integração segura garante continuidade no histórico de saúde dos trabalhadores em trânsito."
+  },
+  {
+    "id": "con_009",
+    "categoria": "conexao",
+    "nivel": 1,
+    "tema": "capacitacao",
+    "texto": "Você completou o curso obrigatório de Governança e Boas Práticas em IA corporativa.",
+    "efeito": {
+      "tokens": 4
+    },
+    "explicacao": "A cultura de capacitação contínua fortalece a segurança em todas as áreas da instituição."
+  },
+  {
+    "id": "con_010",
+    "categoria": "conexao",
+    "nivel": 1,
+    "tema": "suporte",
+    "texto": "O canal de atendimento da TI solucionou sua dúvida sobre permissões de pasta compartilhada.",
+    "efeito": {
+      "tokens": 3
+    },
+    "explicacao": "Canais formais de suporte evitam concessões indevidas de privilégios de acesso."
+  },
+  {
+    "id": "con_011",
+    "categoria": "conexao",
+    "nivel": 1,
+    "tema": "comunicacao",
+    "texto": "Boletim mensal da DPO informou sobre as atualizações das diretrizes de privacidade da instituição.",
+    "efeito": {
+      "tokens": 3
+    },
+    "explicacao": "A transparência na comunicação reforça o engajamento de todos os setores."
+  },
+  {
+    "id": "con_012",
+    "categoria": "conexao",
+    "nivel": 2,
+    "tema": "interoperabilidade",
+    "texto": "A API governada unificou dados de matrículas presenciais e do Ambiente Virtual de Aprendizagem.",
+    "efeito": {
+      "tokens": 4
+    },
+    "explicacao": "Sistemas integrados evitam divergências e reduzem duplicidade de registros."
+  },
+  {
+    "id": "con_013",
+    "categoria": "conexao",
+    "nivel": 2,
+    "tema": "parceria",
+    "texto": "SEST SENAT e Confederação Nacional do Transporte firmaram diretrizes unificadas de ética em telemetria.",
+    "efeito": {
+      "tokens": 4
+    },
+    "explicacao": "A colaboração setorial estabelece padrões elevados de maturidade em dados de transporte."
+  },
+  {
+    "id": "con_014",
+    "categoria": "conexao",
+    "nivel": 2,
+    "tema": "qualidade",
+    "texto": "O comitê multidisciplinar concluiu o catálogo oficial de dados e termos técnicos da instituição.",
+    "efeito": {
+      "tokens": 4
+    },
+    "explicacao": "Vocabulário comum assegura consistência nas análises analíticas de todas as unidades."
+  },
+  {
+    "id": "con_015",
+    "categoria": "conexao",
+    "nivel": 2,
+    "tema": "feedback",
+    "texto": "Os instrutores de direção participaram da avaliação de usabilidade do novo simulador com telemetria.",
+    "efeito": {
+      "tokens": 3
+    },
+    "explicacao": "Ouvir os usuários finais garante que a tecnologia atenda às reais necessidades de ensino."
+  },
+  {
+    "id": "con_016",
+    "categoria": "conexao",
+    "nivel": 2,
+    "tema": "transparencia",
+    "texto": "O portal corporativo publicou a cartilha 'Uso Ético de Ferramentas de IA para Colaboradores'.",
+    "efeito": {
+      "tokens": 4
+    },
+    "explicacao": "Normas claras e acessíveis orientam o uso produtivo e seguro no cotidiano."
+  },
+  {
+    "id": "con_017",
+    "categoria": "conexao",
+    "nivel": 3,
+    "tema": "federacao_dados",
+    "texto": "Implantação de arquitetura federada de dados permitiu consultas analíticas com privacidade diferencial.",
+    "efeito": {
+      "tokens": 5
+    },
+    "explicacao": "Tecnologia de ponta que extrai métricas coletivas sem expor a identidade individual de nenhum titular."
+  },
+  {
+    "id": "con_018",
+    "categoria": "conexao",
+    "nivel": 3,
+    "tema": "selo_conformidade",
+    "texto": "A instituição obteve reconhecimento de conformidade internacional de segurança da informação (ISO 27001).",
+    "efeito": {
+      "tokens": 5
+    },
+    "explicacao": "Auditorias externas independentes atestam o rigor dos controles institucionais de segurança."
+  },
+  {
+    "id": "con_019",
+    "categoria": "conexao",
+    "nivel": 3,
+    "tema": "inovacao_responsavel",
+    "texto": "O laboratório de inovação testou algoritmos de rotas ecológicas reduzindo emissões de carbono no transporte.",
+    "efeito": {
+      "tokens": 5
+    },
+    "explicacao": "A IA gerando valor sustentável concreto alinhada aos pilares ESG do setor de transporte."
+  },
+  {
+    "id": "con_020",
+    "categoria": "conexao",
+    "nivel": 3,
+    "tema": "cooperacao_tecnica",
+    "texto": "Acordo técnico com a Autoridade Nacional de Proteção de Dados (ANPD) compartilhou boas práticas do setor.",
+    "efeito": {
+      "tokens": 5
+    },
+    "explicacao": "Liderança e protagonismo institucional na aplicação prática da lei em escala nacional."
+  },
+  {
+    "id": "evt_008",
+    "categoria": "evento",
+    "nivel": 1,
+    "tema": "campanha",
+    "texto": "Semana Interna de Proteção de Dados! Todos os colaboradores participaram de jogos e desafios éticos.",
+    "efeito": {
+      "tokens": 4
+    },
+    "explicacao": "Eventos de conscientização elevam a vigilância e a maturidade de segurança em toda a organização."
+  },
+  {
+    "id": "evt_009",
+    "categoria": "evento",
+    "nivel": 1,
+    "tema": "atualizacao",
+    "texto": "Manutenção preventiva programada nos servidores da unidade concluída com sucesso e sem perda de dados.",
+    "efeito": {
+      "tokens": 3
+    },
+    "explicacao": "Manutenções regulares evitam paradas não planejadas e vulnerabilidades de software."
+  },
+  {
+    "id": "evt_010",
+    "categoria": "evento",
+    "nivel": 1,
+    "tema": "reconhecimento",
+    "texto": "Sua unidade recebeu o selo 'Unidade Segura' por zero incidentes de privacidade no trimestre.",
+    "efeito": {
+      "tokens": 4
+    },
+    "explicacao": "O cuidado coletivo com as boas práticas gera resultados tangíveis e protege a reputação da casa."
+  },
+  {
+    "id": "evt_011",
+    "categoria": "evento",
+    "nivel": 1,
+    "tema": "ajuste",
+    "texto": "Revisão geral de acessos expirou permissões antigas de contas temporárias de estagiários.",
+    "efeito": {
+      "tokens": 3
+    },
+    "explicacao": "A revogação de acessos desnecessários é requisito fundamental de controle de privilégios."
+  },
+  {
+    "id": "evt_012",
+    "categoria": "evento",
+    "nivel": 2,
+    "tema": "simulado",
+    "texto": "Simulado surpresa de phishing! Apenas 2% dos usuários caíram na armadilha de teste, batendo a meta.",
+    "efeito": {
+      "tokens": 4
+    },
+    "explicacao": "Treinamento contínuo transforma os colaboradores na primeira linha de defesa cibernética."
+  },
+  {
+    "id": "evt_013",
+    "categoria": "evento",
+    "nivel": 2,
+    "tema": "otimizacao",
+    "texto": "Novo pipeline automatizado de limpeza de dados reduziu pela metade o tempo de geração de relatórios de BI.",
+    "efeito": {
+      "tokens": 4
+    },
+    "explicacao": "Eficiência operacional e economia de tempo para as equipes de análise estratégica."
+  },
+  {
+    "id": "evt_014",
+    "categoria": "evento",
+    "nivel": 2,
+    "tema": "alerta",
+    "texto": "Alerta preventivo de vulnerabilidade zero-day em biblioteca web foi corrigido pela TI em menos de 2 horas.",
+    "efeito": {
+      "tokens": 4
+    },
+    "explicacao": "Monitoramento proativo protege as aplicações antes que invasores descubram brechas."
+  },
+  {
+    "id": "evt_015",
+    "categoria": "evento",
+    "nivel": 2,
+    "tema": "reciclagem",
+    "texto": "Programa de reciclagem de equipamentos eletroeletrônicos desmagnetizou e destruiu discos rígidos antigos.",
+    "efeito": {
+      "tokens": 3
+    },
+    "explicacao": "Descarte com certificação de desmagnetização impede a recuperação de dados em sucatas."
+  },
+  {
+    "id": "evt_016",
+    "categoria": "evento",
+    "nivel": 2,
+    "tema": "workshop",
+    "texto": "Workshop prático 'Prompt Engineering Ético' capacitou 80 colaboradores das unidades operacionais.",
+    "efeito": {
+      "tokens": 4
+    },
+    "explicacao": "Ensinar a usar IA com responsabilidade potencializa ganhos e blinda a organização contra riscos."
+  },
+  {
+    "id": "evt_017",
+    "categoria": "evento",
+    "nivel": 3,
+    "tema": "auditoria_externa",
+    "texto": "Auditoria independente de governança de IA aprovou com louvor os critérios de equidade do sistema.",
+    "efeito": {
+      "tokens": 5
+    },
+    "explicacao": "Validação externa confere credibilidade máxima aos processos automatizados da instituição."
+  },
+  {
+    "id": "evt_018",
+    "categoria": "evento",
+    "nivel": 3,
+    "tema": "ataque_bloqueado",
+    "texto": "Sistema corporativo de detecção de intrusão bloqueou um ataque massivo de negação de serviço (DDoS).",
+    "efeito": {
+      "tokens": 5
+    },
+    "explicacao": "Infraestrutura resiliente mantém os serviços essenciais de saúde e ensino no ar sem interrupção."
+  },
+  {
+    "id": "evt_019",
+    "categoria": "evento",
+    "nivel": 3,
+    "tema": "premio_inovacao",
+    "texto": "O projeto de Inteligência Artificial Responsável do SEST SENAT venceu premiação nacional do setor.",
+    "efeito": {
+      "tokens": 5
+    },
+    "explicacao": "Reconhecimento público do compromisso com a ética, sustentabilidade e proteção ao trabalhador."
+  },
+  {
+    "id": "evt_020",
+    "categoria": "evento",
+    "nivel": 3,
+    "tema": "benchmark",
+    "texto": "Publicação do relatório de sustentabilidade digital com métricas de consumo de energia dos servidores.",
+    "efeito": {
+      "tokens": 4
+    },
+    "explicacao": "Toda IA consome recursos energéticos e hídricos; medir o consumo é governança ambiental responsável."
   }
 ]

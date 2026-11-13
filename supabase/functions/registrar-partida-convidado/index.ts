@@ -89,8 +89,8 @@ serve(async (req) => {
       });
     }
 
-    if (historico.length > 35) {
-      return new Response(JSON.stringify({ erro: "Número de jogadas excede o limite máximo permitido por partida (35)." }), {
+    if (historico.length > 400) {
+      return new Response(JSON.stringify({ erro: "Número de jogadas excede o limite máximo permitido por partida (400)." }), {
         status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" }
       });
     }
@@ -143,11 +143,18 @@ serve(async (req) => {
     tokens += 3 + 5;
     tokens = Math.max(0, tokens);
 
-    const ptsTokens = tokens * 10;
+    const casasAvancadas = Math.max(0, Number(body.casas_avancadas || (historico.length * 3.5)));
+    const voltas = Math.max(0, Number(body.voltas || 0));
+    const boasPraticas = Math.max(0, Number(body.boas_praticas || 0));
+
+    const ptsCasas = casasAvancadas * 5;
+    const ptsVoltas = voltas * 150;
     const ptsDesafios = acertosDesafio * 50;
     const ptsPenseAntes = bonusPenseAntes * 30;
-    const bonusZeroArmadilhas = armadilhas === 0 ? 100 : 0;
-    const pontosFinais = Math.max(0, ptsTokens + ptsDesafios + ptsPenseAntes + bonusZeroArmadilhas);
+    const ptsBoasPraticas = boasPraticas * 10;
+    const penalidadeArmadilhas = armadilhas * 20;
+
+    const pontosFinais = Math.max(0, Math.round(ptsCasas + ptsVoltas + ptsDesafios + ptsPenseAntes + ptsBoasPraticas - penalidadeArmadilhas));
 
     // MODO DRY_RUN: Devolve sem gravar no banco
     if (body.dry_run === true) {

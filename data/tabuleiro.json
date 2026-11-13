@@ -1088,7 +1088,9 @@
       "x": 680,
       "y": 120,
       "tipo_fixo": "checkpoint",
-      "proximos": [],
+      "proximos": [
+        0
+      ],
       "bifurcacao": null,
       "rotulo": "PORTAL FINAL",
       "caminho": null

@@ -1346,7 +1346,9 @@ export const GRAFO_PADRAO = {
       "x": 680,
       "y": 120,
       "tipo_fixo": "checkpoint",
-      "proximos": [],
+      "proximos": [
+        0
+      ],
       "bifurcacao": null,
       "rotulo": "PORTAL FINAL",
       "caminho": null
@@ -1383,7 +1385,7 @@ export async function carregarGrafoTabuleiro() {
  * @param {Object} grafoJson
  * @returns {Record<number, string>} Mapeamento de nodeId -> categoria
  */
-export function gerarTabuleiroGrafo(semanaOuRng = semanaAtual(), grafoJson = null) {
+export function gerarTabuleiroGrafo(semanaOuRng = semanaAtual(), grafoJson = null, voltas = 0) {
   const rng = (semanaOuRng && typeof semanaOuRng.embaralhar === 'function')
     ? semanaOuRng
     : criarRng(typeof semanaOuRng === 'string' ? `${semanaOuRng}_cartas` : semanaOuRng);
@@ -1452,12 +1454,45 @@ export function gerarTabuleiroGrafo(semanaOuRng = semanaAtual(), grafoJson = nul
     }
   }
 
+  // Escalada por volta: a cada volta (+1 armadilha redistribuída determinística pela semente + nº da volta)
+  const vNum = Math.max(0, Math.floor(voltas || 0));
+  if (vNum > 0) {
+    const sementeStr = (semanaOuRng && typeof semanaOuRng === 'string') ? semanaOuRng : 'trilha_loop';
+    const rngVolta = criarRng(`${sementeStr}_armadilha_volta_${vNum}`);
+    const elegiveis = casas.filter(c => !c.tipo_fixo && c.id !== 0 && c.id !== 20 && c.id !== 40 && c.id !== 60 && c.id !== 33);
+    if (elegiveis.length > 0) {
+      const sorteada = rngVolta.embaralhar(elegiveis)[0];
+      categorias[sorteada.id] = "armadilha";
+    }
+  }
+
   return categorias;
 }
 
 /**
  * Gerenciador de Deck com suporte a compra determinística e reembaralho automático ao esgotar
  */
+export const MODELOS_PROCEDURAIS = {
+  vazamento_destino: [
+    "A equipe precisa processar {DADO}. Um colaborador sugeriu enviar os arquivos para {DESTINO}.",
+    "Durante a execução de um projeto interno envolvendo {DADO}, cogitou-se utilizar {DESTINO} para acelerar a entrega.",
+    "Um relatório consolidado contendo {DADO} precisa ser analisado. Foi proposto carregar a base em {DESTINO}.",
+    "Para facilitar o trabalho remoto com {DADO}, solicitou-se permissão de envio para {DESTINO}."
+  ],
+  reuso_ativos: [
+    "Para atender a nova demanda no {ATIVO}, avalia-se se é necessário contratar uma ferramenta externa de IA ou reusar soluções corporativas vigentes.",
+    "Identificou-se uma oportunidade de automação para o {ATIVO}. A instituição já possui sistemas homologados que realizam funções semelhantes.",
+    "A gerência solicitou modernização tecnológica aplicada ao {ATIVO}. Qual a postura correta de governança e investimento?",
+    "Um fornecedor ofereceu um módulo de IA para ser acoplado ao {ATIVO}. O que deve ser avaliado antes de fechar a contratação?"
+  ],
+  qualidade_seguranca: [
+    "Ao integrar {DADO} diretamente no {ATIVO}, observou-se ausência de padronização nos registros de entrada.",
+    "Para calibrar os algoritmos de telemetria no {ATIVO}, foram carregados dados históricos de {DADO}.",
+    "Uma auditoria preventiva de conformidade no {ATIVO} revisou o ciclo de retenção e custódia de {DADO}.",
+    "Um alerta de monitoramento no {ATIVO} acusou um volume anômalo de consultas aos registros de {DADO}."
+  ]
+};
+
 export class DeckManager {
   /**
    * @param {Array<Object>} cartas - Lista de cartas válidas
@@ -1469,19 +1504,20 @@ export class DeckManager {
       : criarRng(typeof sementeOuRng === 'string' ? `${sementeOuRng}_cartas` : sementeOuRng);
 
     this.todasCartas = cartas.filter(validarCarta);
-    this.cartasPorCategoria = {};
+    this.cartasPorCatNivel = {};
     this.cartasDisponiveis = {};
     this.cartasUsadas = {};
 
     for (const cat of CATEGORIAS_VALIDAS) {
-      this.cartasPorCategoria[cat] = [];
-      this.cartasDisponiveis[cat] = [];
-      this.cartasUsadas[cat] = [];
+      this.cartasPorCatNivel[cat] = { 1: [], 2: [], 3: [] };
+      this.cartasDisponiveis[cat] = { 1: [], 2: [], 3: [] };
+      this.cartasUsadas[cat] = { 1: [], 2: [], 3: [] };
     }
 
     for (const c of this.todasCartas) {
-      if (this.cartasPorCategoria[c.categoria]) {
-        this.cartasPorCategoria[c.categoria].push(c);
+      const nv = Math.min(3, Math.max(1, Number(c.nivel || 1)));
+      if (this.cartasPorCatNivel[c.categoria]) {
+        this.cartasPorCatNivel[c.categoria][nv].push(c);
       }
     }
 
@@ -1489,45 +1525,59 @@ export class DeckManager {
   }
 
   /**
-   * Reinicia o deck embaralhando todas as cartas por categoria
+   * Reinicia o deck organizando e embaralhando determinísticamente por categoria e nível de dificuldade
    */
   reiniciar() {
     for (const cat of CATEGORIAS_VALIDAS) {
-      this.cartasUsadas[cat] = [];
-      this.cartasDisponiveis[cat] = this.rng.embaralhar(this.cartasPorCategoria[cat]);
+      for (const nv of [1, 2, 3]) {
+        this.cartasUsadas[cat][nv] = [];
+        this.cartasDisponiveis[cat][nv] = this.rng.embaralhar(this.cartasPorCatNivel[cat][nv]);
+      }
     }
   }
 
   /**
-   * Compra a próxima carta da categoria.
-   * Se as disponíveis esgotarem, reembaralha automaticamente as cartas usadas daquela categoria.
+   * Compra a próxima carta da categoria respeitando o nível de dificuldade atual.
+   * Política rígida anti-repetição: não repete nenhuma carta até esgotar o pool do nível.
+   * Ao esgotar, reembaralha somente as cartas daquele nível.
    * 
    * @param {string} categoria
+   * @param {number} [nivel=1]
    * @returns {Object|null}
    */
-  comprarCarta(categoria) {
+  comprarCarta(categoria, nivel = 1) {
     if (!CATEGORIAS_VALIDAS.includes(categoria)) return null;
 
-    let disponiveis = this.cartasDisponiveis[categoria];
+    const nvAlvo = Math.min(3, Math.max(1, Number(nivel || 1)));
+    let disponiveis = this.cartasDisponiveis[categoria][nvAlvo];
 
-    // Se acabou, reembaralha as usadas
+    // Se acabou as disponíveis daquele nível, reembaralha as usadas DAQUELE nível
     if (!disponiveis || disponiveis.length === 0) {
-      const usadas = this.cartasUsadas[categoria] || [];
+      const usadas = this.cartasUsadas[categoria][nvAlvo] || [];
       if (usadas.length === 0) {
-        // Fallback: se não havia nem usadas, busca do catálogo base
-        const base = this.cartasPorCategoria[categoria] || [];
-        if (base.length === 0) return null;
-        this.cartasDisponiveis[categoria] = this.rng.embaralhar(base);
+        // Tenta buscar no catálogo base do nível
+        const base = this.cartasPorCatNivel[categoria][nvAlvo] || [];
+        if (base.length > 0) {
+          this.cartasDisponiveis[categoria][nvAlvo] = this.rng.embaralhar(base);
+        } else {
+          // Fallback para outros níveis se o nível estiver vazio
+          for (const outroNv of [1, 2, 3]) {
+            if (this.cartasPorCatNivel[categoria][outroNv].length > 0) {
+              return this.comprarCarta(categoria, outroNv);
+            }
+          }
+          return null;
+        }
       } else {
-        this.cartasDisponiveis[categoria] = this.rng.embaralhar(usadas);
-        this.cartasUsadas[categoria] = [];
+        this.cartasDisponiveis[categoria][nvAlvo] = this.rng.embaralhar(usadas);
+        this.cartasUsadas[categoria][nvAlvo] = [];
       }
-      disponiveis = this.cartasDisponiveis[categoria];
+      disponiveis = this.cartasDisponiveis[categoria][nvAlvo];
     }
 
     const carta = disponiveis.shift();
     if (carta) {
-      this.cartasUsadas[categoria].push(carta);
+      this.cartasUsadas[categoria][nvAlvo].push(carta);
     }
     return carta || null;
   }

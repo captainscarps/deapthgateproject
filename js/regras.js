@@ -1,23 +1,29 @@
-// js/regras.js - Efeitos, checkpoints, pontuação e limites (funções puras)
+// js/regras.js - Efeitos, checkpoints, voltas em loop, pontuação auditada e limites (funções puras)
 // NUNCA ACESSA O DOM
 
 export const CONSTANTES = {
   TOKENS_INICIAIS: 20,
   CASA_INICIAL: 0,
   CASA_FINAL: 60,
-  CASA_FINAL_LEGADO: 30,
   DADO_MIN: 1,
   DADO_MAX: 6,
   BONUS_CHECKPOINT_1: 3,
   BONUS_CHECKPOINT_2: 5,
-  BONUS_CHECKPOINT_3: 0,
-  BONUS_CHECKPOINT_10: 3,
-  BONUS_CHECKPOINT_20: 5,
-  BONUS_CHECKPOINT_30: 0,
-  CHECKPOINT_1_NODO: 27,
-  CHECKPOINT_2_NODO: 53,
+  BONUS_VOLTA_COMPLETA: 10,
+  CHECKPOINT_1_NODO: 20,
+  CHECKPOINT_2_NODO: 40,
   CHECKPOINT_3_NODO: 60,
-  MAX_RODADAS: 45
+  MAX_RODADAS: 400
+};
+
+// Constantes oficiais e fáceis de calibrar da nova pontuação
+export const CONSTANTES_PONTUACAO = {
+  PTS_POR_CASA: 5,
+  PTS_POR_VOLTA: 150,
+  PTS_ACERTO_DESAFIO: 50,
+  PTS_BONUS_PENSE_ANTES: 30,
+  PTS_BOA_PRATICA: 10,
+  PENALIDADE_ARMADILHA: 20
 };
 
 /**
@@ -32,58 +38,90 @@ export function limitarPosicao(pos, maxPos = CONSTANTES.CASA_FINAL) {
 }
 
 /**
- * Verifica passagem ou parada em checkpoints.
- * Suporta o novo tabuleiro em grafo (nós 27, 53, 60) e legado (10, 20, 30).
- * Regra: O bônus é concedido APENAS na PRIMEIRA vez que o peão alcança ou ultrapassa o checkpoint.
- * Voltar casas e passar novamente NÃO concede bônus.
- * 
- * @param {number} posicaoAnterior
- * @param {number} novaPosicao
- * @param {Iterable<number>|Array<number>} checkpointsPassados - Lista ou Set dos checkpoints já premiados
- * @param {boolean} [modoGrafo=true]
- * @returns {{ bonusTokens: number, novosCheckpoints: number[], fimDePartida: boolean }}
+ * Calcula o custo em tokens de cada rolagem do dado com base na volta atual.
+ * - Volta 1 (voltas === 0): 1 token
+ * - Volta 2 (voltas === 1): 2 tokens
+ * - Volta 3+ (voltas >= 2): 3 tokens
+ * @param {number} [voltas=0]
+ * @returns {number}
  */
-export function verificarCheckpoints(posicaoAnterior, novaPosicao, checkpointsPassados = [], modoGrafo = true) {
-  const visitados = new Set(checkpointsPassados || []);
-  const novos = [];
-  let bonusTokens = 0;
+export function calcularCustoRolagem(voltas = 0) {
+  const v = Math.max(0, Math.floor(voltas || 0));
+  if (v <= 0) return 1;
+  if (v === 1) return 2;
+  return 3;
+}
 
-  // Checkpoints no grafo (27: CP1, 53: CP2, 60: CP3) e legado (10, 20, 30)
-  if (novaPosicao > posicaoAnterior) {
-    // Checkpoint 1 (Nó 27 no grafo ou 10 no legado)
-    const atingiuCp1 = (posicaoAnterior < 27 && novaPosicao >= 27) || (posicaoAnterior < 10 && novaPosicao >= 10);
-    if (atingiuCp1 && !visitados.has(27) && !visitados.has(10)) {
-      bonusTokens += CONSTANTES.BONUS_CHECKPOINT_1;
-      novos.push(27);
-      visitados.add(27);
-      visitados.add(10);
-    }
-
-    // Checkpoint 2 (Nó 53 no grafo ou 20 no legado)
-    const atingiuCp2 = (posicaoAnterior < 53 && novaPosicao >= 53) || (posicaoAnterior < 20 && novaPosicao >= 20);
-    if (atingiuCp2 && !visitados.has(53) && !visitados.has(20)) {
-      bonusTokens += CONSTANTES.BONUS_CHECKPOINT_2;
-      novos.push(53);
-      visitados.add(53);
-      visitados.add(20);
-    }
-
-    // Checkpoint 3 / Portal Final (Nó 60 no grafo ou 30 no legado)
-    const atingiuCp3 = (novaPosicao >= 60) || (!modoGrafo && novaPosicao >= 30);
-    if (atingiuCp3 && !visitados.has(60) && !visitados.has(30)) {
-      bonusTokens += CONSTANTES.BONUS_CHECKPOINT_3;
-      novos.push(60);
-      visitados.add(60);
-      visitados.add(30);
-    }
+/**
+ * Calcula o bônus de checkpoint aplicando a redução pela metade a cada volta completada.
+ * @param {number} nodoId
+ * @param {number} [voltas=0]
+ * @returns {number}
+ */
+export function calcularBonusCheckpoint(nodoId, voltas = 0) {
+  let base = 0;
+  if (nodoId === 20 || nodoId === 27) {
+    base = CONSTANTES.BONUS_CHECKPOINT_1; // 3
+  } else if (nodoId === 40 || nodoId === 53) {
+    base = CONSTANTES.BONUS_CHECKPOINT_2; // 5
+  } else if (nodoId === 60) {
+    base = CONSTANTES.BONUS_VOLTA_COMPLETA; // 10
   }
 
-  const fimDePartida = novaPosicao >= (modoGrafo ? 60 : 30);
+  if (base === 0) return 0;
+  const v = Math.max(0, Math.floor(voltas || 0));
+  if (v === 0) return base;
+  return Math.max(1, Math.round(base / Math.pow(2, v)));
+}
+
+/**
+ * Verifica passagem ou parada em checkpoints durante uma volta.
+ * Suporta o novo tabuleiro em grafo (20, 40, 60) e compatibilidade com nós 27 e 53.
+ * Checkpoints dão bônus 1 vez por volta.
+ *
+ * @param {number} posicaoAnterior
+ * @param {number} novaPosicao
+ * @param {Iterable<number>|Array<number>} checkpointsPassadosVolta - Checkpoints já visitados nesta volta
+ * @param {number} [voltas=0] - Número de voltas completadas
+ * @returns {{ bonusTokens: number, novosCheckpoints: number[], completouVolta: boolean }}
+ */
+export function verificarCheckpoints(posicaoAnterior, novaPosicao, checkpointsPassadosVolta = [], voltas = 0) {
+  const visitados = new Set(checkpointsPassadosVolta || []);
+  const novos = [];
+  let bonusTokens = 0;
+  let completouVolta = false;
+
+  // Checkpoint 1 (Nó 20 / 27)
+  const atingiuCp1 = (posicaoAnterior < 20 && novaPosicao >= 20) || (posicaoAnterior < 27 && novaPosicao >= 27);
+  if (atingiuCp1 && !visitados.has(20) && !visitados.has(27)) {
+    const b = calcularBonusCheckpoint(20, voltas);
+    bonusTokens += b;
+    novos.push(20);
+    visitados.add(20);
+  }
+
+  // Checkpoint 2 (Nó 40 / 53)
+  const atingiuCp2 = (posicaoAnterior < 40 && novaPosicao >= 40) || (posicaoAnterior < 53 && novaPosicao >= 53);
+  if (atingiuCp2 && !visitados.has(40) && !visitados.has(53)) {
+    const b = calcularBonusCheckpoint(40, voltas);
+    bonusTokens += b;
+    novos.push(40);
+    visitados.add(40);
+  }
+
+  // Portal Final / Volta Completa (Nó 60)
+  if (novaPosicao >= 60 && !visitados.has(60)) {
+    const b = calcularBonusCheckpoint(60, voltas);
+    bonusTokens += b;
+    novos.push(60);
+    visitados.add(60);
+    completouVolta = true;
+  }
 
   return {
     bonusTokens,
     novosCheckpoints: Array.from(visitados),
-    fimDePartida
+    completouVolta
   };
 }
 
@@ -106,7 +144,7 @@ export function aplicarEfeito(estado, efeito = {}) {
 
   if (deltaMover !== 0) {
     const posCalculada = limitarPosicao(copia.posicao + deltaMover);
-    const cpRes = verificarCheckpoints(copia.posicao, posCalculada, checkpointsPassados);
+    const cpRes = verificarCheckpoints(copia.posicao, posCalculada, checkpointsPassados, copia.voltas_completas || 0);
     novaPosicao = posCalculada;
     bonusCheckpoints = cpRes.bonusTokens;
     cpRes.novosCheckpoints.forEach(cp => checkpointsPassados.add(cp));
@@ -126,8 +164,13 @@ export function aplicarEfeito(estado, efeito = {}) {
     bonusPenseAntes++;
   }
 
+  let boasPraticas = copia.boas_praticas || 0;
+  if (efeito.boa_pratica === true || efeito.categoria === 'boa_pratica') {
+    boasPraticas++;
+  }
+
   let armadilhas = copia.armadilhas || 0;
-  if (efeito.armadilha === true) {
+  if (efeito.armadilha === true || efeito.categoria === 'armadilha') {
     armadilhas++;
   }
 
@@ -139,6 +182,7 @@ export function aplicarEfeito(estado, efeito = {}) {
     tokens: tokensCalculados,
     acertos_desafio: acertos,
     bonus_pense_antes: bonusPenseAntes,
+    boas_praticas: boasPraticas,
     armadilhas: armadilhas,
     pular_proxima_rodada: pularRodada,
     checkpoints_passados: Array.from(checkpointsPassados)
@@ -146,65 +190,108 @@ export function aplicarEfeito(estado, efeito = {}) {
 }
 
 /**
- * Verifica se a partida terminou por qualquer uma das condições de parada
- * @param {{ posicao: number, tokens: number, rodada?: number }} params
+ * NOVA REGRA: A partida termina SOMENTE quando os tokens chegam a 0,
+ * ou quando o jogador escolhe encerrar voluntariamente.
+ * O Portal NÃO encerra a partida (conta volta e continua para a casa 0).
+ *
+ * @param {{ tokens: number, encerrouVoluntariamente?: boolean, rodada?: number }} params
  * @returns {boolean}
  */
-export function isFimDePartida({ posicao, tokens, rodada = 0 }) {
-  if (posicao >= CONSTANTES.CASA_FINAL) return true;
-  if (tokens <= 0) return true;
+export function isFimDePartida({ tokens, encerrouVoluntariamente = false, rodada = 0 }) {
+  if (encerrouVoluntariamente === true) return true;
+  if (typeof tokens === 'number' && tokens <= 0) return true;
   if (rodada >= CONSTANTES.MAX_RODADAS) return true;
   return false;
 }
 
 /**
- * Fórmula auditada oficial de pontuação:
- * (tokens * 10) + (acertos * 50) + (bonusPenseAntes * 30) + (armadilhas === 0 ? 100 : 0)
- * Retorna no mínimo 0.
- * 
- * @param {{ tokens?: number, acertos?: number, acertos_desafio?: number, bonusPenseAntes?: number, bonus_pense_antes?: number, armadilhas?: number }} params
+ * Nova pontuação auditada oficial em loop:
+ * pontos = casas_avancadas*5 + voltas*150 + acertos_desafio*50 + bonus_pense_antes*30
+ *          + boas_praticas*10 - armadilhas*20 (mínimo 0)
+ *
+ * @param {{
+ *   casas_avancadas?: number,
+ *   casasAvancadas?: number,
+ *   voltas?: number,
+ *   voltas_completas?: number,
+ *   acertos?: number,
+ *   acertos_desafio?: number,
+ *   bonusPenseAntes?: number,
+ *   bonus_pense_antes?: number,
+ *   boasPraticas?: number,
+ *   boas_praticas?: number,
+ *   armadilhas?: number
+ * }} params
  * @returns {number}
  */
 export function calcularPontuacao(params = {}) {
-  const tokens = Math.max(0, Number(params.tokens ?? params.tokensFinais ?? 0));
+  const casasAvancadas = Math.max(0, Number(params.casas_avancadas ?? params.casasAvancadas ?? 0));
+  const voltas = Math.max(0, Number(params.voltas ?? params.voltas_completas ?? 0));
   const acertos = Math.max(0, Number(params.acertos ?? params.acertos_desafio ?? 0));
   const bonusPenseAntes = Math.max(0, Number(params.bonusPenseAntes ?? params.bonus_pense_antes ?? 0));
+  const boasPraticas = Math.max(0, Number(params.boas_praticas ?? params.boasPraticas ?? 0));
   const armadilhas = Math.max(0, Number(params.armadilhas ?? 0));
 
-  const ptsTokens = tokens * 10;
-  const ptsDesafios = acertos * 50;
-  const ptsPenseAntes = bonusPenseAntes * 30;
-  const bonusZeroArmadilhas = armadilhas === 0 ? 100 : 0;
+  const ptsCasas = casasAvancadas * CONSTANTES_PONTUACAO.PTS_POR_CASA;
+  const ptsVoltas = voltas * CONSTANTES_PONTUACAO.PTS_POR_VOLTA;
+  const ptsDesafios = acertos * CONSTANTES_PONTUACAO.PTS_ACERTO_DESAFIO;
+  const ptsPenseAntes = bonusPenseAntes * CONSTANTES_PONTUACAO.PTS_BONUS_PENSE_ANTES;
+  const ptsBoasPraticas = boasPraticas * CONSTANTES_PONTUACAO.PTS_BOA_PRATICA;
+  const penalidadeArmadilhas = armadilhas * CONSTANTES_PONTUACAO.PENALIDADE_ARMADILHA;
 
-  return Math.max(0, ptsTokens + ptsDesafios + ptsPenseAntes + bonusZeroArmadilhas);
+  const total = ptsCasas + ptsVoltas + ptsDesafios + ptsPenseAntes + ptsBoasPraticas - penalidadeArmadilhas;
+  return Math.max(0, total);
 }
 
 /**
  * Auditoria oficial determinística de histórico de partida.
- * Idêntica à Edge Function registrar-partida do Supabase.
+ * Idêntica à Edge Function registrar-partida do Supabase (teto de segurança: 400 itens).
  *
- * @param {Array<{ carta_id: string, opcao_index?: number }>} historico
+ * @param {Array<{ carta_id?: string, opcao_index?: number, casas_andadas?: number, tipo?: string, custo_rolagem?: number }>} historico
  * @param {Record<string, any>} [cartasDicionario]
- * @returns {{ valido: boolean, status: number, sucesso: boolean, erro?: string, tokens?: number, acertos?: number, bonus_pense_antes?: number, armadilhas?: number, pontos?: number }}
+ * @param {Object} [metaPartida]
+ * @returns {{ valido: boolean, status: number, sucesso: boolean, erro?: string, tokens?: number, acertos?: number, bonus_pense_antes?: number, boas_praticas?: number, armadilhas?: number, voltas?: number, casas_avancadas?: number, pontos?: number }}
  */
-export function auditarHistorico(historico, cartasDicionario = {}) {
+export function auditarHistorico(historico, cartasDicionario = {}, metaPartida = {}) {
   if (!Array.isArray(historico) || historico.length === 0) {
     return { valido: false, status: 400, sucesso: false, erro: "Histórico de jogadas vazio ou ausente." };
   }
 
-  if (historico.length > 35) {
-    return { valido: false, status: 400, sucesso: false, erro: "Número de jogadas excede o limite máximo permitido por partida (35)." };
+  if (historico.length > CONSTANTES.MAX_RODADAS) {
+    return { valido: false, status: 400, sucesso: false, erro: `Número de jogadas excede o teto de segurança permitido por partida (${CONSTANTES.MAX_RODADAS}).` };
   }
 
   let tokens = CONSTANTES.TOKENS_INICIAIS; // 20
   let acertos = 0;
   let bonusPenseAntes = 0;
+  let boasPraticas = 0;
   let armadilhas = 0;
+  let casasAvancadas = 0;
+  let voltas = 0;
 
   for (let i = 0; i < historico.length; i++) {
     const item = historico[i];
-    const cartaId = String(item?.carta_id || "");
-    const opIdx = Number(item?.opcao_index ?? 0);
+    
+    // Contabiliza avanço de casas se informado
+    if (item.casas_andadas) {
+      casasAvancadas += Number(item.casas_andadas);
+    }
+
+    // Contabiliza dedução do custo da rolagem
+    if (item.custo_rolagem) {
+      tokens = Math.max(0, tokens - Number(item.custo_rolagem));
+    }
+
+    if (item.completou_volta) {
+      voltas++;
+      tokens += calcularBonusCheckpoint(60, voltas - 1);
+    }
+    if (item.checkpoint_atingido) {
+      tokens += calcularBonusCheckpoint(item.checkpoint_atingido, voltas);
+    }
+
+    const cartaId = item?.carta_id ? String(item.carta_id) : "";
+    if (!cartaId) continue;
 
     const carta = cartasDicionario[cartaId];
     if (!carta) {
@@ -215,6 +302,8 @@ export function auditarHistorico(historico, cartasDicionario = {}) {
         erro: `Carta inexistente ou não autorizada no histórico: '${cartaId}'.`
       };
     }
+
+    const opIdx = Number(item?.opcao_index ?? 0);
 
     if (carta.opcoes && Array.isArray(carta.opcoes) && carta.opcoes.length > 0) {
       if (opIdx < 0 || opIdx >= carta.opcoes.length) {
@@ -239,17 +328,24 @@ export function auditarHistorico(historico, cartasDicionario = {}) {
       if (carta.categoria === "armadilha" || carta.efeito?.armadilha === true) {
         armadilhas++;
       }
+      if (carta.categoria === "boa_pratica" || carta.efeito?.boa_pratica === true) {
+        boasPraticas++;
+      }
     }
+    tokens = Math.max(0, tokens);
   }
 
-  // Bônus oficiais dos checkpoints: Casa 10 (+3), Casa 20 (+5), Casa 30 (+0)
-  tokens += CONSTANTES.BONUS_CHECKPOINT_10 + CONSTANTES.BONUS_CHECKPOINT_20;
-  tokens = Math.max(0, tokens);
+  // Usa metas consolidadas se fornecidas
+  casasAvancadas = Number(metaPartida.casas_avancadas ?? casasAvancadas);
+  voltas = Number(metaPartida.voltas ?? voltas);
+  boasPraticas = Number(metaPartida.boas_praticas ?? boasPraticas);
 
   const pontos = calcularPontuacao({
-    tokens,
+    casas_avancadas: casasAvancadas,
+    voltas,
     acertos,
-    bonusPenseAntes,
+    bonus_pense_antes: bonusPenseAntes,
+    boas_praticas: boasPraticas,
     armadilhas
   });
 
@@ -260,7 +356,10 @@ export function auditarHistorico(historico, cartasDicionario = {}) {
     tokens,
     acertos,
     bonus_pense_antes: bonusPenseAntes,
+    boas_praticas: boasPraticas,
     armadilhas,
+    voltas,
+    casas_avancadas: casasAvancadas,
     pontos
   };
 }

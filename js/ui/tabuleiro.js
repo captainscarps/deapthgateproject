@@ -1,7 +1,7 @@
 // js/ui/tabuleiro.js - Visual 2.5D: Party Game Retro Arcade + Cidade dos Dados
 // Tabuleiro em Grafo (61 nós) • 2 Bifurcações Pedagógicas • Hub Central • Câmera que Segue o Peão
 import { state } from '../state.js';
-import { CONSTANTES, limitarPosicao } from '../regras.js';
+import { CONSTANTES, limitarPosicao, calcularCustoRolagem, calcularBonusCheckpoint } from '../regras.js';
 import { abrirModalCarta } from './carta.js';
 import { Audio } from '../audio.js';
 import { GRAFO_PADRAO, centroCasa } from '../deck.js';
@@ -128,11 +128,15 @@ export function render(currentState) {
   const faceInicial = currentState.dado_ultimo || 1;
   const rotInicial = ROTACAO_FACES_DADO[faceInicial] || { rx: 0, ry: 0 };
   const tokensNum = currentState.tokens || 20;
+  const custoRolagem = currentState.custo_proxima_rolagem || calcularCustoRolagem(currentState.voltas_completas || 0);
 
   // Estado dos 3 checkpoints para a barra lateral (Casas 20, 40 e 60)
   const cp1 = posAtual >= 20;
   const cp2 = posAtual >= 40;
   const cp3 = posAtual >= 60;
+
+  const casaAtualObj = casas.find(c => c.id === posAtual) || casas[0] || { col: 1, row: 9 };
+  const posInicial = centroCasa(casaAtualObj);
 
   const svgTrilhos = gerarTrilhosSVG(casas);
 
@@ -425,11 +429,20 @@ export function render(currentState) {
                               </div>
                               ${nomeCheckpoint ? `<div class="checkpoint-placa billboard">${nomeCheckpoint}</div>` : ''}
                             </div>
-                            ${isAtiva ? renderHTMLPeao(currentState) : ''}
                           </div>
                         </div>
                       `;
                     }).join('')}
+                  </div>
+
+                  <!-- PEÃO BILLBOARD COM ÂNCORA NOS PÉS E CENTRO EXATO NA CASA -->
+                  <div id="peao-jogador" class="peao-container-layer" style="position: absolute; left: ${posInicial.x}px; top: ${posInicial.y}px; z-index: 60; pointer-events: none; transform-style: preserve-3d;">
+                    <div class="peao-avatar-wrapper" style="position: absolute; left: 0; top: 0; width: 52px; height: 70px; transform: translate3d(calc(-50% - 0.5px), calc(-100% + ${(posAtual === 20 || posAtual === 40 || posAtual === 60) ? 0 : 2.5}px), ${(posAtual === 20 || posAtual === 40 || posAtual === 60) ? 32 : 16}px); transform-origin: 50% 100%;">
+                      <div class="peao-sombra" style="position: absolute; bottom: 0px; left: 50%; transform: translate(-50%, 50%); width: 32px; height: 12px;"></div>
+                      <div id="peao-corpo" class="peao-corpo-wrapper peao-avatar-wrapper peao-reacao-neutro dadinho-neutro" style="transform: rotateX(calc(-1 * var(--incl))); transform-origin: 50% 100%;">
+                        ${renderAvatarSVG(currentState.avatar || AVATAR_PADRAO, { modo: 'peao', reacao: 'neutro' })}
+                      </div>
+                    </div>
                   </div>
 
                 </div>
@@ -473,12 +486,15 @@ export function render(currentState) {
 
         <!-- Botão de Ação Arcade Logo Abaixo do Dado -->
         <div>
-          <button id="btn-rolar-dado" class="btn btn-primary btn-block" style="font-size: 1.25rem; padding: 14px 16px; letter-spacing: 1px;">
-            ${currentState.pular_proxima_rodada ? 'PASSAR VEZ' : 'ROLAR DADO'}
+          <button id="btn-rolar-dado" class="btn btn-primary btn-block" style="font-size: 1.15rem; padding: 14px 16px; letter-spacing: 0.5px;">
+            ${currentState.pular_proxima_rodada ? 'PASSAR VEZ' : `🎲 ROLAR DADO · -${custoRolagem} 🪙`}
           </button>
           <div class="item-desktop-only" style="text-align: center; margin-top: 6px; font-size: 0.75rem; color: var(--text-muted);">
             Atalho: <span class="opcao-badge-atalho" style="font-size: 0.7rem;">ESPAÇO</span> ou <span class="opcao-badge-atalho" style="font-size: 0.7rem;">ENTER</span>
           </div>
+          <button id="btn-encerrar-partida" class="btn btn-outline btn-block btn-sm" style="margin-top: 8px; border-color: rgba(232, 72, 79, 0.6); color: #FF7A3D;" title="Encerrar a partida agora e garantir a pontuação acumulada">
+            🛑 Encerrar Partida
+          </button>
         </div>
 
         <!-- Pilha Física de Fichas de Tokens em 3D -->
@@ -662,15 +678,34 @@ export function montar(container, currentState, navigate) {
     };
   }
 
-  // 4. Ação do Botão Rolar Dado com Suporte ao Grafo
+  // 4. Ação do Botão Encerrar Partida Voluntariamente
+  const btnEncerrar = container.querySelector('#btn-encerrar-partida');
+  if (btnEncerrar) {
+    btnEncerrar.onclick = () => {
+      if (confirm('Deseja encerrar a partida agora e garantir a sua pontuação acumulada?')) {
+        state.encerrarPartidaVoluntariamente();
+        navigateRef('resultado');
+      }
+    };
+  }
+
+  // 5. Ação do Botão Rolar Dado com Suporte ao Grafo e Custo de Rolagem
   if (btnRolar) {
     btnRolar.onclick = async () => {
       if (emAnimacao) return;
 
       const st = state.get();
+      if (st.tokens <= 0 || st.partida_finalizada) {
+        state.finalizarPartida();
+        await exibirModalTokensEsgotados();
+        navigateRef('resultado');
+        return;
+      }
+
       if (st.pular_proxima_rodada) {
         state.set({ pular_proxima_rodada: false });
-        btnRolar.textContent = 'ROLAR DADO';
+        const cProx = calcularCustoRolagem(st.voltas_completas || 0);
+        btnRolar.innerHTML = `<span class="dado-btn-icone">🎲</span> ROLAR DADO &middot; -${cProx} 🪙`;
         const aviso = container.querySelector('#aviso-pular-rodada');
         if (aviso) aviso.remove();
         return;
@@ -735,11 +770,11 @@ export function montar(container, currentState, navigate) {
           await exibirModalCheckpoint(resMov.novaPosicao, resMov.bonusTokens);
         }
 
-        // Se atingiu o final (Casa 60)
-        if (resMov.novaPosicao >= 60 || state.get().partida_finalizada) {
-          setTimeout(() => {
-            navigateRef('resultado');
-          }, 600);
+        // Se os tokens esgotaram na rolagem/movimento
+        if (state.get().tokens <= 0 || state.get().partida_finalizada) {
+          state.finalizarPartida();
+          await exibirModalTokensEsgotados();
+          navigateRef('resultado');
           return;
         }
 
@@ -783,9 +818,8 @@ export function montar(container, currentState, navigate) {
 
           if (state.get().tokens <= 0 || state.get().partida_finalizada) {
             state.finalizarPartida();
-            setTimeout(() => {
-              navigateRef('resultado');
-            }, 500);
+            await exibirModalTokensEsgotados();
+            navigateRef('resultado');
             return;
           }
         }
@@ -1185,16 +1219,18 @@ if (typeof window !== 'undefined') {
   window.debugCamera = debugCamera;
 }
 
-// Anima um passo entre dois nós do grafo com arco parabólico e squash
+// Anima um passo entre dois nós do grafo com arco parabólico e squash seguindo estritamente as coordenadas centroCasa()
 async function animarPassoGrafo(deId, paraId) {
   if (!containerRef) return;
   const grafo = state.get().grafoTabuleiro || GRAFO_PADRAO;
-  const deNodo = grafo.casas.find(c => c.id === deId);
-  const paraNodo = grafo.casas.find(c => c.id === paraId);
+  const deNodo = grafo.casas.find(c => c.id === deId) || { id: deId, col: 1, row: 9, x: 120, y: 760 };
+  const paraNodo = grafo.casas.find(c => c.id === paraId) || { id: paraId, col: 1, row: 9, x: 120, y: 760 };
   const peaoEl = containerRef.querySelector('#peao-jogador');
-  const tileDestino = containerRef.querySelector(`#casa-tile-${paraId}`);
 
-  if (!peaoEl || !tileDestino) return;
+  if (!peaoEl) return;
+
+  const pontoA = centroCasa(deNodo);
+  const pontoB = centroCasa(paraNodo);
 
   try {
     if (Audio && typeof Audio.tocarPasso === 'function') {
@@ -1206,39 +1242,78 @@ async function animarPassoGrafo(deId, paraId) {
     aplicarModoSeguir(paraId, true);
   }
 
+  const isCheckpoint = (paraId === 20 || paraId === 40 || paraId === 60);
+  const zAlt = isCheckpoint ? 32 : 16;
+  const yOffset = isCheckpoint ? 0 : 2.5;
+  const wrapper = peaoEl.querySelector('.peao-avatar-wrapper');
+  if (wrapper) {
+    wrapper.style.transform = `translate3d(calc(-50% - 0.5px), calc(-100% + ${yOffset}px), ${zAlt}px)`;
+  }
+
   const prefereReduzido = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if (prefereReduzido || !window.gsap) {
-    tileDestino.appendChild(peaoEl);
+    peaoEl.style.left = `${pontoB.x}px`;
+    peaoEl.style.top = `${pontoB.y}px`;
     return;
   }
 
   const corpo = peaoEl.querySelector('#peao-corpo');
-  const sombra = peaoEl.querySelector('#peao-sombra');
+  const sombra = peaoEl.querySelector('.peao-sombra');
 
   if (corpo) {
-    corpo.className = 'peao-corpo-wrapper peao-avatar-wrapper peao-reacao-pulando dadinho-pulando';
     definirReacaoPeao('pulando');
   }
 
   await new Promise(resolve => {
     const tl = gsap.timeline({
       onComplete: () => {
-        tileDestino.appendChild(peaoEl);
+        peaoEl.style.left = `${pontoB.x}px`;
+        peaoEl.style.top = `${pontoB.y}px`;
         if (corpo) {
-          gsap.fromTo(corpo, { scaleY: 0.75, scaleX: 1.25 }, { scaleY: 1, scaleX: 1, duration: 0.25, ease: "bounce.out" });
-          corpo.className = 'peao-corpo-wrapper peao-avatar-wrapper peao-reacao-neutro dadinho-neutro';
+          gsap.fromTo(corpo, { scaleY: 0.8, scaleX: 1.2 }, { scaleY: 1, scaleX: 1, duration: 0.22, ease: "bounce.out" });
           definirReacaoPeao('neutro');
         }
         resolve();
       }
     });
 
-    tl.to(corpo, { y: -28, duration: 0.22, ease: "power2.out" })
-      .to(corpo, { y: 0, duration: 0.22, ease: "power2.in" });
+    // Deslocamento de centro a centro ao longo da aresta
+    tl.to(peaoEl, {
+      left: pontoB.x,
+      top: pontoB.y,
+      duration: 0.32,
+      ease: "power1.inOut"
+    }, 0);
 
+    // Arco vertical do pulo
+    if (corpo) {
+      tl.to(corpo, { y: -26, duration: 0.16, ease: "power2.out" }, 0)
+        .to(corpo, { y: 0, duration: 0.16, ease: "power2.in" }, 0.16);
+    }
     if (sombra) {
-      tl.to(sombra, { scale: 0.6, opacity: 0.3, duration: 0.22 }, 0)
-        .to(sombra, { scale: 1, opacity: 0.85, duration: 0.22 }, 0.22);
+      tl.to(sombra, { scale: 0.65, opacity: 0.35, duration: 0.16 }, 0)
+        .to(sombra, { scale: 1, opacity: 0.85, duration: 0.16 }, 0.16);
+    }
+  });
+}
+
+function exibirModalTokensEsgotados() {
+  return new Promise(resolve => {
+    const modal = containerRef ? containerRef.querySelector('#modal-tokens-esgotados') : null;
+    if (!modal) {
+      resolve();
+      return;
+    }
+    modal.style.display = 'flex';
+    modal.classList.add('fade-in');
+    const btn = modal.querySelector('#btn-ver-resultado-esgotado');
+    if (btn) {
+      btn.onclick = () => {
+        modal.style.display = 'none';
+        resolve();
+      };
+    } else {
+      setTimeout(resolve, 3000);
     }
   });
 }

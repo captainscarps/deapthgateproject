@@ -11,14 +11,21 @@ export function render(currentState) {
   const acertos = currentState.acertos_desafio || 0;
   const bonusPense = currentState.bonus_pense_antes || 0;
   const armadilhas = currentState.armadilhas || 0;
+  const voltas = currentState.voltas_completas || 0;
+  const casasAvancadas = currentState.casas_avancadas || 0;
+  const boasPraticas = currentState.boas_praticas || 0;
   const pontuacaoCliente = currentState.pontuacao_final || 0;
   const valeRanking = currentState.partida_vale_ranking === true;
   const ehConvidado = currentState.modo_convidado === true;
 
-  // Detalhamento dos componentes
-  const ptsTokens = tokens * 10;
+  // Nova fórmula oficial em loop:
+  // pontos = casas_avancadas*5 + voltas*150 + acertos_desafio*50 + bonus_pense_antes*30 + boas_praticas*10 - armadilhas*20
+  const ptsCasas = casasAvancadas * 5;
+  const ptsVoltas = voltas * 150;
   const ptsDesafios = acertos * 50;
   const ptsPenseAntes = bonusPense * 30;
+  const ptsBoasPraticas = boasPraticas * 10;
+  const penalidadeArmadilhas = armadilhas * 20;
 
   return `
     <div class="tela-resultado fade-in">
@@ -80,46 +87,60 @@ export function render(currentState) {
         </section>
 
         <!-- RESUMO RÁPIDO DE MÉTRICAS -->
-        <section class="resumo-metricas-grid">
+        <section class="resumo-metricas-grid" style="grid-template-columns: repeat(4, 1fr);">
+          <div class="metrica-card">
+            <span class="metrica-card-valor" style="color: var(--cyan);">${voltas}</span>
+            <span class="metrica-card-rotulo">Voltas</span>
+          </div>
           <div class="metrica-card">
             <span class="metrica-card-valor" style="color: var(--green);">${acertos}</span>
             <span class="metrica-card-rotulo">Acertos</span>
           </div>
           <div class="metrica-card">
-            <span class="metrica-card-valor" style="color: ${armadilhas === 0 ? 'var(--green)' : 'var(--coral)'};">${armadilhas}</span>
-            <span class="metrica-card-rotulo">Armadilhas</span>
+            <span class="metrica-card-valor" style="color: var(--amber);">${bonusPense}</span>
+            <span class="metrica-card-rotulo">Pense Antes</span>
           </div>
           <div class="metrica-card">
-            <span class="metrica-card-valor" style="color: var(--amber);">${bonusPense}</span>
-            <span class="metrica-card-rotulo">Pensou Antes</span>
+            <span class="metrica-card-valor" style="color: ${armadilhas === 0 ? 'var(--green)' : 'var(--coral)'};">${armadilhas}</span>
+            <span class="metrica-card-rotulo">Armadilhas</span>
           </div>
         </section>
 
         <!-- DETALHAMENTO DA PONTUAÇÃO -->
         <section class="card" style="display: flex; flex-direction: column; gap: 8px;">
           <h3 class="titulo-card" style="font-size: 1.05rem; color: var(--cyan); border-bottom: 1px solid var(--border); padding-bottom: 4px;">
-            Detalhamento por Componente
+            Detalhamento da Pontuação (Regra em Loop)
           </h3>
 
-          <div style="display: flex; justify-content: space-between; font-size: 0.95rem;">
-            <span style="color: var(--text-muted);">Tokens Restantes (${tokens} × 10):</span>
-            <span style="font-family: var(--font-pixel); font-weight: 700; color: var(--gold);">+${ptsTokens} pts</span>
+          <div style="display: flex; justify-content: space-between; font-size: 0.92rem;">
+            <span style="color: var(--text-muted);">Casas Avançadas (${casasAvancadas} × 5):</span>
+            <span style="font-family: var(--font-pixel); font-weight: 700; color: var(--gold);">+${ptsCasas} pts</span>
           </div>
 
-          <div style="display: flex; justify-content: space-between; font-size: 0.95rem;">
+          <div style="display: flex; justify-content: space-between; font-size: 0.92rem;">
+            <span style="color: var(--text-muted);">Voltas Completas (${voltas} × 150):</span>
+            <span style="font-family: var(--font-pixel); font-weight: 700; color: var(--cyan);">+${ptsVoltas} pts</span>
+          </div>
+
+          <div style="display: flex; justify-content: space-between; font-size: 0.92rem;">
             <span style="color: var(--text-muted);">Acertos em Desafios (${acertos} × 50):</span>
             <span style="font-family: var(--font-pixel); font-weight: 700; color: var(--green);">+${ptsDesafios} pts</span>
           </div>
 
-          <div style="display: flex; justify-content: space-between; font-size: 0.95rem;">
+          <div style="display: flex; justify-content: space-between; font-size: 0.92rem;">
             <span style="color: var(--text-muted);">Bônus "Pense Antes" (${bonusPense} × 30):</span>
-            <span style="font-family: var(--font-pixel); font-weight: 700; color: var(--cyan);">+${ptsPenseAntes} pts</span>
+            <span style="font-family: var(--font-pixel); font-weight: 700; color: var(--amber);">+${ptsPenseAntes} pts</span>
           </div>
 
-          <div style="display: flex; justify-content: space-between; font-size: 0.95rem;">
-            <span style="color: var(--text-muted);">Consciência Ética (Zero Armadilhas):</span>
-            <span style="font-family: var(--font-pixel); font-weight: 700; color: ${armadilhas === 0 ? 'var(--green)' : 'var(--text-dim)'};">
-              ${armadilhas === 0 ? '+100 pts' : '0 pts (' + armadilhas + ' armadilhas)'}
+          <div style="display: flex; justify-content: space-between; font-size: 0.92rem;">
+            <span style="color: var(--text-muted);">Boas Práticas Adotadas (${boasPraticas} × 10):</span>
+            <span style="font-family: var(--font-pixel); font-weight: 700; color: var(--green);">+${ptsBoasPraticas} pts</span>
+          </div>
+
+          <div style="display: flex; justify-content: space-between; font-size: 0.92rem;">
+            <span style="color: var(--text-muted);">Penalidade de Armadilhas (${armadilhas} × -20):</span>
+            <span style="font-family: var(--font-pixel); font-weight: 700; color: ${armadilhas === 0 ? 'var(--text-dim)' : 'var(--coral)'};">
+              -${penalidadeArmadilhas} pts
             </span>
           </div>
         </section>
@@ -270,8 +291,11 @@ async function processarEnvioPartida(container, currentState, pontosCliente, elC
         area_id: currentState.area_id || null,
         pontos: pontosCliente,
         tokens: currentState.tokens,
+        casas_avancadas: currentState.casas_avancadas || 0,
+        voltas: currentState.voltas_completas || 0,
         acertos: currentState.acertos_desafio,
         bonusPenseAntes: currentState.bonus_pense_antes,
+        boas_praticas: currentState.boas_praticas || 0,
         armadilhas: currentState.armadilhas,
         historico: currentState.historico,
         jogada_em: currentState.jogada_em || new Date().toISOString()
@@ -302,8 +326,11 @@ async function processarEnvioPartida(container, currentState, pontosCliente, elC
     versao_cartas: currentState.versao_cartas || '1.0',
     pontos: pontosCliente,
     tokens: currentState.tokens,
+    casas_avancadas: currentState.casas_avancadas || 0,
+    voltas: currentState.voltas_completas || 0,
     acertos: currentState.acertos_desafio,
     bonusPenseAntes: currentState.bonus_pense_antes,
+    boas_praticas: currentState.boas_praticas || 0,
     armadilhas: currentState.armadilhas,
     historico: currentState.historico,
     jogada_em: currentState.jogada_em || new Date().toISOString()

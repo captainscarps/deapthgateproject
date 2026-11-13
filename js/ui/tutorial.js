@@ -3,19 +3,19 @@ import { state } from '../state.js';
 
 const PASSOS = [
   {
-    icone: "🎲",
-    titulo: "1. A Trilha e o Dado",
-    texto: "Avance por uma trilha de 31 casas (0 a 30). Role o dado determinístico semanal de 1 a 6. Conquiste os bônus dos checkpoints na 1ª passagem (+3 tokens na Casa 10 e +5 tokens na Casa 20)."
+    icone: "🔄",
+    titulo: "1. Trilha em Loop Contínuo",
+    texto: "A Cidade dos Dados opera em circuito contínuo de 61 nós com 2 bifurcações e Central de Dados. O Portal Final não encerra o jogo: ele completa 1 volta com bônus e leva seu personagem de volta ao início para continuar!"
   },
   {
-    icone: "💡",
-    titulo: "2. Cartas e Governança",
-    texto: "A cada parada, tire uma carta sobre governança de IA, LGPD e segurança da informação: Boas Práticas, Pense Antes, Conexões e Desafios de múltipla escolha. Cuidado com as Armadilhas!"
+    icone: "🪙",
+    titulo: "2. Custo de Rolagem e Sustentabilidade",
+    texto: "Cada rolagem consome tokens: 1 na Volta 1, 2 na Volta 2 e 3 nas Voltas 3+. A partida termina somente quando seus tokens chegam a 0 (ou ao escolher 'Encerrar Partida'). Toda IA consome recursos — use com consciência!"
   },
   {
     icone: "🏆",
-    titulo: "3. Tokens e Ranking",
-    texto: "Você começa com 20 tokens. Suas escolhas somam ou subtraem recursos. Termine a trilha antes que seus tokens esgotem e impulsione sua Área no ranking institucional do SEST SENAT!"
+    titulo: "3. Escalada, Checkpoints e Pontuação",
+    texto: "A cada volta, o desafio sobe (+1 armadilha e cartas mais complexas). Checkpoints dão bônus 1 vez por volta. Sua pontuação final soma casas avançadas (x5), voltas completadas (x150), acertos em desafios (x50) e boas práticas!"
   }
 ];
 

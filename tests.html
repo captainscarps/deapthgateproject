@@ -193,7 +193,7 @@
 
   <script type="module">
     import { cyrb53, mulberry32, criarRng } from './js/rng.js';
-    import { CONSTANTES, limitarPosicao, verificarCheckpoints, aplicarEfeito, calcularPontuacao, isFimDePartida, auditarHistorico } from './js/regras.js';
+    import { CONSTANTES, CONSTANTES_PONTUACAO, limitarPosicao, verificarCheckpoints, aplicarEfeito, calcularPontuacao, calcularCustoRolagem, calcularBonusCheckpoint, isFimDePartida, auditarHistorico } from './js/regras.js';
     import { semanaAtual, validarCarta, gerarTabuleiro, DeckManager, CATEGORIAS_VALIDAS, gerarSementeConvidado, GRAFO_PADRAO, centroCasa } from './js/deck.js';
     import { state } from './js/state.js';
     import { api } from './js/api.js';
@@ -308,15 +308,15 @@
           : detalheFalhaArmadilha
       );
 
-      // 5. PONTUAÇÃO COM CASOS DE EXEMPLO AUDITADOS
-      const p1 = calcularPontuacao({ tokens: 20, acertos: 3, bonusPenseAntes: 2, armadilhas: 0 });
-      const p2 = calcularPontuacao({ tokens: 15, acertos: 1, bonusPenseAntes: 0, armadilhas: 2 });
-      const p3 = calcularPontuacao({ tokens: 0, acertos: 0, bonusPenseAntes: 0, armadilhas: 1 });
-      const pontuacaoOk = (p1 === 510) && (p2 === 200) && (p3 === 0);
+      // 5. PONTUAÇÃO COM CASOS DE EXEMPLO AUDITADOS (NOVA FÓRMULA OFICIAL EM LOOP)
+      const p1 = calcularPontuacao({ casas_avancadas: 60, voltas: 1, acertos_desafio: 3, bonus_pense_antes: 2, boas_praticas: 4, armadilhas: 1 });
+      const p2 = calcularPontuacao({ casas_avancadas: 25, voltas: 0, acertos_desafio: 1, bonus_pense_antes: 0, boas_praticas: 1, armadilhas: 2 });
+      const p3 = calcularPontuacao({ casas_avancadas: 0, voltas: 0, acertos_desafio: 0, bonus_pense_antes: 0, boas_praticas: 0, armadilhas: 5 });
+      const pontuacaoOk = (p1 === 680) && (p2 === 145) && (p3 === 0);
       registrar(testesLogica,
         "5. Pontuação com casos de exemplo auditados",
         pontuacaoOk,
-        `Caso A: ${p1} (esperado 510) | Caso B: ${p2} (esperado 200) | Caso C: ${p3} (esperado 0)`
+        `Caso A: ${p1} (esperado 680) | Caso B: ${p2} (esperado 145) | Caso C: ${p3} (esperado 0)`
       );
 
       // 6. NÃO PASSA DE 0 AO VOLTAR CASAS
@@ -331,7 +331,7 @@
       );
 
       // 7. CHECKPOINT NÃO REPETE BÔNUS AO RECUAR E AVANÇAR
-      const estInicial = { posicao: 8, tokens: 20, checkpoints_passados: [] };
+      const estInicial = { posicao: 18, tokens: 20, checkpoints_passados: [] };
       const resPasso1 = aplicarEfeito(estInicial, { mover: 4 });
       const resPasso2 = aplicarEfeito(resPasso1, { mover: -3 });
       const resPasso3 = aplicarEfeito(resPasso2, { mover: 5 });
@@ -339,7 +339,7 @@
       registrar(testesLogica,
         "7. Checkpoint não repete bônus ao recuar e avançar",
         semRepetirCp,
-        `Inicial: 20 -> Passo 1 (+4): ${resPasso1.tokens} -> Passo 2 (-3): ${resPasso2.tokens} -> Passo 3 (+5): ${resPasso3.tokens}`
+        `Inicial: 20 -> Passo 1 (+4 atingindo CP 20): ${resPasso1.tokens} -> Passo 2 (-3): ${resPasso2.tokens} -> Passo 3 (+5 sem repetir CP 20): ${resPasso3.tokens}`
       );
 
       // 8. REEMBARALHO AUTOMÁTICO QUANDO ESGOTA
@@ -412,15 +412,15 @@
       const resHub = state.mover(3);
       const hubOk = (resHub.hubAtivado === true) && (resHub.novaPosicao === 34);
 
-      // Posiciona na casa 58 e move 5 (deve parar no Portal casa 60, não ultrapassar e encerrar)
+      // Posiciona na casa 58 e move 5 (deve cruzar o Portal casa 60, completar volta e continuar no loop até a casa 3)
       state.set({ posicao: 58 });
       const resPortal = state.mover(5);
-      const portalOk = (resPortal.novaPosicao === 60) && (resPortal.fimDePartida === true);
+      const portalOk = (resPortal.novaPosicao === 3) && (resPortal.voltaCompletada === true) && (state.get().voltas_completas === 1) && (resPortal.fimDePartida === false);
 
       registrar(testesLogica,
         "11. Grafo: mover N casas antes de bifurcação, hub e portal",
         parouBif1Ok && escolheuAtalhoOk && hubOk && portalOk,
-        `Bifurcação 12: ${parouBif1Ok}, Atalho 61: ${escolheuAtalhoOk}, Hub 33: ${hubOk}, Portal 60: ${portalOk}`
+        `Bifurcação 12: ${parouBif1Ok}, Atalho 61: ${escolheuAtalhoOk}, Hub 33: ${hubOk}, Portal 60 em loop: ${portalOk}`
       );
 
       // 12. NAVEGAÇÃO NO GRAFO: RECUAR CASAS (MOVIMENTO NEGATIVO)
@@ -453,7 +453,7 @@
             m = state.escolherCaminhoBifurcacao(m.bifurcacaoPendente.noOrigem, prox, 'Escolha Teste');
           }
           rolagensSemErro++;
-          if (m.fimDePartida || state.get().posicao >= 60 || state.get().partida_finalizada) {
+          if (m.fimDePartida || state.get().tokens <= 0 || state.get().partida_finalizada) {
             state.iniciarPartida({ modo_convidado: true });
           }
         } catch (errLoop) {
@@ -474,6 +474,43 @@
         "14. Função verificarEnquadramento() disponível e exportada",
         funcEnquadramentoOk,
         `verificarEnquadramento tipo: ${typeof verificarEnquadramento}, window.verificarEnquadramento: ${typeof window.verificarEnquadramento}`
+      );
+
+      // 15. CUSTO DE ROLAGEM PROGRESSIVO POR VOLTA (1, 2, 3+ TOKENS)
+      const custoV0 = calcularCustoRolagem(0);
+      const custoV1 = calcularCustoRolagem(1);
+      const custoV2 = calcularCustoRolagem(2);
+      const custoV5 = calcularCustoRolagem(5);
+      const custosOk = (custoV0 === 1) && (custoV1 === 2) && (custoV2 === 3) && (custoV5 === 3);
+      registrar(testesLogica,
+        "15. Custo de rolagem progressivo por volta (1, 2, 3+ tokens)",
+        custosOk,
+        `Volta 0: ${custoV0}🪙, Volta 1: ${custoV1}🪙, Volta 2: ${custoV2}🪙, Volta 5: ${custoV5}🪙`
+      );
+
+      // 16. BÔNUS DE CHECKPOINTS REDUZIDOS PELA METADE A CADA VOLTA
+      const cp1_v0 = calcularBonusCheckpoint(20, 0);
+      const cp1_v1 = calcularBonusCheckpoint(20, 1);
+      const cp2_v0 = calcularBonusCheckpoint(40, 0);
+      const cp2_v1 = calcularBonusCheckpoint(40, 1);
+      const cp3_v0 = calcularBonusCheckpoint(60, 0);
+      const cp3_v1 = calcularBonusCheckpoint(60, 1);
+      const bonusOk = (cp1_v0 === 3) && (cp1_v1 === 2) && (cp2_v0 === 5) && (cp2_v1 === 3) && (cp3_v0 === 10) && (cp3_v1 === 5);
+      registrar(testesLogica,
+        "16. Bônus de checkpoints reduzidos pela metade a cada volta",
+        bonusOk,
+        `CP20: ${cp1_v0} -> ${cp1_v1} | CP40: ${cp2_v0} -> ${cp2_v1} | Portal 60: ${cp3_v0} -> ${cp3_v1}`
+      );
+
+      // 17. FIM DE PARTIDA SOMENTE COM 0 TOKENS OU ENCERRAMENTO VOLUNTÁRIO
+      const naoTerminaPortal = isFimDePartida({ tokens: 10, encerrouVoluntariamente: false, rodada: 10 });
+      const terminaZeroTokens = isFimDePartida({ tokens: 0, encerrouVoluntariamente: false, rodada: 10 });
+      const terminaVoluntario = isFimDePartida({ tokens: 10, encerrouVoluntariamente: true, rodada: 10 });
+      const fimOk = (!naoTerminaPortal) && terminaZeroTokens && terminaVoluntario;
+      registrar(testesLogica,
+        "17. Fim de partida somente com 0 tokens ou encerramento voluntário",
+        fimOk,
+        `Com tokens: ${!naoTerminaPortal}, Zero tokens: ${terminaZeroTokens}, Voluntário: ${terminaVoluntario}`
       );
 
       } catch (e) {
@@ -703,7 +740,7 @@
 
         registrar(testesTrilha,
           "2. Correspondência 1:1: Toda aresta tem um segmento desenhado e todo segmento corresponde a uma aresta",
-          totalArestas === 67 && arestasComSegmento === totalArestas,
+          totalArestas === 68 && arestasComSegmento === totalArestas,
           `Total de arestas do grafo: ${totalArestas}. Segmentos gerados: ${segmentosCriados.length}.`
         );
 

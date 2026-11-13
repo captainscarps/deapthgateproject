@@ -105,7 +105,7 @@ CREATE TABLE IF NOT EXISTS public.partidas (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     jogador_id UUID NOT NULL REFERENCES public.jogadores(id) ON DELETE CASCADE,
     area_id INT NOT NULL REFERENCES public.areas(id) ON DELETE RESTRICT,
-    pontos INT NOT NULL CHECK (pontos >= 0 AND pontos <= 2000),
+    pontos INT NOT NULL CHECK (pontos >= 0 AND pontos <= 50000),
     acertos INT NOT NULL DEFAULT 0 CHECK (acertos >= 0),
     armadilhas INT NOT NULL DEFAULT 0 CHECK (armadilhas >= 0),
     bonus_pense_antes INT NOT NULL DEFAULT 0 CHECK (bonus_pense_antes >= 0),
@@ -266,7 +266,7 @@ GRANT EXECUTE ON FUNCTION public.get_ranking_area(TEXT, INT) TO anon, authentica
 CREATE TABLE IF NOT EXISTS public.partidas_convidado (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     area_id INT REFERENCES public.areas(id) ON DELETE SET NULL,
-    pontos INT NOT NULL CHECK (pontos >= 0 AND pontos <= 2000),
+    pontos INT NOT NULL CHECK (pontos >= 0 AND pontos <= 50000),
     acertos INT NOT NULL DEFAULT 0 CHECK (acertos >= 0),
     armadilhas INT NOT NULL DEFAULT 0 CHECK (armadilhas >= 0),
     bonus_pense_antes INT NOT NULL DEFAULT 0 CHECK (bonus_pense_antes >= 0),

@@ -1,0 +1,44 @@
+[
+  {
+    "id": "ativo_simulador",
+    "nome": "Simulador Avançado de Direção de Caminhão e Ônibus",
+    "area": "Desenvolvimento Profissional",
+    "criticidade": "alta",
+    "descricao": "Equipamento imersivo com telemetria para treino de direção defensiva e econômica."
+  },
+  {
+    "id": "ativo_clinica",
+    "nome": "Sistema de Gestão Clínica e Consultórios Odontológicos",
+    "area": "Promoção Social e Saúde",
+    "criticidade": "critica",
+    "descricao": "Software de prontuários eletrônicos, agendamento e exames de colaboradores e dependentes."
+  },
+  {
+    "id": "ativo_ava",
+    "nome": "Ambiente Virtual de Aprendizagem (AVA SEST SENAT)",
+    "area": "Educação a Distância",
+    "criticidade": "alta",
+    "descricao": "Plataforma de cursos EAD para motoristas profissionais, mecânicos e gestores de frota."
+  },
+  {
+    "id": "ativo_bi_transporte",
+    "nome": "Painel Analítico de Transporte e Logística Corporativa",
+    "area": "Tecnologia da Informação e BI",
+    "criticidade": "media",
+    "descricao": "Dashboards de indicadores operacionais e desempenho das 160+ unidades operacionais."
+  },
+  {
+    "id": "ativo_unidades_moveis",
+    "nome": "Vans e Unidades Móveis de Saúde e Treinamento em Rodovias",
+    "area": "Operações",
+    "criticidade": "alta",
+    "descricao": "Veículos adaptados que levam atendimento gratuito de saúde aos pontos de parada de caminhoneiros."
+  },
+  {
+    "id": "ativo_portal_rh",
+    "nome": "Portal de Carreiras, Seleção e Autoatendimento do Colaborador",
+    "area": "Gestão de Pessoas",
+    "criticidade": "media",
+    "descricao": "Sistema centralizado de gestão funcional, avaliações de competência e treinamentos internos."
+  }
+]
