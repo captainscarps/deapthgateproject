@@ -85,6 +85,33 @@ export const Audio = {
   },
 
   /**
+   * Efeito sonoro de passo do peão pelo tabuleiro
+   */
+  tocarPasso() {
+    if (estaMudo) return;
+    const ctx = getAudioContext();
+    if (!ctx) return;
+    try {
+      const t = ctx.currentTime;
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(380, t);
+      osc.frequency.exponentialRampToValueAtTime(200, t + 0.06);
+
+      gain.gain.setValueAtTime(0.12, t);
+      gain.gain.exponentialRampToValueAtTime(0.001, t + 0.06);
+
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+
+      osc.start(t);
+      osc.stop(t + 0.07);
+    } catch (e) {}
+  },
+
+  /**
    * Efeito sonoro de acerto / resposta correta (arpejo harmonioso C5 -> E5 -> G5)
    */
   tocarAcerto() {

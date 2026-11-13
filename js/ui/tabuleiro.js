@@ -4,7 +4,8 @@ import { state } from '../state.js';
 import { CONSTANTES, limitarPosicao } from '../regras.js';
 import { abrirModalCarta } from './carta.js';
 import { Audio } from '../audio.js';
-import { GRAFO_PADRAO } from '../deck.js';
+import { GRAFO_PADRAO, centroCasa } from '../deck.js';
+import { renderAvatarSVG, renderPeaoAvatarHTML, AVATAR_PADRAO } from '../avatar.js';
 
 let containerRef = null;
 let navigateRef = null;
@@ -69,40 +70,45 @@ function renderFichaTokenHex() {
   `;
 }
 
-// Gera o traçado contínuo em SVG das conexões do grafo
+// Gera o traçado contínuo em SVG das conexões do grafo EXCLUSIVAMENTE a partir da fonte única de verdade centroCasa()
 function gerarTrilhosSVG(casas) {
   let paths = '';
   let chevrons = '';
 
   for (const c of casas) {
     if (!c.proximos || c.proximos.length === 0) continue;
+    const pontoA = centroCasa(c);
+
     for (const proxId of c.proximos) {
       const p = casas.find(n => n.id === proxId);
-      if (!p) continue;
+      if (!p) {
+        console.error(`[Grafo Tabuleiro] Aresta aponta para nó inexistente: Casa ${c.id} -> ${proxId}`);
+        continue;
+      }
+      const pontoB = centroCasa(p);
 
-      let d = '';
-      if (c.x === p.x || c.y === p.y) {
-        d = `M ${c.x} ${c.y} L ${p.x} ${p.y}`;
-      } else {
-        // Curva em 90 graus
-        if (Math.abs(c.x - p.x) > Math.abs(c.y - p.y)) {
-          d = `M ${c.x} ${c.y} L ${p.x} ${c.y} L ${p.x} ${p.y}`;
-        } else {
-          d = `M ${c.x} ${c.y} L ${c.x} ${p.y} L ${p.x} ${p.y}`;
-        }
+      // Validação de ortogonalidade e saltos no console
+      const dx = Math.abs((c.col ?? 0) - (p.col ?? 0));
+      const dy = Math.abs((c.row ?? 0) - (p.row ?? 0));
+      if (pontoA.x !== pontoB.x && pontoA.y !== pontoB.y) {
+        console.error(`[Grafo Tabuleiro] Aresta diagonal inválida: Casa ${c.id} (${c.col},${c.row}) -> Casa ${p.id} (${p.col},${p.row})`);
+      } else if (dx + dy > 1) {
+        console.error(`[Grafo Tabuleiro] Aresta pula células: Casa ${c.id} (${c.col},${c.row}) -> Casa ${p.id} (${p.col},${p.row}) (distância=${dx + dy})`);
       }
 
-      // Trilho base 3D + faixa escura + superfície ciano
+      // Traçado estrito de centroCasa(a) até centroCasa(b)
+      const d = `M ${pontoA.x} ${pontoA.y} L ${pontoB.x} ${pontoB.y}`;
+
       paths += `
-        <path d="${d}" stroke="#05101F" stroke-width="30" stroke-linecap="round" stroke-linejoin="round"/>
-        <path d="${d}" stroke="#00B4D8" stroke-width="18" stroke-linecap="round" stroke-linejoin="round"/>
-        <path d="${d}" stroke="#0A1C30" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="${d}" stroke="#05101F" stroke-width="32" stroke-linecap="round"/>
+        <path d="${d}" stroke="#00B4D8" stroke-width="18" stroke-linecap="round"/>
+        <path d="${d}" stroke="#0A1C30" stroke-width="10" stroke-linecap="round"/>
       `;
 
-      // Setas direcionais no meio do percurso
-      const mx = (c.x + p.x) / 2;
-      const my = (c.y + p.y) / 2;
-      const ang = Math.atan2(p.y - c.y, p.x - c.x) * 180 / Math.PI;
+      // Setas direcionais no centro do percurso
+      const mx = (pontoA.x + pontoB.x) / 2;
+      const my = (pontoA.y + pontoB.y) / 2;
+      const ang = Math.atan2(pontoB.y - pontoA.y, pontoB.x - pontoA.x) * 180 / Math.PI;
 
       chevrons += `
         <g transform="translate(${mx}, ${my}) rotate(${ang})">
@@ -145,8 +151,10 @@ export function render(currentState) {
         <!-- Identificação do Jogador & Selo -->
         <div class="hud-jogador-bloco">
           <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px;">
-            <div style="display: flex; align-items: center; gap: 8px;">
-              <span style="font-size: 1.25rem;">👤</span>
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <div class="avatar-busto-moldura hud-avatar-busto" style="width: 44px; height: 44px; flex-shrink: 0;" title="${currentState.jogador || 'Jogador'}">
+                ${renderAvatarSVG(currentState.avatar || AVATAR_PADRAO, { modo: 'busto', tamanho: 44 })}
+              </div>
               <div>
                 <div class="hud-nome" style="font-weight: 800; font-size: 1.15rem; color: var(--text-white);">${currentState.jogador || 'Colaborador'}</div>
                 <div class="hud-area" style="font-size: 0.85rem; color: var(--text-muted);">${currentState.area || 'SEST SENAT'}</div>
@@ -233,21 +241,29 @@ export function render(currentState) {
           </div>
         ` : ''}
 
-        <section class="trilha-wrapper" id="trilha-wrapper">
-          <!-- Botão Flutuante: "Ver Tabuleiro Todo (3s)" -->
-          <button id="btn-visao-geral" class="btn-visao-geral-3s" title="Afastar câmera e visualizar tabuleiro completo">
-            🔍 Ver Tabuleiro Todo (3s)
-          </button>
+        <section class="trilha-wrapper cena-viewport" id="cena-viewport">
+          <!-- Controles Flutuantes da Câmera -->
+          <div class="controles-camera-flutuantes">
+            <button id="btn-visao-geral" class="btn-visao-geral-3s" title="Afastar câmera e visualizar tabuleiro completo">
+              🔍 Ver Tabuleiro Todo (3s)
+            </button>
+            <button id="btn-toggle-camera-modo" class="btn-toggle-camera-modo" title="Alternar entre Modo Mesa e Seguir Peão">
+              🎯 Seguir Peão
+            </button>
+          </div>
 
-          <div class="cena-tabuleiro-3d" id="cena-tabuleiro-3d">
-            <div class="tabuleiro-camera" id="tabuleiro-camera">
-              <div class="tabuleiro-3d" id="tabuleiro-3d">
+          <!-- ENQUADRAMENTO 2D (ÚNICO elemento que a câmera mexe: translate e scale) -->
+          <div class="enquadramento" id="enquadramento">
+            <!-- CENA 3D (perspective fixa) -->
+            <div class="cena cena-tabuleiro-3d" id="cena-tabuleiro-3d">
+              <!-- PLANO 3D (rotateX fixa, NUNCA animado) -->
+              <div class="plano tabuleiro-3d" id="tabuleiro-3d">
                 
-                <!-- PLACA BASE DO DIORAMA EM MÓDULOS DE IMPRESSÃO 3D (1500x1050 px) -->
+                <!-- PLACA BASE DO DIORAMA EM MÓDULOS DE IMPRESSÃO 3D (1440x880 px) -->
                 <div class="diorama-placa" id="diorama-placa">
 
-                  <!-- Trilhos Contínuos em SVG -->
-                  <svg class="trilha-caminho-svg" viewBox="0 0 1500 1050" fill="none">
+                  <!-- Trilhos Contínuos em SVG (1440x880) -->
+                  <svg class="trilha-caminho-svg" viewBox="0 0 1440 880" fill="none">
                     ${svgTrilhos}
                   </svg>
 
@@ -395,9 +411,10 @@ export function render(currentState) {
                       const isVisitada = c.id < posAtual;
                       const svgIcone = ICONES_SVG[cat] || ICONES_SVG.boa_pratica;
                       const nomeCheckpoint = NOMES_CHECKPOINTS[c.id] || null;
+                      const pos = centroCasa(c);
 
                       return `
-                        <div class="casa-nodo-pos" style="left: ${c.x}px; top: ${c.y}px;" data-casa="${c.id}">
+                        <div class="casa-nodo-pos" style="left: ${pos.x}px; top: ${pos.y}px;" data-casa="${c.id}">
                           <div class="casa-tile casa-${cat} ${isAtiva ? 'ativa' : ''} ${isVisitada ? 'visitada' : ''}" id="casa-tile-${c.id}" data-casa="${c.id}" data-categoria="${cat}">
                             <div class="casa-disco-base">
                               <div class="casa-disco-topo">
@@ -408,7 +425,7 @@ export function render(currentState) {
                               </div>
                               ${nomeCheckpoint ? `<div class="checkpoint-placa billboard">${nomeCheckpoint}</div>` : ''}
                             </div>
-                            ${isAtiva ? renderHTMLPeao() : ''}
+                            ${isAtiva ? renderHTMLPeao(currentState) : ''}
                           </div>
                         </div>
                       `;
@@ -574,65 +591,17 @@ function renderFichasToken(qtd) {
   return html;
 }
 
-function renderHTMLPeao() {
-  return `
-    <div class="peao-container" id="peao-jogador">
-      <div class="peao-sombra" id="peao-sombra"></div>
-      <div class="peao-corpo-wrapper dadinho-neutro" id="peao-corpo">
-        <svg class="dadinho-mascote-svg" viewBox="0 0 48 54" fill="none">
-          <ellipse cx="24" cy="50" rx="16" ry="3.5" fill="#05101F" opacity="0.65"/>
-          <rect class="perna-esq" x="14" y="42" width="6" height="8" rx="3" fill="#05101F"/>
-          <rect class="perna-dir" x="28" y="42" width="6" height="8" rx="3" fill="#05101F"/>
-          <rect x="6" y="8" width="36" height="36" rx="8" fill="#00B4D8" stroke="#05101F" stroke-width="3"/>
-          <path d="M10 12 H38" stroke="#90E0EF" stroke-width="2" stroke-linecap="round"/>
-          <circle cx="10" cy="15" r="2" fill="#FFFFFF" stroke="#05101F" stroke-width="1"/>
-          <circle cx="38" cy="15" r="2" fill="#FFFFFF" stroke="#05101F" stroke-width="1"/>
-          <circle cx="10" cy="37" r="2" fill="#FFFFFF" stroke="#05101F" stroke-width="1"/>
-          <circle cx="38" cy="37" r="2" fill="#FFFFFF" stroke="#05101F" stroke-width="1"/>
+function renderHTMLPeao(currentState) {
+  const cfg = currentState?.avatar || state.get().avatar || AVATAR_PADRAO;
+  return renderPeaoAvatarHTML(cfg, 'neutro');
+}
 
-          <g class="exp-neutro">
-            <ellipse cx="18" cy="25" rx="3.5" ry="4.5" fill="#FFFFFF" stroke="#05101F" stroke-width="1.5"/>
-            <circle cx="19" cy="24.5" r="2" fill="#05101F"/>
-            <circle cx="18.2" cy="23.5" r="0.8" fill="#FFFFFF"/>
-            <ellipse cx="30" cy="25" rx="3.5" ry="4.5" fill="#FFFFFF" stroke="#05101F" stroke-width="1.5"/>
-            <circle cx="29" cy="24.5" r="2" fill="#05101F"/>
-            <circle cx="29.8" cy="23.5" r="0.8" fill="#FFFFFF"/>
-            <circle cx="13" cy="29" r="2" fill="#FF7A3D" opacity="0.6"/>
-            <circle cx="35" cy="29" r="2" fill="#FF7A3D" opacity="0.6"/>
-            <path d="M21 31 Q24 33.5 27 31" stroke="#05101F" stroke-width="2" stroke-linecap="round" fill="none"/>
-          </g>
-
-          <g class="exp-pulando">
-            <circle cx="18" cy="23" r="5" fill="#FFFFFF" stroke="#05101F" stroke-width="1.5"/>
-            <circle cx="18" cy="23" r="2.8" fill="#05101F"/>
-            <circle cx="17" cy="21.5" r="1.2" fill="#FFFFFF"/>
-            <circle cx="30" cy="23" r="5" fill="#FFFFFF" stroke="#05101F" stroke-width="1.5"/>
-            <circle cx="30" cy="23" r="2.8" fill="#05101F"/>
-            <circle cx="31" cy="21.5" r="1.2" fill="#FFFFFF"/>
-            <ellipse cx="24" cy="32" rx="3" ry="4" fill="#05101F"/>
-          </g>
-
-          <g class="exp-feliz">
-            <path d="M14 26 Q18 20 22 26" stroke="#05101F" stroke-width="2.8" stroke-linecap="round" fill="none"/>
-            <path d="M26 26 Q30 20 34 26" stroke="#05101F" stroke-width="2.8" stroke-linecap="round" fill="none"/>
-            <path d="M17 29 Q24 39 31 29 Z" fill="#05101F"/>
-            <path d="M20 32 Q24 37 28 32 Z" fill="#E8484F"/>
-            <path d="M6 14 L8 16 L6 18 L4 16 Z" fill="#FFC93C" stroke="#05101F" stroke-width="0.8"/>
-            <path d="M42 14 L44 16 L42 18 L40 16 Z" fill="#FFC93C" stroke="#05101F" stroke-width="0.8"/>
-          </g>
-
-          <g class="exp-assustado">
-            <circle cx="17" cy="24" r="5" fill="#FFFFFF" stroke="#05101F" stroke-width="1.8"/>
-            <circle cx="17" cy="24" r="1.8" fill="#05101F"/>
-            <circle cx="31" cy="24" r="5" fill="#FFFFFF" stroke="#05101F" stroke-width="1.8"/>
-            <circle cx="31" cy="24" r="1.8" fill="#05101F"/>
-            <path d="M19 33 L21 31 L23 33 L25 31 L27 33 L29 31" stroke="#05101F" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-            <path d="M38 18 C38 18 36 22 36 23 C36 24.5 37 25.5 38.5 25.5 C40 25.5 41 24.5 41 23 C41 22 38 18 38 18 Z" fill="#90E0EF" stroke="#05101F" stroke-width="1.2"/>
-          </g>
-        </svg>
-      </div>
-    </div>
-  `;
+function definirReacaoPeao(reacao) {
+  const peaoCorpo = containerRef ? containerRef.querySelector('#peao-corpo') : null;
+  if (!peaoCorpo) return;
+  peaoCorpo.className = `peao-corpo-wrapper peao-avatar-wrapper peao-reacao-${reacao} dadinho-${reacao === 'comemorando' ? 'feliz' : (reacao === 'assustado' ? 'assustado' : (reacao === 'pulando' ? 'pulando' : 'neutro'))}`;
+  const curAvatar = state.get().avatar || AVATAR_PADRAO;
+  peaoCorpo.innerHTML = renderAvatarSVG(curAvatar, { modo: 'peao', reacao });
 }
 
 export function montar(container, currentState, navigate) {
@@ -670,7 +639,7 @@ export function montar(container, currentState, navigate) {
         if (rotuloVisao) rotuloVisao.textContent = 'Diorama 2.5D';
         localStorage.setItem('trilha_visao_plana', 'false');
       }
-      atualizarCameraParaCasa(state.get().posicao, true);
+      recalcularEnquadramento(true);
     };
   }
 
@@ -678,6 +647,18 @@ export function montar(container, currentState, navigate) {
   if (btnVisaoGeral) {
     btnVisaoGeral.onclick = () => {
       ativarVisaoGeralTabuleiro();
+    };
+  }
+
+  // 3b. Botão Alternar Modo de Câmera (Modo Mesa x Seguir Peão)
+  const btnToggleCameraModo = container.querySelector('#btn-toggle-camera-modo');
+  if (btnToggleCameraModo) {
+    btnToggleCameraModo.onclick = () => {
+      if (modoCameraAtual === 'mesa') {
+        aplicarModoSeguir(state.get().posicao, true);
+      } else {
+        aplicarModoMesa(true);
+      }
     };
   }
 
@@ -698,122 +679,125 @@ export function montar(container, currentState, navigate) {
       emAnimacao = true;
       btnRolar.disabled = true;
 
-      // Obtém face do RNG determinístico
-      const faceSorteada = state.rolarDado();
+      try {
+        // Obtém face do RNG determinístico
+        const faceSorteada = state.rolarDado();
 
-      // Giro físico do dado 3D
-      await animarDadoCubo(dadoCubo, faceSorteada);
+        // Giro físico do dado 3D
+        await animarDadoCubo(dadoCubo, faceSorteada);
 
-      // Movimenta no grafo
-      let resMov = state.mover(faceSorteada);
+        // Movimenta no grafo
+        let resMov = state.mover(faceSorteada);
 
-      // Anima o peão passo a passo pelo caminho percorrido
-      if (resMov.caminhoPercorrido && resMov.caminhoPercorrido.length > 1) {
-        for (let i = 1; i < resMov.caminhoPercorrido.length; i++) {
-          const de = resMov.caminhoPercorrido[i - 1];
-          const para = resMov.caminhoPercorrido[i];
-          await animarPassoGrafo(de, para);
-        }
-      }
-
-      // Se parou em bifurcação que exige decisão do jogador
-      if (resMov.parouEmBifurcacao && resMov.bifurcacaoPendente) {
-        const escolha = await exibirModalBifurcacao(resMov.bifurcacaoPendente.bifurcacao);
-        const resContinuacao = state.escolherCaminhoBifurcacao(
-          resMov.bifurcacaoPendente.noOrigem,
-          escolha.proximo,
-          escolha.nome
-        );
-
-        if (resContinuacao.caminhoPercorrido && resContinuacao.caminhoPercorrido.length > 1) {
-          for (let i = 1; i < resContinuacao.caminhoPercorrido.length; i++) {
-            const de = resContinuacao.caminhoPercorrido[i - 1];
-            const para = resContinuacao.caminhoPercorrido[i];
+        // Anima o peão passo a passo pelo caminho percorrido
+        if (resMov.caminhoPercorrido && resMov.caminhoPercorrido.length > 1) {
+          for (let i = 1; i < resMov.caminhoPercorrido.length; i++) {
+            const de = resMov.caminhoPercorrido[i - 1];
+            const para = resMov.caminhoPercorrido[i];
             await animarPassoGrafo(de, para);
           }
         }
-        resMov = resContinuacao;
-      }
 
-      // Se ativou o Hub Central de Dados (Nó 33)
-      if (resMov.hubAtivado || resMov.novaPosicao === 33) {
-        Audio.tocarDado();
-        const evSorteado = state.sortearEventoHub();
-        await animarGiroHub(evSorteado);
-        atualizarHUD(state.get());
-        atualizarPilhaTokens(state.get().tokens);
-      }
+        // Se parou em bifurcação que exige decisão do jogador
+        if (resMov.parouEmBifurcacao && resMov.bifurcacaoPendente) {
+          const escolha = await exibirModalBifurcacao(resMov.bifurcacaoPendente.bifurcacao);
+          const resContinuacao = state.escolherCaminhoBifurcacao(
+            resMov.bifurcacaoPendente.noOrigem,
+            escolha.proximo,
+            escolha.nome
+          );
 
-      // Se conquistou checkpoint com bônus
-      if (resMov.bonusTokens > 0) {
-        Audio.tocarCheckpoint();
-        mostrarTokensFlutuantes(resMov.bonusTokens);
-        atualizarHUD(state.get());
-        atualizarPilhaTokens(state.get().tokens);
-        await exibirModalCheckpoint(resMov.novaPosicao, resMov.bonusTokens);
-      }
-
-      // Se atingiu o final (Casa 60)
-      if (resMov.novaPosicao >= 60 || state.get().partida_finalizada) {
-        setTimeout(() => {
-          navigateRef('resultado');
-        }, 600);
-        return;
-      }
-
-      // Se parou em casa normal (não início, não checkpoint, não hub)
-      if (resMov.novaPosicao > 0 && resMov.novaPosicao !== 27 && resMov.novaPosicao !== 53 && resMov.novaPosicao !== 60 && resMov.novaPosicao !== 33) {
-        const cat = (state.get().tabuleiro && state.get().tabuleiro[resMov.novaPosicao]) || 'boa_pratica';
-        const deckManager = state.deckManager;
-        let carta = deckManager ? deckManager.comprarCarta(cat) : null;
-        if (!carta) {
-          carta = {
-            id: `fb_${cat}`,
-            categoria: cat,
-            tema: "Governança de IA",
-            texto: `Você parou em uma casa de ${NOMES_CATEGORIAS[cat] || cat}. Mantenha a conformidade com as diretrizes de IA!`,
-            efeito: { tokens: 2, mover: 0, feedback: "Muito bem! Continue atento às diretrizes." }
-          };
-        }
-
-        const posAntesCarta = resMov.novaPosicao;
-
-        if (cena3D) cena3D.classList.add('cena-foco-carta');
-        const resCarta = await abrirModalCarta(carta);
-        if (cena3D) cena3D.classList.remove('cena-foco-carta');
-
-        // Expressão do Dadinho
-        const peaoCorpo = containerRef.querySelector('#peao-corpo');
-        if (peaoCorpo) {
-          if (resCarta && resCarta.deltaTokens > 0) {
-            peaoCorpo.className = 'peao-corpo-wrapper dadinho-feliz';
-            setTimeout(() => { if (peaoCorpo) peaoCorpo.className = 'peao-corpo-wrapper dadinho-neutro'; }, 2200);
-          } else if (resCarta && (resCarta.deltaTokens < 0 || resCarta.deltaMover < 0)) {
-            peaoCorpo.className = 'peao-corpo-wrapper dadinho-assustado';
-            setTimeout(() => { if (peaoCorpo) peaoCorpo.className = 'peao-corpo-wrapper dadinho-neutro'; }, 2200);
+          if (resContinuacao.caminhoPercorrido && resContinuacao.caminhoPercorrido.length > 1) {
+            for (let i = 1; i < resContinuacao.caminhoPercorrido.length; i++) {
+              const de = resContinuacao.caminhoPercorrido[i - 1];
+              const para = resContinuacao.caminhoPercorrido[i];
+              await animarPassoGrafo(de, para);
+            }
           }
+          resMov = resContinuacao;
         }
 
-        if (resCarta && resCarta.deltaTokens !== 0) {
-          mostrarTokensFlutuantes(resCarta.deltaTokens);
+        // Se ativou o Hub Central de Dados (Nó 33)
+        if (resMov.hubAtivado || resMov.novaPosicao === 33) {
+          Audio.tocarDado();
+          const evSorteado = state.sortearEventoHub();
+          await animarGiroHub(evSorteado);
           atualizarHUD(state.get());
           atualizarPilhaTokens(state.get().tokens);
         }
 
-        if (state.get().tokens <= 0 || state.get().partida_finalizada) {
-          state.finalizarPartida();
+        // Se conquistou checkpoint com bônus
+        if (resMov.bonusTokens > 0) {
+          Audio.tocarCheckpoint();
+          mostrarTokensFlutuantes(resMov.bonusTokens);
+          atualizarHUD(state.get());
+          atualizarPilhaTokens(state.get().tokens);
+          await exibirModalCheckpoint(resMov.novaPosicao, resMov.bonusTokens);
+        }
+
+        // Se atingiu o final (Casa 60)
+        if (resMov.novaPosicao >= 60 || state.get().partida_finalizada) {
           setTimeout(() => {
             navigateRef('resultado');
-          }, 500);
+          }, 600);
           return;
         }
-      }
 
-      emAnimacao = false;
-      const stFinal = state.get();
-      if (!stFinal.partida_finalizada) {
-        btnRolar.disabled = false;
-        btnRolar.textContent = stFinal.pular_proxima_rodada ? 'PASSAR VEZ' : 'ROLAR DADO';
+        // Se parou em casa normal (não início, não checkpoint, não hub)
+        if (resMov.novaPosicao > 0 && resMov.novaPosicao !== 20 && resMov.novaPosicao !== 40 && resMov.novaPosicao !== 60 && resMov.novaPosicao !== 33) {
+          const cat = (state.get().tabuleiro && state.get().tabuleiro[resMov.novaPosicao]) || 'boa_pratica';
+          const deckManager = state.deckManager;
+          let carta = deckManager ? deckManager.comprarCarta(cat) : null;
+          if (!carta) {
+            carta = {
+              id: `fb_${cat}`,
+              categoria: cat,
+              tema: "Governança de IA",
+              texto: `Você parou em uma casa de ${NOMES_CATEGORIAS[cat] || cat}. Mantenha a conformidade com as diretrizes de IA!`,
+              efeito: { tokens: 2, mover: 0, feedback: "Muito bem! Continue atento às diretrizes." }
+            };
+          }
+
+          if (cena3D) cena3D.classList.add('cena-foco-carta');
+          let resCarta = null;
+          try {
+            resCarta = await abrirModalCarta(carta);
+          } finally {
+            if (cena3D) cena3D.classList.remove('cena-foco-carta');
+          }
+
+          // Reação do Avatar Chibi
+          if (resCarta && resCarta.deltaTokens > 0) {
+            definirReacaoPeao('comemorando');
+            setTimeout(() => definirReacaoPeao('neutro'), 2200);
+          } else if (resCarta && (resCarta.deltaTokens < 0 || resCarta.deltaMover < 0)) {
+            definirReacaoPeao('assustado');
+            setTimeout(() => definirReacaoPeao('neutro'), 2200);
+          }
+
+          if (resCarta && resCarta.deltaTokens !== 0) {
+            mostrarTokensFlutuantes(resCarta.deltaTokens);
+            atualizarHUD(state.get());
+            atualizarPilhaTokens(state.get().tokens);
+          }
+
+          if (state.get().tokens <= 0 || state.get().partida_finalizada) {
+            state.finalizarPartida();
+            setTimeout(() => {
+              navigateRef('resultado');
+            }, 500);
+            return;
+          }
+        }
+      } catch (err) {
+        console.error("[tabuleiro] Erro durante a rodada:", err);
+      } finally {
+        emAnimacao = false;
+        const stFinal = state.get();
+        if (!stFinal.partida_finalizada) {
+          btnRolar.disabled = false;
+          btnRolar.textContent = stFinal.pular_proxima_rodada ? 'PASSAR VEZ' : 'ROLAR DADO';
+        }
       }
     };
   }
@@ -836,13 +820,13 @@ export function montar(container, currentState, navigate) {
   document.addEventListener('keydown', onKeyDownTabuleiro);
   containerRef._limparTeclado = () => document.removeEventListener('keydown', onKeyDownTabuleiro);
 
-  // Resize debounced
+  // Resize debounced (150ms)
   let resizeTimeout = null;
   const onResizeDebounced = () => {
     clearTimeout(resizeTimeout);
     resizeTimeout = setTimeout(() => {
-      atualizarCameraParaCasa(state.get().posicao, false);
-    }, 80);
+      recalcularEnquadramento(false);
+    }, 150);
   };
   window.addEventListener('resize', onResizeDebounced);
   containerRef._limparResize = () => {
@@ -850,125 +834,355 @@ export function montar(container, currentState, navigate) {
     window.removeEventListener('resize', onResizeDebounced);
   };
 
-  // Centraliza câmera no peão inicial
-  atualizarCameraParaCasa(currentState.posicao, false);
-}
-
-let cameraAtualX = -120;
-let cameraAtualY = -680;
-
-// Câmera segue o peão no grafo com antecipação e centralização rigorosa
-function atualizarCameraParaCasa(casaNum, animar = true) {
-  if (!containerRef) return;
-  const planoEl = containerRef.querySelector('#tabuleiro-3d');
-  const cameraEl = containerRef.querySelector('#tabuleiro-camera');
-  if (!planoEl || !cameraEl) return;
-  if (cameraEl.dataset.visaoGeralAtiva === 'true') return;
-
-  const trilhaWrapper = containerRef.querySelector('#trilha-wrapper');
-  const isVisaoPlana = trilhaWrapper && trilhaWrapper.classList.contains('visao-plana');
-
-  const grafo = state.get().grafoTabuleiro || GRAFO_PADRAO;
-  const nodo = grafo.casas.find(c => c.id === casaNum) || grafo.casas[0];
-  const peaoX = nodo ? nodo.x : 120;
-  const peaoY = nodo ? nodo.y : 760;
-
-  // Plano com transform-origin: 0 0.
-  // Transladamos (-peaoX, -peaoY + 80px) para centralizar a casa horizontalmente
-  // e colocá-la levemente abaixo do centro vertical (~80px) para enquadrar o caminho à frente.
-  const targetX = -peaoX;
-  const targetY = -peaoY + 80;
-
-  if (isVisaoPlana) {
-    const cenaEl = containerRef.querySelector('#cena-tabuleiro-3d');
-    const dispW = (cenaEl ? cenaEl.clientWidth : 1200) * 0.88;
-    const dispH = (cenaEl ? cenaEl.clientHeight : 800) * 0.88;
-    const scale = Math.min(dispW / 1440, dispH / 880);
-    planoEl.style.transform = `scale(${scale.toFixed(3)}) rotateX(0deg) translate(-720px, -440px)`;
-    return;
+  // Recalcula enquadramento quando as fontes estiverem prontas
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(() => {
+      recalcularEnquadramento(false);
+    });
   }
 
-  if (window.gsap && animar) {
-    const camObj = { x: cameraAtualX, y: cameraAtualY };
-    gsap.to(camObj, {
-      x: targetX,
-      y: targetY,
-      duration: 0.65,
-      ease: "power2.out",
+  // Define modo inicial por breakpoint: Desktop (>= 1200px) inicia em 'mesa', mobile/tablet em 'seguir'
+  modoCameraAtual = window.innerWidth >= 1200 ? 'mesa' : 'seguir';
+  setModoCamera(modoCameraAtual);
+  // Executa enquadramento inicial após renderização do DOM
+  setTimeout(() => {
+    recalcularEnquadramento(false);
+  }, 30);
+}
+
+// ==============================================================================
+// ENQUADRAMENTO POR MEDIÇÃO NA TELA (NOVA ARQUITETURA 2.5D)
+// ==============================================================================
+
+let modoCameraAtual = 'mesa'; // 'mesa' ou 'seguir'
+let transicaoVisaoGeralAtiva = false;
+
+export function getModoCameraAtual() {
+  return modoCameraAtual;
+}
+
+export function setModoCamera(modo) {
+  modoCameraAtual = modo;
+  const btnToggle = containerRef?.querySelector('#btn-toggle-camera-modo');
+  if (btnToggle) {
+    btnToggle.innerHTML = modo === 'mesa' ? '🎯 Seguir Peão' : '🗺️ Modo Mesa';
+    btnToggle.title = modo === 'mesa' ? 'Mudar para câmera que segue o peão' : 'Mudar para visão de mesa completa';
+  }
+}
+
+/**
+ * Obtém a bounding box união de todos os elementos relevantes do tabuleiro
+ * expressa em coordenadas não transformadas (unscaled/unpanned) relativas ao viewport.
+ */
+function obterCaixaNaoEscalada() {
+  const viewport = document.querySelector('#cena-viewport') || document.querySelector('.cena-viewport');
+  const enquadramento = document.querySelector('#enquadramento');
+  if (!viewport || !enquadramento) return null;
+
+  const vRect = viewport.getBoundingClientRect();
+  const curPanX = parseFloat(enquadramento.style.getPropertyValue('--pan-x')) || 0;
+  const curPanY = parseFloat(enquadramento.style.getPropertyValue('--pan-y')) || 0;
+  const curZoom = parseFloat(enquadramento.style.getPropertyValue('--zoom')) || 1;
+
+  // Mede TODAS as casas, o portal e os props (e diorama placa / hub)
+  const elementos = viewport.querySelectorAll('.casa-nodo-pos, .portal-guardiao-cenario, .cenario-prop, .hub-central-box, .diorama-placa');
+  if (elementos.length === 0) return null;
+
+  let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+
+  for (const el of elementos) {
+    const r = el.getBoundingClientRect();
+    if (r.width > 0 && r.height > 0) {
+      const x0 = (r.left - vRect.left - curPanX) / curZoom;
+      const x1 = (r.right - vRect.left - curPanX) / curZoom;
+      const y0 = (r.top - vRect.top - curPanY) / curZoom;
+      const y1 = (r.bottom - vRect.top - curPanY) / curZoom;
+
+      minX = Math.min(minX, x0);
+      maxX = Math.max(maxX, x1);
+      minY = Math.min(minY, y0);
+      maxY = Math.max(maxY, y1);
+    }
+  }
+
+  if (minX === Infinity) return null;
+
+  const W = maxX - minX;
+  const H = maxY - minY;
+  const Cx = minX + W / 2;
+  const Cy = minY + H / 2;
+
+  return {
+    minX, maxX, minY, maxY,
+    W, H, Cx, Cy,
+    vW: vRect.width,
+    vH: vRect.height,
+    vLeft: vRect.left,
+    vTop: vRect.top
+  };
+}
+
+/**
+ * Calcula pan e zoom do Modo Mesa para caber tudo com 5% de margem em cada borda (90% do viewport)
+ * e perfeitamente centralizado horizontal e verticalmente.
+ */
+export function calcularEnquadramentoMesa() {
+  const box = obterCaixaNaoEscalada();
+  if (!box || box.vW === 0 || box.vH === 0 || box.W === 0 || box.H === 0) return null;
+
+  const disponivelW = box.vW * 0.90;
+  const disponivelH = box.vH * 0.90;
+
+  const zoom = Math.min(disponivelW / box.W, disponivelH / box.H);
+  const panX = box.vW / 2 - zoom * box.Cx;
+  const panY = box.vH / 2 - zoom * box.Cy;
+
+  return { panX, panY, zoom, box };
+}
+
+/**
+ * Aplica o Modo Mesa (tabuleiro parado e 100% visível, margens simétricas).
+ */
+export function aplicarModoMesa(animar = false) {
+  const enquadramento = document.querySelector('#enquadramento');
+  if (!enquadramento) return;
+
+  const calc = calcularEnquadramentoMesa();
+  if (!calc) return;
+
+  setModoCamera('mesa');
+  aplicarTransformEnquadramento(calc.panX, calc.panY, calc.zoom, animar ? 0.4 : 0);
+}
+
+/**
+ * Calcula pan e zoom do Modo Seguir para manter o centro do disco da casa atual em (50%, 60%) da tela.
+ */
+export function calcularEnquadramentoSeguir(casaNum) {
+  const viewport = document.querySelector('#cena-viewport') || document.querySelector('.cena-viewport');
+  const enquadramento = document.querySelector('#enquadramento');
+  if (!viewport || !enquadramento) return null;
+
+  const tileEl = document.querySelector(`#casa-tile-${casaNum}`) || document.querySelector('.casa-tile.ativa');
+  if (!tileEl) return null;
+
+  const discEl = tileEl.querySelector('.casa-disco-base') || tileEl;
+  const discRect = discEl.getBoundingClientRect();
+  const vRect = viewport.getBoundingClientRect();
+
+  const curPanX = parseFloat(enquadramento.style.getPropertyValue('--pan-x')) || 0;
+  const curPanY = parseFloat(enquadramento.style.getPropertyValue('--pan-y')) || 0;
+  const curZoom = parseFloat(enquadramento.style.getPropertyValue('--zoom')) || 1;
+
+  const discCenterX_screen = discRect.left + discRect.width / 2;
+  const discCenterY_screen = discRect.top + discRect.height / 2;
+
+  const discCenterX_unscaled = (discCenterX_screen - vRect.left - curPanX) / curZoom;
+  const discCenterY_unscaled = (discCenterY_screen - vRect.top - curPanY) / curZoom;
+
+  const zoomFixo = window.innerWidth < 768 ? 1.5 : 1.6;
+  const targetX = vRect.width * 0.50;
+  const targetY = vRect.height * 0.60;
+
+  const panX = targetX - zoomFixo * discCenterX_unscaled;
+  const panY = targetY - zoomFixo * discCenterY_unscaled;
+
+  return { panX, panY, zoom: zoomFixo, discCenterX_unscaled, discCenterY_unscaled };
+}
+
+/**
+ * Aplica o Modo Seguir na casa indicada.
+ */
+export function aplicarModoSeguir(casaNum, animar = true) {
+  if (transicaoVisaoGeralAtiva) return;
+  const enquadramento = document.querySelector('#enquadramento');
+  if (!enquadramento) return;
+
+  const calc = calcularEnquadramentoSeguir(casaNum);
+  if (!calc) return;
+
+  setModoCamera('seguir');
+  aplicarTransformEnquadramento(calc.panX, calc.panY, calc.zoom, animar ? 0.4 : 0);
+}
+
+/**
+ * Anima os valores de --pan-x, --pan-y e --zoom em #enquadramento usando GSAP
+ */
+function aplicarTransformEnquadramento(panX, panY, zoom, duracao = 0) {
+  const enquadramento = document.querySelector('#enquadramento');
+  if (!enquadramento) return;
+
+  const curPanX = parseFloat(enquadramento.style.getPropertyValue('--pan-x')) || 0;
+  const curPanY = parseFloat(enquadramento.style.getPropertyValue('--pan-y')) || 0;
+  const curZoom = parseFloat(enquadramento.style.getPropertyValue('--zoom')) || 1;
+
+  if (window.gsap && duracao > 0 && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const animObj = { panX: curPanX, panY: curPanY, zoom: curZoom };
+    gsap.killTweensOf(animObj);
+    gsap.to(animObj, {
+      panX,
+      panY,
+      zoom,
+      duration: duracao,
+      ease: 'power2.out',
       onUpdate: () => {
-        cameraAtualX = camObj.x;
-        cameraAtualY = camObj.y;
-        planoEl.style.transform = `rotateX(var(--incl)) translate(${camObj.x.toFixed(1)}px, ${camObj.y.toFixed(1)}px)`;
+        enquadramento.style.setProperty('--pan-x', `${animObj.panX.toFixed(2)}px`);
+        enquadramento.style.setProperty('--pan-y', `${animObj.panY.toFixed(2)}px`);
+        enquadramento.style.setProperty('--zoom', animObj.zoom.toFixed(4));
+      },
+      onComplete: () => {
+        enquadramento.style.setProperty('--pan-x', `${panX.toFixed(2)}px`);
+        enquadramento.style.setProperty('--pan-y', `${panY.toFixed(2)}px`);
+        enquadramento.style.setProperty('--zoom', zoom.toFixed(4));
+        verificarEnquadramento();
       }
     });
   } else {
-    cameraAtualX = targetX;
-    cameraAtualY = targetY;
-    planoEl.style.transform = `rotateX(var(--incl)) translate(${targetX.toFixed(1)}px, ${targetY.toFixed(1)}px)`;
+    enquadramento.style.setProperty('--pan-x', `${panX.toFixed(2)}px`);
+    enquadramento.style.setProperty('--pan-y', `${panY.toFixed(2)}px`);
+    enquadramento.style.setProperty('--zoom', zoom.toFixed(4));
+    verificarEnquadramento();
   }
 }
 
-// Afasta câmera por 3 segundos para visão geral completa da mesa e tabuleiro
-function ativarVisaoGeralTabuleiro() {
-  if (!containerRef) return;
-  const planoEl = containerRef.querySelector('#tabuleiro-3d');
-  const cameraEl = containerRef.querySelector('#tabuleiro-camera');
-  const btnVisao = containerRef.querySelector('#btn-visao-geral');
-  if (!planoEl || !cameraEl) return;
+/**
+ * Recalcula enquadramento com base na largura da tela e preferência do jogador.
+ */
+export function recalcularEnquadramento(animar = false) {
+  const isDesktop = window.innerWidth >= 1200;
+  if (modoCameraAtual === 'mesa' || (isDesktop && modoCameraAtual !== 'seguir')) {
+    aplicarModoMesa(animar);
+  } else {
+    aplicarModoSeguir(state.get().posicao, animar);
+  }
+}
 
-  cameraEl.dataset.visaoGeralAtiva = 'true';
+/**
+ * "Ver Tabuleiro Todo (3s)": aplica Modo Mesa por 3 segundos e retorna.
+ */
+export function ativarVisaoGeralTabuleiro() {
+  const btnVisao = document.querySelector('#btn-visao-geral');
+  if (transicaoVisaoGeralAtiva) return;
+
+  transicaoVisaoGeralAtiva = true;
   if (btnVisao) btnVisao.classList.add('ativo-timer');
 
-  const cenaEl = containerRef.querySelector('#cena-tabuleiro-3d');
-  const dispW = (cenaEl ? cenaEl.clientWidth : 1200) * 0.90;
-  const dispH = (cenaEl ? cenaEl.clientHeight : 800) * 0.90;
-  const scaleGeral = Math.min(dispW / 1440, dispH / 880);
-
-  const startObj = { x: cameraAtualX, y: cameraAtualY, s: 1.0 };
-  if (window.gsap) {
-    gsap.to(startObj, {
-      x: -720,
-      y: -440,
-      s: scaleGeral,
-      duration: 0.8,
-      ease: "power2.inOut",
-      onUpdate: () => {
-        planoEl.style.transform = `scale(${startObj.s.toFixed(3)}) rotateX(var(--incl)) translate(${startObj.x.toFixed(1)}px, ${startObj.y.toFixed(1)}px)`;
-      }
-    });
-  } else {
-    planoEl.style.transform = `scale(${scaleGeral.toFixed(3)}) rotateX(var(--incl)) translate(-720px, -440px)`;
+  const calcMesa = calcularEnquadramentoMesa();
+  if (calcMesa) {
+    aplicarTransformEnquadramento(calcMesa.panX, calcMesa.panY, calcMesa.zoom, 0.4);
   }
 
   setTimeout(() => {
-    cameraEl.dataset.visaoGeralAtiva = 'false';
+    transicaoVisaoGeralAtiva = false;
     if (btnVisao) btnVisao.classList.remove('ativo-timer');
-    const grafo = state.get().grafoTabuleiro || GRAFO_PADRAO;
-    const nodo = grafo.casas.find(c => c.id === state.get().posicao) || grafo.casas[0];
-    const targetX = -(nodo ? nodo.x : 120);
-    const targetY = -(nodo ? nodo.y : 760) + 80;
-
-    if (window.gsap) {
-      const returnObj = { x: -720, y: -440, s: scaleGeral };
-      gsap.to(returnObj, {
-        x: targetX,
-        y: targetY,
-        s: 1.0,
-        duration: 0.8,
-        ease: "power2.inOut",
-        onUpdate: () => {
-          cameraAtualX = returnObj.x;
-          cameraAtualY = returnObj.y;
-          planoEl.style.transform = `scale(${returnObj.s.toFixed(3)}) rotateX(var(--incl)) translate(${returnObj.x.toFixed(1)}px, ${returnObj.y.toFixed(1)}px)`;
-        },
-        onComplete: () => {
-          planoEl.style.transform = `rotateX(var(--incl)) translate(${targetX.toFixed(1)}px, ${targetY.toFixed(1)}px)`;
-        }
-      });
+    if (modoCameraAtual === 'seguir') {
+      aplicarModoSeguir(state.get().posicao, true);
     } else {
-      atualizarCameraParaCasa(state.get().posicao, false);
+      aplicarModoMesa(true);
     }
   }, 3000);
+}
+
+/**
+ * VERIFICAÇÃO AUTOMÁTICA OBRIGATÓRIA (verificarEnquadramento)
+ */
+export function verificarEnquadramento() {
+  if (typeof document === 'undefined') return null;
+  const viewport = document.querySelector('#cena-viewport') || document.querySelector('.cena-viewport');
+  if (!viewport) return null;
+
+  const vRect = viewport.getBoundingClientRect();
+  if (vRect.width === 0 || vRect.height === 0) return null;
+
+  if (modoCameraAtual === 'mesa') {
+    const elementos = Array.from(viewport.querySelectorAll('.casa-nodo-pos, .portal-guardiao-cenario, .cenario-prop, .hub-central-box, .diorama-placa'));
+    if (elementos.length === 0) return null;
+
+    let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+    for (const el of elementos) {
+      const r = el.getBoundingClientRect();
+      if (r.width > 0 && r.height > 0) {
+        minX = Math.min(minX, r.left);
+        maxX = Math.max(maxX, r.right);
+        minY = Math.min(minY, r.top);
+        maxY = Math.max(maxY, r.bottom);
+      }
+    }
+
+    const margem_esquerda = minX - vRect.left;
+    const margem_direita = vRect.right - maxX;
+    const margem_topo = minY - vRect.top;
+    const margem_base = vRect.bottom - maxY;
+
+    const diffH = Math.abs(margem_esquerda - margem_direita);
+    const diffV = Math.abs(margem_topo - margem_base);
+    const tolH = vRect.width * 0.02;
+    const tolV = vRect.height * 0.02;
+
+    const info = {
+      modo: 'mesa',
+      viewportWidth: Number(vRect.width.toFixed(1)),
+      viewportHeight: Number(vRect.height.toFixed(1)),
+      margem_esquerda: Number(margem_esquerda.toFixed(1)),
+      margem_direita: Number(margem_direita.toFixed(1)),
+      margem_topo: Number(margem_topo.toFixed(1)),
+      margem_base: Number(margem_base.toFixed(1)),
+      diffHorizontalPx: Number(diffH.toFixed(2)),
+      diffVerticalPx: Number(diffV.toFixed(2)),
+      diffHorizontalPct: Number(((diffH / vRect.width) * 100).toFixed(2)),
+      diffVerticalPct: Number(((diffV / vRect.height) * 100).toFixed(2)),
+      criterioMaxPct: 2.0,
+      passou: diffH <= tolH && diffV <= tolV
+    };
+
+    if (typeof window !== 'undefined') window._lastVerificacaoEnquadramento = info;
+    return info;
+  } else {
+    // Modo Seguir
+    const posAtual = state.get().posicao;
+    const tileEl = document.querySelector(`#casa-tile-${posAtual}`) || document.querySelector('.casa-tile.ativa');
+    if (!tileEl) return null;
+    const discEl = tileEl.querySelector('.casa-disco-base') || tileEl;
+    const discRect = discEl.getBoundingClientRect();
+
+    const targetX = vRect.left + vRect.width * 0.50;
+    const targetY = vRect.top + vRect.height * 0.60;
+    const discCenterX = discRect.left + discRect.width / 2;
+    const discCenterY = discRect.top + discRect.height / 2;
+
+    const dx = discCenterX - targetX;
+    const dy = discCenterY - targetY;
+    const distanciaPx = Math.sqrt(dx * dx + dy * dy);
+    const menorDim = Math.min(vRect.width, vRect.height);
+    const distPct = (distanciaPx / menorDim) * 100;
+    const passou = distPct < 3.0;
+
+    const info = {
+      modo: 'seguir',
+      posicao: posAtual,
+      viewportWidth: Number(vRect.width.toFixed(1)),
+      viewportHeight: Number(vRect.height.toFixed(1)),
+      targetX: Number(targetX.toFixed(1)),
+      targetY: Number(targetY.toFixed(1)),
+      discCenterX: Number(discCenterX.toFixed(1)),
+      discCenterY: Number(discCenterY.toFixed(1)),
+      distanciaPx: Number(distanciaPx.toFixed(2)),
+      distanciaPct: Number(distPct.toFixed(2)),
+      criterioMaxPct: 3.0,
+      passou
+    };
+
+    if (typeof window !== 'undefined') window._lastVerificacaoEnquadramento = info;
+    return info;
+  }
+}
+
+export function debugCamera() {
+  return verificarEnquadramento();
+}
+
+if (typeof window !== 'undefined') {
+  window.verificarEnquadramento = verificarEnquadramento;
+  window.debugCamera = debugCamera;
 }
 
 // Anima um passo entre dois nós do grafo com arco parabólico e squash
@@ -982,8 +1196,15 @@ async function animarPassoGrafo(deId, paraId) {
 
   if (!peaoEl || !tileDestino) return;
 
-  Audio.tocarPasso();
-  atualizarCameraParaCasa(paraId, true);
+  try {
+    if (Audio && typeof Audio.tocarPasso === 'function') {
+      Audio.tocarPasso();
+    }
+  } catch (e) {}
+
+  if (modoCameraAtual === 'seguir') {
+    aplicarModoSeguir(paraId, true);
+  }
 
   const prefereReduzido = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if (prefereReduzido || !window.gsap) {
@@ -994,7 +1215,10 @@ async function animarPassoGrafo(deId, paraId) {
   const corpo = peaoEl.querySelector('#peao-corpo');
   const sombra = peaoEl.querySelector('#peao-sombra');
 
-  if (corpo) corpo.className = 'peao-corpo-wrapper dadinho-pulando';
+  if (corpo) {
+    corpo.className = 'peao-corpo-wrapper peao-avatar-wrapper peao-reacao-pulando dadinho-pulando';
+    definirReacaoPeao('pulando');
+  }
 
   await new Promise(resolve => {
     const tl = gsap.timeline({
@@ -1002,7 +1226,8 @@ async function animarPassoGrafo(deId, paraId) {
         tileDestino.appendChild(peaoEl);
         if (corpo) {
           gsap.fromTo(corpo, { scaleY: 0.75, scaleX: 1.25 }, { scaleY: 1, scaleX: 1, duration: 0.25, ease: "bounce.out" });
-          corpo.className = 'peao-corpo-wrapper dadinho-neutro';
+          corpo.className = 'peao-corpo-wrapper peao-avatar-wrapper peao-reacao-neutro dadinho-neutro';
+          definirReacaoPeao('neutro');
         }
         resolve();
       }
@@ -1182,10 +1407,12 @@ function exibirModalCheckpoint(casa, bonus) {
     const fechar = () => {
       modal.classList.remove('ativo');
       btnFechar.removeEventListener('click', fechar);
+      definirReacaoPeao('neutro');
       resolve();
     };
 
     btnFechar.addEventListener('click', fechar);
+    definirReacaoPeao('comemorando');
     modal.classList.add('ativo');
   });
 }

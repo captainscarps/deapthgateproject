@@ -2,6 +2,7 @@
 import { state } from '../state.js';
 import { Api } from '../api.js';
 import { semanaAtual, semanaAnterior } from '../deck.js';
+import { renderAvatarSVG, AVATAR_PADRAO } from '../avatar.js';
 
 let containerRef = null;
 let navigateRef = null;
@@ -233,9 +234,62 @@ function renderListaMinhaArea(listaColaboradores, currentState) {
     `;
   }
 
+  // PÓDIO DOS 3 PRIMEIROS COLOCADOS DA ÁREA COM MINIATURAS CHIBI
+  const top1 = listaColaboradores[0];
+  const top2 = listaColaboradores[1];
+  const top3 = listaColaboradores[2];
+
+  let podioHtml = '';
+  if (top1) {
+    podioHtml = `
+      <div class="ranking-podio-container">
+        <!-- 2º LUGAR (ESQUERDA) -->
+        ${top2 ? `
+          <div class="podio-coluna lugar-2">
+            <div class="podio-miniatura-box">
+              ${renderAvatarSVG(top2.avatar || AVATAR_PADRAO, { modo: 'completo', tamanho: 85 })}
+            </div>
+            <div class="podio-bloco">
+              <span class="podio-numero">2</span>
+              <span class="podio-jogador-nome" title="${top2.jogador_nome}">${top2.jogador_nome}</span>
+              <span class="podio-pontos">${top2.pontos} pts</span>
+            </div>
+          </div>
+        ` : `<div class="podio-coluna" style="opacity: 0.25;"></div>`}
+
+        <!-- 1º LUGAR (CENTRO - MAIS ALTO) -->
+        <div class="podio-coluna lugar-1">
+          <div class="podio-miniatura-box" style="transform: scale(1.08); margin-bottom: -4px;">
+            ${renderAvatarSVG(top1.avatar || AVATAR_PADRAO, { modo: 'completo', reacao: 'comemorando', tamanho: 95 })}
+          </div>
+          <div class="podio-bloco">
+            <span class="podio-numero">1</span>
+            <span class="podio-jogador-nome" title="${top1.jogador_nome}">${top1.jogador_nome}</span>
+            <span class="podio-pontos">${top1.pontos} pts</span>
+          </div>
+        </div>
+
+        <!-- 3º LUGAR (DIREITA) -->
+        ${top3 ? `
+          <div class="podio-coluna lugar-3">
+            <div class="podio-miniatura-box">
+              ${renderAvatarSVG(top3.avatar || AVATAR_PADRAO, { modo: 'completo', tamanho: 75 })}
+            </div>
+            <div class="podio-bloco">
+              <span class="podio-numero">3</span>
+              <span class="podio-jogador-nome" title="${top3.jogador_nome}">${top3.jogador_nome}</span>
+              <span class="podio-pontos">${top3.pontos} pts</span>
+            </div>
+          </div>
+        ` : `<div class="podio-coluna" style="opacity: 0.25;"></div>`}
+      </div>
+    `;
+  }
+
   const cardsHtml = listaColaboradores.map((item, idx) => {
     const pos = item.posicao_area || (idx + 1);
     const ehUsuarioAtual = userNome && item.jogador_nome && item.jogador_nome.trim().toLowerCase() === userNome;
+    const avatarBusto = renderAvatarSVG(item.avatar || AVATAR_PADRAO, { modo: 'busto', tamanho: 42 });
 
     let classePos = 'posicao-outros';
     let iconePos = `${pos}º`;
@@ -247,6 +301,10 @@ function renderListaMinhaArea(listaColaboradores, currentState) {
       <div class="ranking-card ${ehUsuarioAtual ? 'destaque' : ''}">
         <div class="ranking-posicao-badge ${classePos}">
           ${iconePos}
+        </div>
+
+        <div class="avatar-busto-moldura ranking-item" style="width: 42px; height: 42px; flex-shrink: 0; margin: 0 4px;" title="${item.jogador_nome}">
+          ${avatarBusto}
         </div>
 
         <div class="ranking-info">
@@ -272,6 +330,7 @@ function renderListaMinhaArea(listaColaboradores, currentState) {
       📍 Disputa Interna: ${userAreaStr}
     </div>
     ${alertaQuorum}
+    ${podioHtml}
     <div class="ranking-lista">
       ${cardsHtml}
     </div>

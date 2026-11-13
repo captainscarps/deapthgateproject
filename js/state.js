@@ -4,10 +4,12 @@
 import { CONSTANTES, limitarPosicao, verificarCheckpoints, aplicarEfeito, isFimDePartida, calcularPontuacao } from './regras.js';
 import { semanaAtual, gerarTabuleiro, DeckManager, gerarSementeConvidado, GRAFO_PADRAO, gerarTabuleiroGrafo } from './deck.js';
 import { criarRng } from './rng.js';
+import { AVATAR_PADRAO, validarAvatar } from './avatar.js';
 
 const STORAGE_KEYS = {
   JOGADOR: 'trilha_jogador',
-  SESSAO: 'trilha_sessao'
+  SESSAO: 'trilha_sessao',
+  AVATAR_CONVIDADO: 'trilha_avatar_convidado'
 };
 
 class StateManager {
@@ -46,7 +48,11 @@ class StateManager {
       hubEventosSorteados: [],
       
       tutorial_visto: false,
-      termo_privacidade_aceito: false
+      termo_privacidade_aceito: false,
+
+      // Avatar Chibi 3D do Jogador
+      avatar: { ...AVATAR_PADRAO },
+      avatar_configurado: false
     };
 
     // RNG e Deck para a partida atual
@@ -183,6 +189,14 @@ class StateManager {
   }
 
   /**
+   * Atalho para iniciar partida
+   * @param {Object} [params]
+   */
+  iniciarPartida(params = {}) {
+    return this.novaPartida(params);
+  }
+
+  /**
    * Atalho para iniciar partida anônima em Modo Convidado
    * @param {Object} [params]
    */
@@ -229,56 +243,70 @@ class StateManager {
       const visitados = new Set(this.state.checkpoints_passados || []);
       const caminhoPercorrido = [currId];
 
-      while (passos > 0) {
-        const nodo = grafo.casas.find(c => c.id === currId);
-        if (!nodo || !nodo.proximos || nodo.proximos.length === 0) {
-          // Chegou ao fim do grafo (Portal Final / Casa 60)
-          break;
+      if (passos < 0) {
+        // Movimento negativo no grafo (voltar casas)
+        let recuo = Math.abs(passos);
+        while (recuo > 0 && currId > 0) {
+          const preds = grafo.casas.filter(c => c.proximos && c.proximos.includes(currId));
+          if (!preds || preds.length === 0) break;
+          // Prioriza o predecessor com menor distância numérica em relação a currId - 1
+          preds.sort((a, b) => Math.abs(a.id - (currId - 1)) - Math.abs(b.id - (currId - 1)));
+          currId = preds[0].id;
+          caminhoPercorrido.push(currId);
+          recuo--;
         }
-
-        let proxId = null;
-        if (nodo.proximos.length === 1) {
-          proxId = nodo.proximos[0];
-        } else {
-          // Bifurcação!
-          if (caminhoEscolhido !== null && nodo.proximos.includes(caminhoEscolhido)) {
-            proxId = caminhoEscolhido;
-            caminhoEscolhido = null; // consumido
-          } else {
-            // Pausa movimento para o jogador escolher o caminho
-            parouEmBifurcacao = true;
-            bifurcacaoPendente = {
-              noOrigem: currId,
-              passosRestantes: passos,
-              bifurcacao: nodo.bifurcacao
-            };
+      } else {
+        while (passos > 0) {
+          const nodo = grafo.casas.find(c => c.id === currId);
+          if (!nodo || !nodo.proximos || nodo.proximos.length === 0) {
+            // Chegou ao fim do grafo (Portal Final / Casa 60)
             break;
           }
-        }
 
-        currId = proxId;
-        caminhoPercorrido.push(currId);
-        passos--;
+          let proxId = null;
+          if (nodo.proximos.length === 1) {
+            proxId = nodo.proximos[0];
+          } else {
+            // Bifurcação!
+            if (caminhoEscolhido !== null && nodo.proximos.includes(caminhoEscolhido)) {
+              proxId = caminhoEscolhido;
+              caminhoEscolhido = null; // consumido
+            } else {
+              // Pausa movimento para o jogador escolher o caminho
+              parouEmBifurcacao = true;
+              bifurcacaoPendente = {
+                noOrigem: currId,
+                passosRestantes: passos,
+                bifurcacao: nodo.bifurcacao
+              };
+              break;
+            }
+          }
 
-        // Verifica passagem pelo Hub Central (Nó 33)
-        if (currId === 33 && !visitados.has(33)) {
-          hubAtivado = true;
-          visitados.add(33);
-        }
+          currId = proxId;
+          caminhoPercorrido.push(currId);
+          passos--;
 
-        // Verifica checkpoints no grafo (27: CP1, 53: CP2, 60: CP3)
-        if (currId === 27 && !visitados.has(27)) {
-          bonusTokensAcumulado += CONSTANTES.BONUS_CHECKPOINT_1;
-          visitados.add(27);
-        }
-        if (currId === 53 && !visitados.has(53)) {
-          bonusTokensAcumulado += CONSTANTES.BONUS_CHECKPOINT_2;
-          visitados.add(53);
-        }
-        if (currId >= 60 && !visitados.has(60)) {
-          bonusTokensAcumulado += CONSTANTES.BONUS_CHECKPOINT_3;
-          visitados.add(60);
-          break;
+          // Verifica passagem pelo Hub Central (Nó 33)
+          if (currId === 33 && !visitados.has(33)) {
+            hubAtivado = true;
+            visitados.add(33);
+          }
+
+          // Verifica checkpoints no grafo (20: CP1, 40: CP2, 60: CP3 - compatível com 27 e 53)
+          if ((currId === 20 || currId === 27) && !visitados.has(currId)) {
+            bonusTokensAcumulado += CONSTANTES.BONUS_CHECKPOINT_1;
+            visitados.add(currId);
+          }
+          if ((currId === 40 || currId === 53) && !visitados.has(currId)) {
+            bonusTokensAcumulado += CONSTANTES.BONUS_CHECKPOINT_2;
+            visitados.add(currId);
+          }
+          if (currId >= 60 && !visitados.has(60)) {
+            bonusTokensAcumulado += CONSTANTES.BONUS_CHECKPOINT_3;
+            visitados.add(60);
+            break;
+          }
         }
       }
 
@@ -368,7 +396,7 @@ class StateManager {
     if (passosRestantes > 0) {
       return this.mover(passosRestantes, proximoNo);
     }
-    return { novaPosicao: this.state.posicao, bonusTokens: 0, fimDePartida: false };
+    return { novaPosicao: this.state.posicao, caminhoPercorrido: [this.state.posicao], bonusTokens: 0, fimDePartida: false, parouEmBifurcacao: false, bifurcacaoPendente: null, hubAtivado: false };
   }
 
   /**
@@ -476,9 +504,17 @@ class StateManager {
    * Salva dados básicos do jogador e preferências no localStorage
    */
   salvarJogadorLocal(dados = {}) {
-    if (this.state.modo_convidado) return;
     try {
       if (typeof localStorage === 'undefined') return;
+
+      if (this.state.modo_convidado) {
+        // Convidado salva apenas seu avatar localmente no navegador
+        if (this.state.avatar) {
+          localStorage.setItem(STORAGE_KEYS.AVATAR_CONVIDADO, JSON.stringify(this.state.avatar));
+        }
+        return;
+      }
+
       const payload = {
         jogador: dados.jogador ?? this.state.jogador,
         jogador_id: dados.jogador_id ?? this.state.jogador_id,
@@ -486,7 +522,9 @@ class StateManager {
         area_id: dados.area_id ?? this.state.area_id,
         email: dados.email ?? this.state.email,
         tutorial_visto: dados.tutorial_visto ?? this.state.tutorial_visto,
-        termo_privacidade_aceito: dados.termo_privacidade_aceito ?? this.state.termo_privacidade_aceito
+        termo_privacidade_aceito: dados.termo_privacidade_aceito ?? this.state.termo_privacidade_aceito,
+        avatar: dados.avatar ?? this.state.avatar,
+        avatar_configurado: dados.avatar_configurado ?? this.state.avatar_configurado
       };
       localStorage.setItem(STORAGE_KEYS.JOGADOR, JSON.stringify(payload));
     } catch (e) {
@@ -501,10 +539,24 @@ class StateManager {
   carregarJogadorLocal() {
     try {
       if (typeof localStorage === 'undefined') return false;
+
+      // Carrega avatar de convidado se existir
+      const rawConv = localStorage.getItem(STORAGE_KEYS.AVATAR_CONVIDADO);
+      if (rawConv) {
+        try {
+          const parsedConv = JSON.parse(rawConv);
+          const vConv = validarAvatar(parsedConv);
+          if (vConv.valido) {
+            this.state.avatar = vConv.normalizado;
+          }
+        } catch (_) {}
+      }
+
       const raw = localStorage.getItem(STORAGE_KEYS.JOGADOR);
       if (!raw) return false;
       const parsed = JSON.parse(raw);
       if (parsed && typeof parsed === 'object') {
+        const vAvatar = validarAvatar(parsed.avatar);
         this.state = {
           ...this.state,
           jogador: parsed.jogador || this.state.jogador,
@@ -513,7 +565,9 @@ class StateManager {
           area_id: parsed.area_id ?? this.state.area_id,
           email: parsed.email || this.state.email,
           tutorial_visto: !!parsed.tutorial_visto,
-          termo_privacidade_aceito: !!parsed.termo_privacidade_aceito
+          termo_privacidade_aceito: !!parsed.termo_privacidade_aceito,
+          avatar: vAvatar.valido ? vAvatar.normalizado : this.state.avatar,
+          avatar_configurado: !!parsed.avatar_configurado
         };
         return true;
       }

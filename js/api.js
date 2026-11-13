@@ -4,6 +4,7 @@
 import { SUPABASE_URL, SUPABASE_ANON_KEY } from './config.js';
 import { semanaAtual } from './deck.js';
 import { calcularPontuacao } from './regras.js';
+import { AVATAR_PADRAO, validarAvatar, gerarAvatarAleatorio } from './avatar.js';
 
 const STORAGE_KEYS = {
   FILA_OFFLINE: 'trilha_fila_partidas_offline',
@@ -348,7 +349,7 @@ export const Api = {
     try {
       const { data, error } = await this.client
         .from('jogadores')
-        .select('id, user_id, nome, area_id, email, areas ( id, sigla, nome )')
+        .select('id, user_id, nome, area_id, email, avatar, areas ( id, sigla, nome )')
         .eq('user_id', userId)
         .maybeSingle();
 
@@ -363,21 +364,23 @@ export const Api = {
   },
 
   /**
-   * Cria o perfil do colaborador (1º acesso) com nome e área travada
-   * @param {{ userId: string, nome: string, areaId: number, email: string }} params
+   * Cria o perfil do colaborador (1º acesso) com nome, área travada e avatar
+   * @param {{ userId: string, nome: string, areaId: number, email: string, avatar?: Object }} params
    */
-  async criarPerfil(paramsOuUserId, nomeArg, areaIdArg, emailArg) {
-    let userId, nome, areaId, email;
+  async criarPerfil(paramsOuUserId, nomeArg, areaIdArg, emailArg, avatarArg) {
+    let userId, nome, areaId, email, avatar;
     if (paramsOuUserId && typeof paramsOuUserId === 'object') {
       userId = paramsOuUserId.userId;
       nome = paramsOuUserId.nome;
       areaId = paramsOuUserId.areaId;
       email = paramsOuUserId.email;
+      avatar = paramsOuUserId.avatar || AVATAR_PADRAO;
     } else {
       userId = paramsOuUserId;
       nome = nomeArg;
       areaId = areaIdArg;
       email = emailArg;
+      avatar = avatarArg || AVATAR_PADRAO;
     }
 
     if (!email) {
@@ -388,6 +391,9 @@ export const Api = {
       throw new Error('E-mail institucional inválido.');
     }
 
+    const valAv = validarAvatar(avatar);
+    const avatarFinal = valAv.valido ? valAv.normalizado : AVATAR_PADRAO;
+
     if (this.modoMock || !this.client) {
       const areas = await this.carregarAreas();
       const areaObj = areas.find(a => a.id === Number(areaId)) || areas[0];
@@ -397,6 +403,7 @@ export const Api = {
         nome: nome.trim(),
         area_id: Number(areaId),
         email: email.trim().toLowerCase(),
+        avatar: avatarFinal,
         areas: areaObj
       };
       storageSet('trilha_jogador_perfil', JSON.stringify(perfilMock));
@@ -409,15 +416,59 @@ export const Api = {
         user_id: userId,
         nome: nome.trim(),
         area_id: Number(areaId),
-        email: email.trim().toLowerCase()
+        email: email.trim().toLowerCase(),
+        avatar: avatarFinal
       })
-      .select('id, user_id, nome, area_id, email, areas ( id, sigla, nome )')
+      .select('id, user_id, nome, area_id, email, avatar, areas ( id, sigla, nome )')
       .single();
 
     if (error) {
       throw new Error('Erro ao salvar perfil no banco: ' + error.message);
     }
     return data;
+  },
+
+  /**
+   * Atualiza nome e/ou avatar do colaborador (RLS: área continua travada)
+   * @param {{ userId: string, nome?: string, avatar?: Object }} params
+   */
+  async atualizarPerfil({ userId, nome, avatar }) {
+    if (!userId) return { sucesso: false, erro: 'User ID não informado' };
+
+    const updates = {};
+    if (nome) updates.nome = nome.trim();
+    if (avatar) {
+      const val = validarAvatar(avatar);
+      if (val.valido) updates.avatar = val.normalizado;
+    }
+
+    if (this.modoMock || !this.client) {
+      try {
+        const raw = storageGet('trilha_jogador_perfil');
+        let perfil = raw ? JSON.parse(raw) : {};
+        perfil = { ...perfil, ...updates };
+        storageSet('trilha_jogador_perfil', JSON.stringify(perfil));
+        return { sucesso: true, perfil };
+      } catch (e) {
+        return { sucesso: false, erro: e.message };
+      }
+    }
+
+    try {
+      const { data, error } = await this.client
+        .from('jogadores')
+        .update(updates)
+        .eq('user_id', userId)
+        .select('id, user_id, nome, area_id, email, avatar, areas ( id, sigla, nome )')
+        .single();
+
+      if (error) {
+        return { sucesso: false, erro: error.message };
+      }
+      return { sucesso: true, perfil: data };
+    } catch (e) {
+      return { sucesso: false, erro: e.message };
+    }
   },
 
   // ============================================================================
@@ -838,39 +889,39 @@ export const Api = {
     // Simula pequena latência de consulta (200ms)
     await new Promise(r => setTimeout(r, 200));
 
-    // MOCK REALISTA: Dados por área
+    // MOCK REALISTA: Dados por área com avatares chibi individuais
     const MOCK_POR_AREA = {
       1: [ // TI
-        { posicao_area: 1, jogador_nome: "Rafael Scarpille", area_sigla: "TI", area_nome: "Tecnologia da Informação & BI", pontos: 510, acertos: 2 },
-        { posicao_area: 2, jogador_nome: "Mariana Souza", area_sigla: "TI", area_nome: "Tecnologia da Informação & BI", pontos: 490, acertos: 2 },
-        { posicao_area: 3, jogador_nome: "Carlos Eduardo", area_sigla: "TI", area_nome: "Tecnologia da Informação & BI", pontos: 456, acertos: 1 },
-        { posicao_area: 4, jogador_nome: "Aline Ferreira", area_sigla: "TI", area_nome: "Tecnologia da Informação & BI", pontos: 410, acertos: 1 },
-        { posicao_area: 5, jogador_nome: "Thiago Alcântara", area_sigla: "TI", area_nome: "Tecnologia da Informação & BI", pontos: 390, acertos: 0 }
+        { posicao_area: 1, jogador_nome: "Rafael Scarpille", area_sigla: "TI", area_nome: "Tecnologia da Informação & BI", pontos: 510, acertos: 2, avatar: { v: 1, corpo: "m", pele: 3, roupa: "blazer", cor_roupa: "navy", cabelo: "curto", cor_cabelo: "castanho_escuro", barba: "nenhum", rosto: "oculos_grau", cabeca: "nenhum", item: "cracha", mobilidade: "nenhum", expressao: "sorriso" } },
+        { posicao_area: 2, jogador_nome: "Mariana Souza", area_sigla: "TI", area_nome: "Tecnologia da Informação & BI", pontos: 490, acertos: 2, avatar: { v: 1, corpo: "f", pele: 4, roupa: "tailleur", cor_roupa: "ciano", cabelo: "cacheado", cor_cabelo: "preto", barba: "nenhum", rosto: "nenhum", cabeca: "nenhum", item: "notebook", mobilidade: "nenhum", expressao: "confiante" } },
+        { posicao_area: 3, jogador_nome: "Carlos Eduardo", area_sigla: "TI", area_nome: "Tecnologia da Informação & BI", pontos: 456, acertos: 1, avatar: { v: 1, corpo: "m", pele: 5, roupa: "polo_ss", cor_roupa: "navy", cabelo: "crespo_black", cor_cabelo: "preto", barba: "cavanhaque", rosto: "nenhum", cabeca: "bone_ss", item: "tablet_grafico", mobilidade: "nenhum", expressao: "animado" } },
+        { posicao_area: 4, jogador_nome: "Aline Ferreira", area_sigla: "TI", area_nome: "Tecnologia da Informação & BI", pontos: 410, acertos: 1, avatar: { v: 1, corpo: "f", pele: 2, roupa: "camisa_social", cor_roupa: "branco", cabelo: "liso_medio", cor_cabelo: "ruivo", barba: "nenhum", rosto: "oculos_leitura", cabeca: "nenhum", item: "prancheta", mobilidade: "nenhum", expressao: "concentrado" } },
+        { posicao_area: 5, jogador_nome: "Thiago Alcântara", area_sigla: "TI", area_nome: "Tecnologia da Informação & BI", pontos: 390, acertos: 0, avatar: { v: 1, corpo: "m", pele: 6, roupa: "colete", cor_roupa: "cinza", cabelo: "dreads", cor_cabelo: "preto", barba: "curta", rosto: "nenhum", cabeca: "fone_ouvido", item: "caneca_cafe", mobilidade: "cadeira_rodas", expressao: "sorriso" } }
       ],
       2: [ // JUR
-        { posicao_area: 1, jogador_nome: "Dra. Patrícia Lima", area_sigla: "JUR", area_nome: "Jurídico, Compliance & LGPD", pontos: 495, acertos: 2 },
-        { posicao_area: 2, jogador_nome: "Dr. Lucas Mendes", area_sigla: "JUR", area_nome: "Jurídico, Compliance & LGPD", pontos: 460, acertos: 2 },
-        { posicao_area: 3, jogador_nome: "Fernando Rocha", area_sigla: "JUR", area_nome: "Jurídico, Compliance & LGPD", pontos: 425, acertos: 1 },
-        { posicao_area: 4, jogador_nome: "Beatriz Nogueira", area_sigla: "JUR", area_nome: "Jurídico, Compliance & LGPD", pontos: 400, acertos: 1 }
+        { posicao_area: 1, jogador_nome: "Dra. Patrícia Lima", area_sigla: "JUR", area_nome: "Jurídico, Compliance & LGPD", pontos: 495, acertos: 2, avatar: { v: 1, corpo: "f", pele: 3, roupa: "blazer", cor_roupa: "vinho", cabelo: "coque", cor_cabelo: "castanho_medio", barba: "nenhum", rosto: "oculos_grau", cabeca: "nenhum", item: "mala_ss", mobilidade: "nenhum", expressao: "confiante" } },
+        { posicao_area: 2, jogador_nome: "Dr. Lucas Mendes", area_sigla: "JUR", area_nome: "Jurídico, Compliance & LGPD", pontos: 460, acertos: 2, avatar: { v: 1, corpo: "m", pele: 2, roupa: "terno", cor_roupa: "preto", cabelo: "curto", cor_cabelo: "grisalho", barba: "bigode", rosto: "monoculo", cabeca: "nenhum", item: "cracha", mobilidade: "nenhum", expressao: "concentrado" } },
+        { posicao_area: 3, jogador_nome: "Fernando Rocha", area_sigla: "JUR", area_nome: "Jurídico, Compliance & LGPD", pontos: 425, acertos: 1, avatar: { v: 1, corpo: "m", pele: 4, roupa: "camisa_social", cor_roupa: "navy", cabelo: "raspado", cor_cabelo: "preto", barba: "cheia", rosto: "nenhum", cabeca: "nenhum", item: "notebook", mobilidade: "nenhum", expressao: "animado" } },
+        { posicao_area: 4, jogador_nome: "Beatriz Nogueira", area_sigla: "JUR", area_nome: "Jurídico, Compliance & LGPD", pontos: 400, acertos: 1, avatar: { v: 1, corpo: "f", pele: 1, roupa: "tailleur", cor_roupa: "navy", cabelo: "longo", cor_cabelo: "castanho_escuro", barba: "nenhum", rosto: "nenhum", cabeca: "nenhum", item: "prancheta", mobilidade: "nenhum", expressao: "sorriso" } }
       ],
       3: [ // RH
-        { posicao_area: 1, jogador_nome: "Juliana Martins", area_sigla: "RH", area_nome: "Gestão de Pessoas", pontos: 450, acertos: 2 },
-        { posicao_area: 2, jogador_nome: "Rodrigo Silveira", area_sigla: "RH", area_nome: "Gestão de Pessoas", pontos: 420, acertos: 1 },
-        { posicao_area: 3, jogador_nome: "Camila Albuquerque", area_sigla: "RH", area_nome: "Gestão de Pessoas", pontos: 390, acertos: 0 }
+        { posicao_area: 1, jogador_nome: "Juliana Martins", area_sigla: "RH", area_nome: "Gestão de Pessoas", pontos: 450, acertos: 2, avatar: { v: 1, corpo: "f", pele: 7, roupa: "polo_ss", cor_roupa: "ciano", cabelo: "trancas", cor_cabelo: "preto", barba: "nenhum", rosto: "nenhum", cabeca: "lenco_turbante", item: "prancheta", mobilidade: "nenhum", expressao: "sorriso" } },
+        { posicao_area: 2, jogador_nome: "Rodrigo Silveira", area_sigla: "RH", area_nome: "Gestão de Pessoas", pontos: 420, acertos: 1, avatar: { v: 1, corpo: "m", pele: 3, roupa: "blazer", cor_roupa: "cinza", cabelo: "liso_medio", cor_cabelo: "castanho_medio", barba: "cavanhaque", rosto: "oculos_grau", cabeca: "nenhum", item: "cracha", mobilidade: "nenhum", expressao: "confiante" } },
+        { posicao_area: 3, jogador_nome: "Camila Albuquerque", area_sigla: "RH", area_nome: "Gestão de Pessoas", pontos: 390, acertos: 0, avatar: { v: 1, corpo: "f", pele: 2, roupa: "camisa_social", cor_roupa: "branco", cabelo: "franja", cor_cabelo: "ruivo", barba: "nenhum", rosto: "nenhum", cabeca: "nenhum", item: "caneca_cafe", mobilidade: "nenhum", expressao: "animado" } }
       ],
-      4: [ // OPE (Vazio de propósito para testar estado vazio)
+      4: [ // OPE
       ],
-      5: [ // SAU (2 jogadores - menos de 3, dispara aviso de quórum!)
-        { posicao_area: 1, jogador_nome: "Dr. Arnaldo Silva", area_sigla: "SAU", area_nome: "Saúde & Odontologia", pontos: 430, acertos: 1 },
-        { posicao_area: 2, jogador_nome: "Dra. Beatriz Neves", area_sigla: "SAU", area_nome: "Saúde & Odontologia", pontos: 410, acertos: 1 }
+      5: [ // SAU
+        { posicao_area: 1, jogador_nome: "Dr. Arnaldo Silva", area_sigla: "SAU", area_nome: "Saúde & Odontologia", pontos: 430, acertos: 1, avatar: { v: 1, corpo: "m", pele: 4, roupa: "jaleco", cor_roupa: "branco", cabelo: "curto", cor_cabelo: "grisalho", barba: "curta", rosto: "oculos_grau", cabeca: "nenhum", item: "prancheta", mobilidade: "nenhum", expressao: "confiante" } },
+        { posicao_area: 2, jogador_nome: "Dra. Beatriz Neves", area_sigla: "SAU", area_nome: "Saúde & Odontologia", pontos: 410, acertos: 1, avatar: { v: 1, corpo: "f", pele: 3, roupa: "jaleco", cor_roupa: "branco", cabelo: "rabo_cavalo", cor_cabelo: "loiro", barba: "nenhum", rosto: "nenhum", cabeca: "nenhum", item: "cracha", mobilidade: "nenhum", expressao: "sorriso" } }
       ],
-      6: [ // EDU (1 jogador - menos de 3, dispara aviso de quórum!)
-        { posicao_area: 1, jogador_nome: "Profª Carmen Lúcia", area_sigla: "EDU", area_nome: "Educação & Formação Profissional", pontos: 460, acertos: 2 }
+      6: [ // EDU
+        { posicao_area: 1, jogador_nome: "Profª Carmen Lúcia", area_sigla: "EDU", area_nome: "Educação & Formação Profissional", pontos: 460, acertos: 2, avatar: { v: 1, corpo: "f", pele: 5, roupa: "blazer", cor_roupa: "cinza", cabelo: "franja", cor_cabelo: "castanho_escuro", barba: "nenhum", rosto: "oculos_leitura", cabeca: "nenhum", item: "tablet_grafico", mobilidade: "nenhum", expressao: "animado" } }
       ],
       7: [ // ADM
-        { posicao_area: 1, jogador_nome: "Marcelo Tavares", area_sigla: "ADM", area_nome: "Administrativo & Financeiro", pontos: 465, acertos: 2 },
-        { posicao_area: 2, jogador_nome: "Vanessa Ramos", area_sigla: "ADM", area_nome: "Administrativo & Financeiro", pontos: 440, acertos: 1 },
-        { posicao_area: 3, jogador_nome: "Bruno Carvalho", area_sigla: "ADM", area_nome: "Administrativo & Financeiro", pontos: 421, acertos: 1 }
+        { posicao_area: 1, jogador_nome: "Marcelo Tavares", area_sigla: "ADM", area_nome: "Administrativo & Financeiro", pontos: 465, acertos: 2, avatar: { v: 1, corpo: "m", pele: 4, roupa: "terno", cor_roupa: "navy", cabelo: "curto", cor_cabelo: "preto", barba: "por_fazer", rosto: "oculos_grau", cabeca: "nenhum", item: "mala_ss", mobilidade: "nenhum", expressao: "confiante" } },
+        { posicao_area: 2, jogador_nome: "Vanessa Ramos", area_sigla: "ADM", area_nome: "Administrativo & Financeiro", pontos: 440, acertos: 1, avatar: { v: 1, corpo: "f", pele: 2, roupa: "tailleur", cor_roupa: "preto", cabelo: "coque", cor_cabelo: "castanho_escuro", barba: "nenhum", rosto: "nenhum", cabeca: "nenhum", item: "notebook", mobilidade: "nenhum", expressao: "sorriso" } },
+        { posicao_area: 3, jogador_nome: "Bruno Carvalho", area_sigla: "ADM", area_nome: "Administrativo & Financeiro", pontos: 421, acertos: 1, avatar: { v: 1, corpo: "m", pele: 5, roupa: "macacao", cor_roupa: "navy", cabelo: "raspado", cor_cabelo: "preto", barba: "cavanhaque", rosto: "nenhum", cabeca: "capacete_seguranca", item: "prancheta", mobilidade: "nenhum", expressao: "animado" } }
       ]
     };
 

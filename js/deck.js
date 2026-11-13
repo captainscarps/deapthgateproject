@@ -89,10 +89,44 @@ export async function carregarCartas(urlRemota = null) {
     }
   }
 
-  // Fallback local garantido
-  const respLocal = await fetch('data/cartas_fallback.json');
-  const dadosLocal = await respLocal.json();
-  return (Array.isArray(dadosLocal) ? dadosLocal : []).filter(validarCarta);
+  // Fallback local garantido com proteção contra falha de fetch
+  try {
+    const respLocal = await fetch('data/cartas_fallback.json');
+    if (respLocal.ok) {
+      const dadosLocal = await respLocal.json();
+      const validas = (Array.isArray(dadosLocal) ? dadosLocal : []).filter(validarCarta);
+      if (validas.length > 0) return validas;
+    }
+    console.warn('[deck.js] Falha ao carregar data/cartas_fallback.json via HTTP, usando cartas embutidas.');
+  } catch (e) {
+    console.warn('[deck.js] Erro ao carregar data/cartas_fallback.json, usando cartas embutidas:', e);
+  }
+
+  // Fallback mínimo embutido para contingência total
+  return [
+    {
+      id: "FB_01",
+      categoria: "boa_pratica",
+      tema: "Privacidade",
+      texto: "Ao tratar dados de colaboradores no SEST SENAT, utilize sempre ferramentas autorizadas e preserve o sigilo.",
+      opcoes: [
+        { texto: "Utilizar ferramentas corporativas homologadas", correta: true, tokens: 2 },
+        { texto: "Enviar dados para e-mail pessoal não autorizado", correta: false, tokens: -2 }
+      ],
+      explicacao: "Ferramentas corporativas garantem a conformidade com as diretrizes da LGPD."
+    },
+    {
+      id: "FB_02",
+      categoria: "desafio",
+      tema: "Segurança da Informação",
+      texto: "Você recebeu um e-mail com anexo suspeito solicitando credenciais corporativas. Qual a conduta correta?",
+      opcoes: [
+        { texto: "Reportar imediatamente à equipe de TI/Segurança", correta: true, tokens: 3 },
+        { texto: "Abrir o anexo para conferir o remetente", correta: false, tokens: -3 }
+      ],
+      explicacao: "Phishing e anexos suspeitos devem ser reportados à TI imediatamente sem abertura."
+    }
+  ];
 }
 
 /**
@@ -206,6 +240,20 @@ export function gerarTabuleiro(semanaOuRng = semanaAtual(), cartasPorCategoria =
 }
 
 let grafoCache = null;
+/**
+ * Retorna as coordenadas {x, y} no plano do tabuleiro (centro da célula na grade de 80x80)
+ * Fonte Única de Verdade para casas, faixas, setas, placas, peão e câmera.
+ * @param {{ col?: number, row?: number, x?: number, y?: number }} casa
+ * @returns {{ x: number, y: number }}
+ */
+export function centroCasa(casa) {
+  if (!casa) return { x: 0, y: 0 };
+  const tam = 80;
+  const x = typeof casa.col === 'number' ? casa.col * tam + tam / 2 : (casa.x ?? 0);
+  const y = typeof casa.row === 'number' ? casa.row * tam + tam / 2 : (casa.y ?? 0);
+  return { x, y };
+}
+
 
 // Grafo padrão do tabuleiro diorama (61 nós: 0 a 60, com 2 bifurcações pedagógicas, Hub Central e Checkpoints)
 export const GRAFO_PADRAO = {
@@ -1314,10 +1362,12 @@ export async function carregarGrafoTabuleiro() {
       grafoCache = await res.json();
       return grafoCache;
     }
+    console.warn('[deck.js] Falha HTTP ao carregar data/tabuleiro.json (' + res.status + '), usando GRAFO_PADRAO');
   } catch (e) {
-    console.warn("[deck.js] Erro ao carregar data/tabuleiro.json:", e);
+    console.warn('[deck.js] Erro ao carregar data/tabuleiro.json, usando GRAFO_PADRAO:', e);
   }
-  return null;
+  grafoCache = GRAFO_PADRAO;
+  return grafoCache;
 }
 
 /**
@@ -1338,7 +1388,8 @@ export function gerarTabuleiroGrafo(semanaOuRng = semanaAtual(), grafoJson = nul
     ? semanaOuRng
     : criarRng(typeof semanaOuRng === 'string' ? `${semanaOuRng}_cartas` : semanaOuRng);
 
-  const casas = (grafoJson && Array.isArray(grafoJson.casas)) ? grafoJson.casas : [];
+  const baseGrafo = (grafoJson && Array.isArray(grafoJson.casas)) ? grafoJson : GRAFO_PADRAO;
+  const casas = (baseGrafo && Array.isArray(baseGrafo.casas)) ? baseGrafo.casas : [];
   const categorias = {};
 
   // 1. Preenche nós com tipo fixo pré-determinado

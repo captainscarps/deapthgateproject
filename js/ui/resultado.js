@@ -1,6 +1,7 @@
 // js/ui/resultado.js - Tela de Resultado, Homologação e Checklist Pense Antes
 import { state } from '../state.js';
 import { Api } from '../api.js';
+import { renderAvatarSVG, AVATAR_PADRAO } from '../avatar.js';
 
 let containerRef = null;
 let navigateRef = null;
@@ -36,6 +37,13 @@ export function render(currentState) {
           <p style="color: var(--gold); font-size: 1.05rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">
             Guardião dos Dados
           </p>
+
+          <!-- AVATAR CHIBI COMEMORANDO A VITÓRIA -->
+          <div style="display: flex; justify-content: center; align-items: center; margin: 12px 0 6px;">
+            <div class="avatar-podio-box" style="width: 100px; height: 115px; margin: 0 auto;" title="Seu Personagem Comemorando!">
+              ${renderAvatarSVG(currentState.avatar || AVATAR_PADRAO, { modo: 'completo', reacao: 'comemorando', tamanho: 100 })}
+            </div>
+          </div>
 
           <!-- CONTADOR DE PONTUAÇÃO ANIMADO -->
           <div class="pontos-contador-box">

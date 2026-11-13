@@ -4,6 +4,8 @@ import { semanaAtual, carregarCartas } from '../deck.js';
 import { Api } from '../api.js';
 import { abrirModalPrivacidade } from './privacidade.js';
 import { abrirModalTutorial } from './tutorial.js';
+import { renderAvatarSVG, AVATAR_PADRAO, gerarAvatarAleatorio } from '../avatar.js';
+import { abrirCriadorAvatar } from './avatar_criador.js';
 
 let containerRef = null;
 let navigateRef = null;
@@ -145,7 +147,25 @@ export function render(currentState) {
                   Trilha gerada com desafios aleatórios a cada partida. Ideal para praticar sem registrar pontuação no ranking.
                 </p>
 
-                <div class="form-group" style="margin-top: 14px;">
+                <!-- PREVIEW DO PERSONAGEM DO CONVIDADO -->
+                <div style="display: flex; align-items: center; gap: 12px; margin-top: 12px; background: rgba(5, 16, 31, 0.6); padding: 10px; border-radius: 8px; border: 1px solid var(--navy-card);">
+                  <div class="avatar-busto-moldura" style="width: 58px; height: 58px; flex-shrink: 0;" title="Miniatura do Convidado">
+                    ${renderAvatarSVG(currentState.avatar || AVATAR_PADRAO, { modo: 'busto', tamanho: 58 })}
+                  </div>
+                  <div style="flex: 1; display: flex; flex-direction: column; gap: 6px;">
+                    <div style="font-size: 0.82rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Seu Avatar Chibi 3D</div>
+                    <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                      <button id="btn-avatar-aleatorio-convidado" type="button" class="btn btn-secondary btn-sm" style="font-size: 0.78rem; padding: 4px 8px;">
+                        🎲 Aleatório
+                      </button>
+                      <button id="btn-customizar-avatar-convidado" type="button" class="btn btn-outline btn-sm" style="font-size: 0.78rem; padding: 4px 8px;">
+                        🎨 Personalizar
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-group" style="margin-top: 12px;">
                   <label class="form-label" for="select-area-convidado">Sua Área de Atuação (Opcional)</label>
                   <select id="select-area-convidado" class="form-select">
                     <option value="">Carregando áreas...</option>
@@ -186,25 +206,32 @@ export function render(currentState) {
 }
 
 function renderCardAutenticado(currentState, valeRanking) {
+  const avatarSvg = renderAvatarSVG(currentState.avatar || AVATAR_PADRAO, { modo: 'busto', tamanho: 72 });
   return `
-    <div class="colaborador-header">
-      <div>
-        <div style="font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase;">Colaborador Conectado</div>
-        <div class="colaborador-nome">${currentState.jogador}</div>
+    <div class="colaborador-header" style="align-items: center; gap: 12px;">
+      <div class="avatar-busto-moldura grande" style="width: 72px; height: 72px; flex-shrink: 0;" title="Seu Personagem">
+        ${avatarSvg}
+      </div>
+      <div style="flex: 1; min-width: 0;">
+        <div style="font-size: 0.82rem; color: var(--text-muted); text-transform: uppercase;">Colaborador Conectado</div>
+        <div class="colaborador-nome" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${currentState.jogador}</div>
+        <button id="btn-editar-avatar" class="btn btn-outline btn-sm" style="margin-top: 4px; padding: 3px 8px; font-size: 0.78rem;">
+          🎨 Personalizar Personagem
+        </button>
       </div>
       <button id="btn-logout" class="btn btn-secondary btn-sm" title="Desconectar sessão">
-        Sair / Trocar
+        Sair
       </button>
     </div>
 
-    <div class="colaborador-area-lock">
+    <div class="colaborador-area-lock" style="margin-top: 10px;">
       <span class="badge badge-area">
         🏛️ ${currentState.area}
       </span>
       <span class="lock-icon" title="Área vinculada ao perfil institucional">🔒 Área Fixada</span>
     </div>
 
-    <div style="font-size: 0.9rem; color: var(--text-dim); margin-top: 2px;">
+    <div style="font-size: 0.88rem; color: var(--text-dim); margin-top: 2px;">
       ${currentState.email}
     </div>
 
@@ -504,33 +531,45 @@ function atribuirEventos(container) {
       const areaSigla = opt ? opt.dataset.sigla : 'TI';
       const areaNome = opt ? opt.dataset.nome : 'Tecnologia da Informação';
       const areaIdNum = parseInt(areaId, 10);
-
       const userId = 'user_mock_' + fluxoAuth.emailDigitado.replace(/[^a-z0-9]/g, '_');
-      const salvouRemoto = await Api.criarPerfil({
-        userId,
-        nome,
-        areaId: areaIdNum,
-        email: fluxoAuth.emailDigitado
-      });
-      if (salvouRemoto && !salvouRemoto.sucesso && salvouRemoto.erro) {
-        fluxoAuth.erro = salvouRemoto.erro;
-        reRender();
-        return;
-      }
 
-      state.set({
-        jogador: nome,
-        email: fluxoAuth.emailDigitado,
-        area: `${areaSigla} - ${areaNome}`,
-        area_id: areaIdNum,
-        modo_convidado: false
-      });
-      state.salvarJogadorLocal();
+      // Abre o criador de personagem antes de finalizar o primeiro acesso
+      abrirCriadorAvatar({
+        avatarInicial: state.get().avatar || AVATAR_PADRAO,
+        nomeJogador: nome,
+        salvarRemoto: false,
+        onSalvar: async (avatarCriado) => {
+          state.salvarAvatar(avatarCriado);
 
-      fluxoAuth.etapa = 'logado';
-      fluxoAuth.erro = '';
-      fluxoAuth.info = '';
-      reRender();
+          const salvouRemoto = await Api.criarPerfil({
+            userId,
+            nome,
+            areaId: areaIdNum,
+            email: fluxoAuth.emailDigitado,
+            avatar: avatarCriado
+          });
+          if (salvouRemoto && !salvouRemoto.sucesso && salvouRemoto.erro) {
+            fluxoAuth.erro = salvouRemoto.erro;
+            reRender();
+            return;
+          }
+
+          state.set({
+            jogador: nome,
+            email: fluxoAuth.emailDigitado,
+            area: `${areaSigla} - ${areaNome}`,
+            area_id: areaIdNum,
+            modo_convidado: false,
+            avatar: avatarCriado
+          });
+          state.salvarJogadorLocal();
+
+          fluxoAuth.etapa = 'logado';
+          fluxoAuth.erro = '';
+          fluxoAuth.info = 'Perfil registrado e personagem salvo com sucesso!';
+          reRender();
+        }
+      });
     };
   }
 
@@ -557,6 +596,48 @@ function atribuirEventos(container) {
         info: 'Sessão encerrada com sucesso.'
       };
       reRender();
+    };
+  }
+
+  // F2. Ações de Personalização de Personagem (Avatar)
+  const btnEditarAvatar = container.querySelector('#btn-editar-avatar');
+  if (btnEditarAvatar) {
+    btnEditarAvatar.onclick = () => {
+      const cur = state.get();
+      abrirCriadorAvatar({
+        avatarInicial: cur.avatar || AVATAR_PADRAO,
+        nomeJogador: cur.jogador,
+        salvarRemoto: true,
+        onSalvar: (novoAvatar) => {
+          state.salvarAvatar(novoAvatar);
+          reRender();
+        }
+      });
+    };
+  }
+
+  const btnAvatarAleatorioConvidado = container.querySelector('#btn-avatar-aleatorio-convidado');
+  if (btnAvatarAleatorioConvidado) {
+    btnAvatarAleatorioConvidado.onclick = () => {
+      const randAvatar = gerarAvatarAleatorio();
+      state.salvarAvatar(randAvatar);
+      reRender();
+    };
+  }
+
+  const btnCustomizarAvatarConvidado = container.querySelector('#btn-customizar-avatar-convidado');
+  if (btnCustomizarAvatarConvidado) {
+    btnCustomizarAvatarConvidado.onclick = () => {
+      const cur = state.get();
+      abrirCriadorAvatar({
+        avatarInicial: cur.avatar || AVATAR_PADRAO,
+        nomeJogador: cur.jogador || 'Convidado',
+        salvarRemoto: false,
+        onSalvar: (novoAvatar) => {
+          state.salvarAvatar(novoAvatar);
+          reRender();
+        }
+      });
     };
   }
 

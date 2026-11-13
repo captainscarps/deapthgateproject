@@ -49,11 +49,36 @@ CREATE TABLE IF NOT EXISTS public.jogadores (
     nome TEXT NOT NULL,
     area_id INT NOT NULL REFERENCES public.areas(id) ON DELETE RESTRICT,
     email TEXT NOT NULL CHECK (email ILIKE '%@sestsenat.org.br'),
+    avatar JSONB DEFAULT NULL,
     criado_em TIMESTAMPTZ NOT NULL DEFAULT timezone('utc'::text, now()),
     atualizado_em TIMESTAMPTZ NOT NULL DEFAULT timezone('utc'::text, now())
 );
 
 CREATE INDEX IF NOT EXISTS idx_jogadores_user_id ON public.jogadores(user_id);
+
+-- TRIGGER: VALIDAÇÃO DO AVATAR CHIBI (Schema JSON versão 1 e tamanho máximo seguro)
+CREATE OR REPLACE FUNCTION public.validar_avatar_jogador()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+SET search_path = public
+AS $$
+BEGIN
+    IF NEW.avatar IS NOT NULL THEN
+        IF (NEW.avatar->>'v') IS NULL OR (NEW.avatar->>'v') <> '1' THEN
+            RAISE EXCEPTION 'Versão de avatar inválida (esperado v=1)';
+        END IF;
+        IF length(NEW.avatar::text) > 1000 THEN
+            RAISE EXCEPTION 'Payload do avatar excede limite máximo permitido (1000 caracteres)';
+        END IF;
+    END IF;
+    RETURN NEW;
+END;
+$$;
+
+DROP TRIGGER IF EXISTS trg_validar_avatar ON public.jogadores;
+CREATE TRIGGER trg_validar_avatar
+BEFORE INSERT OR UPDATE ON public.jogadores
+FOR EACH ROW EXECUTE FUNCTION public.validar_avatar_jogador();
 
 -- TRIGGER: TRAVAR ÁREA INSTITUCIONAL APÓS DEFINIDA
 CREATE OR REPLACE FUNCTION public.impedir_alteracao_area()
@@ -186,7 +211,8 @@ RETURNS TABLE (
     area_sigla VARCHAR(10),
     area_nome VARCHAR(100),
     pontos INT,
-    acertos INT
+    acertos INT,
+    avatar JSONB
 )
 LANGUAGE sql
 SECURITY DEFINER
@@ -199,7 +225,8 @@ AS $$
         a.sigla AS area_sigla,
         a.nome AS area_nome,
         p.pontos,
-        p.acertos
+        p.acertos,
+        j.avatar
     FROM public.partidas p
     INNER JOIN public.jogadores j ON j.id = p.jogador_id
     INNER JOIN public.areas a ON a.id = p.area_id

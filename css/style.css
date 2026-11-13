@@ -33,10 +33,12 @@
   --font-body: 'Barlow', -apple-system, sans-serif;
   --min-touch: 44px;
 
-  /* Câmera Diorama 2.5D por Breakpoint */
-  --incl: 55deg;
+  /* Enquadramento 2D e Câmera 2.5D por Medição */
+  --incl: 50deg;
   --persp: 1400px;
-  --escala-tabuleiro: 1;
+  --pan-x: 0px;
+  --pan-y: 0px;
+  --zoom: 1;
 }
 
 * {

@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none">
+  <!-- Selo genérico institucional "SS" para fácil substituição posterior -->
+  <circle cx="50" cy="50" r="46" fill="#00B4D8" stroke="#05101F" stroke-width="7"/>
+  <circle cx="50" cy="50" r="38" fill="#0A223E"/>
+  <path d="M36 34 C36 28 44 26 50 26 C57 26 62 29 62 35 C62 46 36 44 36 56 C36 63 42 66 50 66 C58 66 64 62 64 56" stroke="#FFC93C" stroke-width="7" stroke-linecap="round" fill="none"/>
+  <path d="M48 42 C48 37 54 35 59 35 C65 35 69 38 69 43 C69 52 48 51 48 61 C48 67 53 70 59 70 C66 70 71 67 71 62" stroke="#FFFFFF" stroke-width="6" stroke-linecap="round" fill="none" opacity="0.95"/>
+</svg>

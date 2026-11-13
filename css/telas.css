@@ -855,67 +855,74 @@
   border-color: var(--cyan);
 }
 
-/* Moldura e Mesa do Diorama */
+/* ==============================================================================
+   ENQUADRAMENTO POR MEDIÇÃO NA TELA (NOVA ARQUITETURA 2.5D)
+   ============================================================================== */
+
+/* 1. Viewport visível (coluna central): relative, overflow hidden, textura de mesa de madeira */
+.cena-viewport,
 .trilha-wrapper {
-  background: #061528;
+  position: relative !important;
+  overflow: hidden !important;
+  width: 100% !important;
+  height: 100% !important;
+  max-height: calc(100vh - 80px);
   border: 3px solid var(--navy-darkest);
   border-radius: 14px;
   padding: 0;
-  overflow: hidden;
-  height: 100%;
-  max-height: calc(100vh - 80px);
-  position: relative;
-  box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.8), 0 6px 0 var(--navy-darkest);
-}
-
-/* Cena 3D: perspective explícita sobre MESA DE MADEIRA EM TONS QUENTES */
-.cena-tabuleiro-3d {
-  width: 100%;
-  height: 100%;
-  perspective: var(--persp);
-  perspective-origin: 50% 50%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: relative;
-  overflow: hidden;
-  /* TEXTURA DE MESA DE MADEIRA EM TONS QUENTES (CONTRASTE QUENTE/FRIO) */
+  /* TEXTURA DE MESA DE MADEIRA EM TONS QUENTES */
   background:
     radial-gradient(ellipse at 50% 50%, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.72) 100%),
     repeating-linear-gradient(90deg, rgba(30, 15, 6, 0.15) 0px, rgba(30, 15, 6, 0.15) 2px, transparent 2px, transparent 150px),
     repeating-linear-gradient(0deg, #3D1F0E 0px, #4F2A14 28px, #361709 56px, #593018 84px, #44220E 112px) !important;
-  box-shadow: inset 0 0 120px rgba(0, 0, 0, 0.88);
-  transition: transform 0.3s ease;
+  box-shadow: inset 0 0 120px rgba(0, 0, 0, 0.88), 0 6px 0 var(--navy-darkest);
+}
+
+/* 2. Enquadramento 2D: SÓ translate(pan-x, pan-y) scale(zoom). É o ÚNICO elemento que a câmera mexe */
+.enquadramento {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 1440px;
+  height: 880px;
+  transform-origin: 0 0;
+  transform: translate(var(--pan-x, 0px), var(--pan-y, 0px)) scale(var(--zoom, 1));
+  will-change: transform;
+}
+
+/* 3. Cena 3D: perspective fixa; NADA de translate de câmera aqui */
+.cena,
+.cena-tabuleiro-3d {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 1440px;
+  height: 880px;
+  perspective: var(--persp, 1400px);
+  perspective-origin: 50% 50%;
+  transform-style: preserve-3d;
+  pointer-events: none;
+  background: transparent !important;
+  box-shadow: none !important;
 }
 
 /* Foco na Carta (Leve escurecimento sem blur pesado) */
 .cena-tabuleiro-3d.cena-foco-carta {
   filter: brightness(0.5);
-  transform: scale(0.98);
 }
 
-/* CÂMERA: Ponto central rigorosamente no centro da .cena (left: 50%; top: 50%) */
-.tabuleiro-camera {
-  transform-style: preserve-3d;
-  will-change: transform;
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  width: 0;
-  height: 0;
-  max-width: none;
-  transform-origin: 0 0;
-}
-
-/* MESA INCLINADA 3D: Origem (0, 0), transladada por (-X, -Y) da casa atual (1440x880 px) */
+/* 4. Plano 3D: rotateX(var(--incl)) FIXO, transform-origin: 50% 50%; NUNCA ANIMADO */
+.plano,
 .tabuleiro-3d {
-  width: 1440px;
-  height: 880px;
-  transform-style: preserve-3d;
-  transform-origin: 0 0;
   position: absolute;
   left: 0;
   top: 0;
+  width: 1440px;
+  height: 880px;
+  transform-origin: 50% 50%;
+  transform: rotateX(var(--incl, 50deg));
+  transform-style: preserve-3d;
+  pointer-events: auto;
   will-change: transform;
 }
 
@@ -1177,18 +1184,18 @@
   z-index: 30;
 }
 
-/* Armadilha: Disco Afundado (-6px) */
+/* Armadilha: Disco Vermelho Levemente Rebaixado (8px acima da faixa, mas abaixo das casas padrão de 14px) */
 .casa-tile.casa-armadilha .casa-disco-base {
-  transform: translateZ(-6px);
-  background: #2D141C;
-  border-color: rgba(239, 71, 111, 0.6);
-  box-shadow: inset 0 4px 10px rgba(0, 0, 0, 0.9),
-              inset 0 0 6px rgba(239, 71, 111, 0.45),
-              0 2px 4px rgba(0, 0, 0, 0.5);
+  transform: translateZ(8px);
+  background: #C9184A;
+  border-color: #FF758F;
+  box-shadow: 0 3px 0 #590D22, 0 6px 10px rgba(0, 0, 0, 0.7);
 }
 
 .casa-tile.casa-armadilha .casa-disco-topo {
-  box-shadow: inset 0 3px 6px rgba(0, 0, 0, 0.8);
+  background: linear-gradient(145deg, #FF4D6D 0%, #A4133C 100%);
+  border: 1.5px solid #FF8FA3;
+  box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.3), inset 0 -2px 4px rgba(0, 0, 0, 0.6);
 }
 
 /* BILLBOARD: Ícones e Números Em Pé (Leitura Perfeita) */
@@ -1588,11 +1595,8 @@
 .trilha-wrapper.visao-plana {
   --incl: 0deg !important;
   --persp: 99999px !important;
-}
-
-.trilha-wrapper.visao-plana #tabuleiro-3d {
-  transform: none !important;
-  transform-origin: 50% 50% !important;
+  --cam-x: 720px !important;
+  --cam-y: 440px !important;
 }
 
 .trilha-wrapper.visao-plana .billboard {
@@ -1605,23 +1609,8 @@
 }
 
 .trilha-wrapper.visao-plana .cena-tabuleiro-3d {
-  perspective: none !important;
   background-image: none !important;
   background-color: var(--navy-bg) !important;
-  padding: 8px;
-  filter: none !important;
-  transform: none !important;
-}
-
-.trilha-wrapper.visao-plana .tabuleiro-camera,
-.trilha-wrapper.visao-plana .tabuleiro-3d,
-.trilha-wrapper.visao-plana .diorama-placa {
-  transform: none !important;
-  max-width: 100% !important;
-  padding: 0 !important;
-  box-shadow: none !important;
-  border: none !important;
-  background: transparent !important;
 }
 
 .trilha-wrapper.visao-plana .casa-tile {
@@ -1667,12 +1656,20 @@
    CONTROLES FLUTUANTES, MODAL DE BIFURCAÇÃO & CENTRAL DE DADOS
    ============================================================================== */
 
-/* Botão Flutuante: "Ver Tabuleiro Todo (3s)" */
-.btn-visao-geral-3s {
+/* Controles Flutuantes da Câmera (Inferior Direito) */
+.controles-camera-flutuantes {
   position: absolute;
   bottom: 16px;
   right: 16px;
   z-index: 50;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.btn-visao-geral-3s,
+.btn-toggle-camera-modo {
+  position: relative;
   background: rgba(10, 28, 48, 0.94);
   border: 2px solid var(--cyan);
   color: var(--cyan);
@@ -1691,11 +1688,23 @@
   backdrop-filter: blur(4px);
 }
 
+.btn-toggle-camera-modo {
+  border-color: var(--gold);
+  color: var(--gold);
+}
+
 .btn-visao-geral-3s:hover {
   background: var(--cyan);
   color: var(--navy-darkest);
   transform: translateY(-2px);
   box-shadow: 0 8px 18px rgba(0, 180, 216, 0.4);
+}
+
+.btn-toggle-camera-modo:hover {
+  background: var(--gold);
+  color: var(--navy-darkest);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px rgba(255, 201, 60, 0.4);
 }
 
 .btn-visao-geral-3s.ativo-timer {
@@ -2492,10 +2501,471 @@
   .peao-tabuleiro,
   .spinner-circulo,
   .badge-pular-aviso,
-  .token-float-popup {
+  .token-float-popup,
+  .avatar-previa-wrapper,
+  .peao-corpo-wrapper {
     animation: none !important;
     transition: none !important;
     transform: none !important;
   }
 }
+
+/* ==============================================================================
+   CRIADOR DE PERSONAGEM (AVATAR CHIBI 3D) & ELEMENTOS VISUAIS
+   ============================================================================== */
+
+/* Modal do Criador */
+.modal-avatar-backdrop {
+  z-index: 1500;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(3, 10, 20, 0.88);
+  backdrop-filter: blur(8px);
+}
+
+.modal-avatar-backdrop.ativo {
+  display: flex !important;
+}
+
+.criador-avatar-dialog {
+  max-width: 920px;
+  width: 100%;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--navy-panel);
+  border: 3px solid var(--navy-darkest);
+  border-radius: 16px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.9), 0 0 24px rgba(0, 180, 216, 0.25);
+  overflow: hidden;
+}
+
+.criador-avatar-header {
+  background: #061528;
+  border-bottom: 2px solid var(--navy-darkest);
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.criador-avatar-body {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 20px;
+  padding: 20px;
+  overflow-y: auto;
+  max-height: calc(90vh - 140px);
+}
+
+@media (max-width: 768px) {
+  .criador-avatar-body {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 14px;
+  }
+}
+
+/* Coluna de Prévia do Avatar */
+.criador-previa-coluna {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.avatar-podio-box {
+  width: 100%;
+  height: 250px;
+  background: radial-gradient(circle at 50% 45%, #103254 0%, #061528 85%);
+  border: 2px solid var(--navy-darkest);
+  border-radius: 14px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.8);
+}
+
+.avatar-podio-luz {
+  position: absolute;
+  top: 10px;
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(0, 180, 216, 0.28) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.avatar-previa-wrapper {
+  width: 170px;
+  height: 190px;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: avatar-podio-bounce 2.6s infinite ease-in-out;
+}
+
+@keyframes avatar-podio-bounce {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-7px) rotate(0.6deg); }
+}
+
+.avatar-chibi-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.7));
+}
+
+.criador-botoes-rapidos {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+}
+
+.criador-botoes-rapidos .btn {
+  flex: 1;
+}
+
+.avatar-selo-marca-info {
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Coluna de Opções e Abas */
+.criador-opcoes-coluna {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-width: 0;
+}
+
+.avatar-abas-nav {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  padding-bottom: 6px;
+  border-bottom: 2px solid var(--navy-darkest);
+}
+
+.avatar-aba-btn {
+  background: #081B30;
+  color: var(--text-muted);
+  border: 1.5px solid var(--border-arcade);
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-family: var(--font-title);
+  font-size: 0.95rem;
+  font-weight: 800;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.avatar-aba-btn:hover {
+  border-color: var(--cyan);
+  color: var(--text-white);
+  background: #0E2C4D;
+}
+
+.avatar-aba-btn.ativa {
+  background: var(--cyan);
+  color: var(--navy-darkest);
+  border-color: var(--cyan);
+  box-shadow: 0 0 12px rgba(0, 180, 216, 0.4);
+}
+
+.avatar-aba-painel {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  overflow-y: auto;
+  max-height: 380px;
+  padding-right: 4px;
+}
+
+.avatar-secao-grupo {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.avatar-grupo-rotulo {
+  font-family: var(--font-title);
+  font-size: 0.85rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--gold);
+}
+
+/* Grade de Botões Cards */
+.avatar-grade-opcoes {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  gap: 8px;
+}
+
+.avatar-botoes-corpo-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.btn-opcao-card {
+  background: var(--navy-card);
+  border: 2px solid var(--navy-darkest);
+  border-radius: 10px;
+  padding: 10px 8px;
+  color: var(--text-white);
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  text-align: center;
+  transition: all 0.2s ease;
+}
+
+.btn-opcao-card:hover {
+  border-color: var(--cyan);
+  background: #11335A;
+  transform: translateY(-2px);
+}
+
+.btn-opcao-card.selecionado {
+  border-color: var(--gold);
+  background: rgba(255, 201, 60, 0.15);
+  color: var(--gold);
+  box-shadow: 0 0 10px rgba(255, 201, 60, 0.3);
+}
+
+/* Swatches de Pele e Cores */
+.avatar-paleta-pele-grid,
+.avatar-paleta-cores-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(42px, 1fr));
+  gap: 8px;
+}
+
+.avatar-swatch-pele,
+.avatar-swatch-cor {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 3px solid var(--navy-darkest);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 3px 0 var(--navy-darkest);
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.avatar-swatch-pele:hover,
+.avatar-swatch-cor:hover {
+  transform: scale(1.1);
+  border-color: var(--cyan);
+}
+
+.avatar-swatch-pele.selecionado,
+.avatar-swatch-cor.selecionado {
+  transform: scale(1.15);
+  border-color: var(--gold);
+  box-shadow: 0 0 12px rgba(255, 201, 60, 0.6);
+}
+
+.swatch-check {
+  font-family: var(--font-pixel);
+  font-size: 0.8rem;
+  font-weight: 900;
+  color: #05101F;
+  text-shadow: 0 0 3px #FFFFFF;
+}
+
+/* Rodapé do Modal */
+.criador-avatar-footer {
+  background: #061528;
+  border-top: 2px solid var(--navy-darkest);
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+/* ==============================================================================
+   AVATAR NO TABULEIRO (PEÃO BILLBOARD MINIATURA 3D)
+   ============================================================================== */
+.peao-avatar-wrapper {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 52px;
+  height: 70px;
+  pointer-events: none;
+  z-index: 60;
+  transform-style: preserve-3d;
+}
+
+.peao-avatar-wrapper .peao-corpo-wrapper {
+  width: 52px;
+  height: 70px;
+  transform: rotateX(calc(-1 * var(--incl)));
+  transform-origin: center 60px;
+  will-change: transform;
+}
+
+.peao-avatar-wrapper.peao-reacao-comemorando .peao-corpo-wrapper {
+  animation: avatar-peao-comemorar 0.5s infinite alternate ease-in-out;
+}
+
+@keyframes avatar-peao-comemorar {
+  0% { transform: rotateX(calc(-1 * var(--incl))) translateY(0) scale(1); }
+  100% { transform: rotateX(calc(-1 * var(--incl))) translateY(-10px) scale(1.08); }
+}
+
+.peao-avatar-wrapper.peao-reacao-assustado .peao-corpo-wrapper {
+  animation: avatar-peao-tremer 0.12s infinite alternate ease-in-out;
+}
+
+@keyframes avatar-peao-tremer {
+  0% { transform: rotateX(calc(-1 * var(--incl))) rotateZ(-5deg) translateX(-2px); }
+  100% { transform: rotateX(calc(-1 * var(--incl))) rotateZ(5deg) translateX(2px); }
+}
+
+/* ==============================================================================
+   MOLDURAS DE BUSTO (HUD E RANKING)
+   ============================================================================== */
+.avatar-busto-moldura {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #0F2D4C 0%, #061528 100%);
+  border: 2px solid var(--cyan);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.avatar-busto-moldura.grande {
+  width: 64px;
+  height: 64px;
+  border-width: 2.5px;
+  border-color: var(--gold);
+}
+
+.avatar-busto-moldura.ranking-item {
+  width: 36px;
+  height: 36px;
+  border-width: 1.5px;
+}
+
+/* ==============================================================================
+   PÓDIO DO RANKING (TOP 3 COM MINIATURAS CHIBI INTEIRAS)
+   ============================================================================== */
+.ranking-podio-container {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 14px;
+  margin: 16px 0 24px 0;
+  padding: 10px 0;
+}
+
+.podio-coluna {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  flex: 1;
+  max-width: 130px;
+}
+
+.podio-miniatura-box {
+  width: 90px;
+  height: 110px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: -10px;
+  z-index: 5;
+  filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.8));
+}
+
+.podio-bloco {
+  width: 100%;
+  border-radius: 10px 10px 4px 4px;
+  border: 2px solid var(--navy-darkest);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 6px;
+  box-shadow: 0 6px 0 var(--navy-darkest);
+}
+
+.podio-coluna.lugar-1 .podio-bloco {
+  height: 105px;
+  background: linear-gradient(180deg, #FFE082 0%, #FFC93C 60%, #D4A325 100%);
+  color: var(--navy-darkest);
+}
+
+.podio-coluna.lugar-2 .podio-bloco {
+  height: 85px;
+  background: linear-gradient(180deg, #E2E8F0 0%, #CBD5E1 60%, #94A3B8 100%);
+  color: var(--navy-darkest);
+}
+
+.podio-coluna.lugar-3 .podio-bloco {
+  height: 70px;
+  background: linear-gradient(180deg, #D4A373 0%, #BC6C25 60%, #8A4B15 100%);
+  color: #FFFFFF;
+}
+
+.podio-numero {
+  font-family: var(--font-pixel);
+  font-size: 1.4rem;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.podio-jogador-nome {
+  font-family: var(--font-title);
+  font-size: 0.85rem;
+  font-weight: 800;
+  max-width: 100px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-top: 4px;
+}
+
+.podio-pontos {
+  font-family: var(--font-pixel);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
 
