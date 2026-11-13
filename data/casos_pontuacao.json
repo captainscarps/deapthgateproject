@@ -1,0 +1,427 @@
+[
+  {
+    "id": "caso_01_checkpoint_repetido",
+    "nome": "1. Checkpoint com Recuo e Bônus Único",
+    "descricao": "Peão cruza checkpoint 10 (+3), sofre recuo por armadilha e cruza novamente. Bônus contabilizado apenas uma vez.",
+    "semana": "2026-W46",
+    "historico": [
+      {
+        "carta_id": "pa_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "arm_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "des_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "con_001",
+        "opcao_index": 0
+      }
+    ],
+    "resultado_esperado": {
+      "status": 200,
+      "sucesso": true,
+      "tokens": 35,
+      "acertos": 1,
+      "bonus_pense_antes": 1,
+      "armadilhas": 1,
+      "pontos": 430
+    }
+  },
+  {
+    "id": "caso_02_armadilhas_multiplas",
+    "nome": "2. Múltiplas Armadilhas",
+    "descricao": "Colaborador cai em 3 armadilhas e perde o bônus de 100 pontos por zero armadilhas.",
+    "semana": "2026-W46",
+    "historico": [
+      {
+        "carta_id": "arm_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "arm_002",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "arm_003",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      }
+    ],
+    "resultado_esperado": {
+      "status": 200,
+      "sucesso": true,
+      "tokens": 19,
+      "acertos": 0,
+      "bonus_pense_antes": 0,
+      "armadilhas": 3,
+      "pontos": 190
+    }
+  },
+  {
+    "id": "caso_03_zero_tokens",
+    "nome": "3. Zero Tokens (Partida Catastrófica)",
+    "descricao": "Penalidades consecutivas de armadilhas e escolhas incorretas zeram os tokens (Math.max(0, tokens)).",
+    "semana": "2026-W46",
+    "historico": [
+      {
+        "carta_id": "arm_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "arm_006",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "arm_002",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "arm_003",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "arm_005",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "pa_007",
+        "opcao_index": 1
+      },
+      {
+        "carta_id": "des_006",
+        "opcao_index": 1
+      }
+    ],
+    "resultado_esperado": {
+      "status": 200,
+      "sucesso": true,
+      "tokens": 0,
+      "acertos": 0,
+      "bonus_pense_antes": 0,
+      "armadilhas": 5,
+      "pontos": 0
+    }
+  },
+  {
+    "id": "caso_04_pense_antes_maximo",
+    "nome": "4. Bônus Pense Antes Máximo",
+    "descricao": "Colaborador prioriza governança e reflexão em todas as tomadas de decisão.",
+    "semana": "2026-W46",
+    "historico": [
+      {
+        "carta_id": "pa_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "pa_003",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "pa_004",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "pa_006",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      }
+    ],
+    "resultado_esperado": {
+      "status": 200,
+      "sucesso": true,
+      "tokens": 47,
+      "acertos": 0,
+      "bonus_pense_antes": 4,
+      "armadilhas": 0,
+      "pontos": 690
+    }
+  },
+  {
+    "id": "caso_05_carta_inexistente",
+    "nome": "5. Carta Inexistente",
+    "descricao": "Histórico corrompido ou malicioso contendo ID de carta que não existe no baralho.",
+    "semana": "2026-W46",
+    "historico": [
+      {
+        "carta_id": "carta_fantasma_999",
+        "opcao_index": 0
+      }
+    ],
+    "resultado_esperado": {
+      "status": 400,
+      "sucesso": false,
+      "erro": "Carta inexistente ou não autorizada no histórico: 'carta_fantasma_999'."
+    }
+  },
+  {
+    "id": "caso_06_opcao_invalida",
+    "nome": "6. Opção Fora do Limite",
+    "descricao": "Histórico com índice de opção inexistente para a respectiva carta.",
+    "semana": "2026-W46",
+    "historico": [
+      {
+        "carta_id": "pa_001",
+        "opcao_index": 9
+      }
+    ],
+    "resultado_esperado": {
+      "status": 400,
+      "sucesso": false,
+      "erro": "Índice de opção inválido (9) para a carta 'pa_001'."
+    }
+  },
+  {
+    "id": "caso_07_historico_vazio",
+    "nome": "7. Histórico Vazio",
+    "descricao": "Envio de payload com array de jogadas vazio.",
+    "semana": "2026-W46",
+    "historico": [],
+    "resultado_esperado": {
+      "status": 400,
+      "sucesso": false,
+      "erro": "Histórico de jogadas vazio ou ausente."
+    }
+  },
+  {
+    "id": "caso_08_excesso_jogadas",
+    "nome": "8. Excesso de Jogadas (>35)",
+    "descricao": "Partida com 36 jogadas, violando a regra de limite de turnos.",
+    "semana": "2026-W46",
+    "historico": [
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_001",
+        "opcao_index": 0
+      }
+    ],
+    "resultado_esperado": {
+      "status": 400,
+      "sucesso": false,
+      "erro": "Número de jogadas excede o limite máximo permitido por partida (35)."
+    }
+  },
+  {
+    "id": "caso_09_partida_equilibrada",
+    "nome": "9. Partida Equilibrada Realista",
+    "descricao": "Mix realista de decisões: boas práticas, acertos, erro em desafio e conexões.",
+    "semana": "2026-W46",
+    "historico": [
+      {
+        "carta_id": "bp_002",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "des_002",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "des_003",
+        "opcao_index": 1
+      },
+      {
+        "carta_id": "evt_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "con_002",
+        "opcao_index": 0
+      }
+    ],
+    "resultado_esperado": {
+      "status": 200,
+      "sucesso": true,
+      "tokens": 42,
+      "acertos": 1,
+      "bonus_pense_antes": 0,
+      "armadilhas": 0,
+      "pontos": 570
+    }
+  },
+  {
+    "id": "caso_10_desafios_gabaritados",
+    "nome": "10. Desafios Gabaritados (Alta Performance)",
+    "descricao": "Todos os 4 desafios enfrentados foram respondidos corretamente (+50 cada).",
+    "semana": "2026-W46",
+    "historico": [
+      {
+        "carta_id": "des_001",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "des_002",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "des_003",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "des_004",
+        "opcao_index": 0
+      },
+      {
+        "carta_id": "bp_007",
+        "opcao_index": 0
+      }
+    ],
+    "resultado_esperado": {
+      "status": 200,
+      "sucesso": true,
+      "tokens": 48,
+      "acertos": 4,
+      "bonus_pense_antes": 0,
+      "armadilhas": 0,
+      "pontos": 780
+    }
+  }
+]

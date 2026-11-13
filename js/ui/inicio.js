@@ -1,4 +1,4 @@
-// js/ui/inicio.js - Tela de Início, Fluxo de Conta Mock e Modais
+// js/ui/inicio.js - Tela de Início, Modo Convidado e Autenticação de Colaborador
 import { state } from '../state.js';
 import { semanaAtual, carregarCartas } from '../deck.js';
 import { Api } from '../api.js';
@@ -8,7 +8,7 @@ import { abrirModalTutorial } from './tutorial.js';
 let containerRef = null;
 let navigateRef = null;
 
-// Estado transitório local do formulário de autenticação mock
+// Estado transitório local do formulário de autenticação
 let fluxoAuth = {
   etapa: 'email', // 'email' | 'otp' | 'perfil' | 'logado'
   emailDigitado: '',
@@ -18,7 +18,6 @@ let fluxoAuth = {
 };
 
 function formatarSemanaExibicao(semanaIso) {
-  // Converte "2026-W46" para "Semana 46 • 2026"
   const match = semanaIso.match(/^(\d{4})-W(\d{2})$/);
   if (match) {
     return `Desafio da Semana ${parseInt(match[2], 10)} (${match[1]})`;
@@ -31,7 +30,6 @@ export function render(currentState) {
   const semFormatada = formatarSemanaExibicao(semIso);
   const estaLogado = !!(currentState.email && currentState.jogador && currentState.area);
 
-  // Se o estado já tem dados persistidos, atualiza fluxoAuth
   if (estaLogado && fluxoAuth.etapa !== 'logado') {
     fluxoAuth.etapa = 'logado';
   }
@@ -41,166 +39,269 @@ export function render(currentState) {
   return `
     <div class="tela-inicio fade-in">
       
-      <!-- HERO COM SEMANA E STATUS -->
-      <section class="inicio-hero">
-        <div class="semana-tag">
-          <span>📅</span>
-          <span>${semFormatada}</span>
-        </div>
-        
-        <div class="status-partida-box">
-          ${valeRanking ? `
-            <span class="badge badge-oficial">
-              🏆 OFICIAL • Vale para o Ranking
-            </span>
-          ` : `
-            <span class="badge badge-treino">
-              🎯 TREINO • Não afeta sua pontuação oficial
-            </span>
-          `}
-        </div>
+      <!-- COLUNA ESQUERDA: APRESENTAÇÃO & ILUSTRAÇÃO DO TABULEIRO / DADINHO -->
+      <div class="inicio-coluna-esquerda">
+        <!-- HERO COM SEMANA E STATUS -->
+        <section class="inicio-hero painel-arcade">
+          <span class="parafuso-canto top-left"></span>
+          <span class="parafuso-canto top-right"></span>
+          <span class="parafuso-canto bottom-left"></span>
+          <span class="parafuso-canto bottom-right"></span>
 
-        <p class="inicio-desc">
-          Partida rápida (5 a 8 minutos). Aprenda uso ético de IA, proteção de dados corporativos e LGPD no SEST SENAT.
-        </p>
-      </section>
+          <div class="semana-tag">
+            <span>📅</span>
+            <span>${semFormatada}</span>
+          </div>
+          
+          <h2 style="font-family: var(--font-title); font-size: 1.85rem; color: var(--cyan); margin-top: 6px; font-weight: 900; text-transform: uppercase;">
+            Trilha Inteligente • Governança de IA
+          </h2>
 
-      <!-- CARD DE IDENTIFICAÇÃO / LOGIN MOCK -->
-      <section class="colaborador-card" id="card-identificacao">
-        ${renderCardAutenticacao(currentState)}
-      </section>
+          <p class="inicio-desc" style="margin-top: 8px;">
+            Partida rápida de <strong>5 a 8 minutos</strong>. Navegue pela Cidade dos Dados, responda situações reais sobre IA ética, proteção de dados corporativos e LGPD no <strong>SEST SENAT</strong>.
+          </p>
 
-      <!-- AÇÕES PRINCIPAIS -->
-      <section class="inicio-acoes">
-        <button id="btn-jogar" class="btn btn-primary btn-block" style="font-size: 1.35rem; padding: 16px;">
-          🚀 JOGAR AGORA
-        </button>
+          <!-- DADINHO NA CIDADE DOS DADOS -->
+          <div style="background: var(--navy-darkest); border: 2px solid var(--navy-card); border-radius: 10px; padding: 14px; margin-top: 14px; display: flex; align-items: center; gap: 14px;">
+            <div style="width: 58px; height: 64px; flex-shrink: 0;">
+              <svg viewBox="0 0 48 54" fill="none" style="width: 100%; height: 100%;">
+                <ellipse cx="24" cy="50" rx="16" ry="3.5" fill="#05101F" opacity="0.65"/>
+                <rect x="14" y="42" width="6" height="8" rx="3" fill="#05101F"/>
+                <rect x="28" y="42" width="6" height="8" rx="3" fill="#05101F"/>
+                <rect x="6" y="8" width="36" height="36" rx="8" fill="#00B4D8" stroke="#05101F" stroke-width="3"/>
+                <path d="M10 12 H38" stroke="#90E0EF" stroke-width="2" stroke-linecap="round"/>
+                <circle cx="10" cy="15" r="2" fill="#FFFFFF" stroke="#05101F" stroke-width="1"/>
+                <circle cx="38" cy="15" r="2" fill="#FFFFFF" stroke="#05101F" stroke-width="1"/>
+                <ellipse cx="18" cy="25" rx="3.5" ry="4.5" fill="#FFFFFF" stroke="#05101F" stroke-width="1.5"/>
+                <circle cx="19" cy="24.5" r="2" fill="#05101F"/>
+                <ellipse cx="30" cy="25" rx="3.5" ry="4.5" fill="#FFFFFF" stroke="#05101F" stroke-width="1.5"/>
+                <circle cx="29" cy="24.5" r="2" fill="#05101F"/>
+                <path d="M21 31 Q24 33.5 27 31" stroke="#05101F" stroke-width="2" stroke-linecap="round" fill="none"/>
+              </svg>
+            </div>
+            <div style="text-align: left; font-size: 0.88rem; color: var(--text-muted); line-height: 1.35;">
+              <div style="font-family: var(--font-pixel); color: var(--gold); font-size: 0.82rem; margin-bottom: 2px;">GUIA DO DADINHO:</div>
+              Jogue os dados, passe pelos 3 checkpoints e alcance o portal Guardião dos Dados com o maior número de tokens.
+            </div>
+          </div>
+        </section>
 
-        <button id="btn-ver-ranking" class="btn btn-secondary btn-block">
-          🏅 VER RANKING SEMANAL
-        </button>
-      </section>
+        <!-- AÇÕES GERAIS -->
+        <section class="inicio-acoes" style="margin-top: 14px;">
+          <button id="btn-ver-ranking" class="btn btn-secondary btn-block">
+            🏅 VER RANKING SEMANAL
+          </button>
+        </section>
 
-      <!-- LINKS SECUNDÁRIOS -->
-      <section class="inicio-links-secundarios">
-        <button id="btn-abrir-tutorial" class="btn btn-outline btn-sm">
-          💡 Como Jogar
-        </button>
-        <button id="btn-abrir-privacidade" class="btn btn-outline btn-sm">
-          🛡️ Privacidade & LGPD
-        </button>
-      </section>
+        <!-- LINKS SECUNDÁRIOS -->
+        <section class="inicio-links-secundarios" style="display: flex; justify-content: center; gap: 14px; margin-top: 12px;">
+          <button id="btn-abrir-tutorial" class="btn btn-outline btn-sm">
+            💡 Como Jogar
+          </button>
+          <button id="btn-abrir-privacidade" class="btn btn-outline btn-sm">
+            🛡️ Privacidade &amp; LGPD
+          </button>
+        </section>
+      </div>
+
+      <!-- COLUNA DIREITA: CARDS DE OPÇÃO (CONVIDADO X LOGIN) -->
+      <div class="inicio-coluna-direita">
+        ${estaLogado ? `
+          <!-- SE COLABORADOR JÁ ESTIVER LOGADO -->
+          <section class="colaborador-card painel-arcade" id="card-identificacao">
+            <span class="parafuso-canto top-left"></span>
+            <span class="parafuso-canto top-right"></span>
+            <span class="parafuso-canto bottom-left"></span>
+            <span class="parafuso-canto bottom-right"></span>
+            ${renderCardAutenticado(currentState, valeRanking)}
+          </section>
+
+          <section class="card" style="margin-top: 12px; background: rgba(16, 38, 68, 0.6); border: 2px dashed var(--navy-darkest); padding: 14px; text-align: center;">
+            <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 8px;">
+              Quer praticar sem valer para a sua pontuação semanal?
+            </p>
+            <button id="btn-jogar-convidado-alt" class="btn btn-secondary btn-sm" style="margin: 0 auto;">
+              🎲 Jogar Trilha Aleatória como Convidado
+            </button>
+          </section>
+
+        ` : `
+          <!-- DOIS CAMINHOS CLAROS (CONVIDADO X COLABORADOR) -->
+          <section class="caminhos-inicio-grid" style="margin: 0;">
+            
+            <!-- CAMINHO 1: MODO CONVIDADO -->
+            <div class="card-caminho destaque-convidado painel-arcade">
+              <span class="parafuso-canto top-left"></span>
+              <span class="parafuso-canto top-right"></span>
+              <div>
+                <div class="card-caminho-topo">
+                  <span class="card-caminho-icone">🎲</span>
+                  <div>
+                    <h3 class="card-caminho-titulo" style="font-family: var(--font-title); font-size: 1.3rem;">Jogar como Convidado</h3>
+                    <span class="badge badge-treino" style="font-size: 0.75rem;">Sem Cadastro • Não Pontua</span>
+                  </div>
+                </div>
+                <p class="card-caminho-desc" style="margin-top: 8px;">
+                  Trilha gerada com desafios aleatórios a cada partida. Ideal para praticar sem registrar pontuação no ranking.
+                </p>
+
+                <div class="form-group" style="margin-top: 14px;">
+                  <label class="form-label" for="select-area-convidado">Sua Área de Atuação (Opcional)</label>
+                  <select id="select-area-convidado" class="form-select">
+                    <option value="">Carregando áreas...</option>
+                  </select>
+                </div>
+              </div>
+
+              <button id="btn-jogar-convidado" class="btn btn-primary btn-block" style="font-size: 1.15rem; padding: 14px; margin-top: 10px;">
+                🎲 Iniciar como Convidado
+              </button>
+            </div>
+
+            <!-- CAMINHO 2: ENTRAR COM E-MAIL INSTITUCIONAL -->
+            <div class="card-caminho destaque-colaborador painel-arcade" id="card-identificacao">
+              <span class="parafuso-canto top-left"></span>
+              <span class="parafuso-canto top-right"></span>
+              <div>
+                <div class="card-caminho-topo">
+                  <span class="card-caminho-icone">🏛️</span>
+                  <div>
+                    <h3 class="card-caminho-titulo" style="font-family: var(--font-title); font-size: 1.3rem;">Colaborador SEST SENAT</h3>
+                    <span class="badge badge-oficial" style="font-size: 0.75rem;">Desafio Semanal • Vale Ranking</span>
+                  </div>
+                </div>
+                
+                <div style="margin-top: 8px;">
+                  ${renderFormularioAutenticacao(currentState)}
+                </div>
+              </div>
+            </div>
+
+          </section>
+        `}
+      </div>
 
     </div>
   `;
 }
 
-function renderCardAutenticacao(currentState) {
+function renderCardAutenticado(currentState, valeRanking) {
+  return `
+    <div class="colaborador-header">
+      <div>
+        <div style="font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase;">Colaborador Conectado</div>
+        <div class="colaborador-nome">${currentState.jogador}</div>
+      </div>
+      <button id="btn-logout" class="btn btn-secondary btn-sm" title="Desconectar sessão">
+        Sair / Trocar
+      </button>
+    </div>
+
+    <div class="colaborador-area-lock">
+      <span class="badge badge-area">
+        🏛️ ${currentState.area}
+      </span>
+      <span class="lock-icon" title="Área vinculada ao perfil institucional">🔒 Área Fixada</span>
+    </div>
+
+    <div style="font-size: 0.9rem; color: var(--text-dim); margin-top: 2px;">
+      ${currentState.email}
+    </div>
+
+    <div style="margin-top: 10px;">
+      ${valeRanking ? `
+        <span class="badge badge-oficial" style="font-size: 0.85rem; padding: 4px 10px;">
+          🏆 1ª PARTIDA DA SEMANA: Vale para o Ranking Oficial
+        </span>
+      ` : `
+        <span class="badge badge-treino" style="font-size: 0.85rem; padding: 4px 10px;">
+          🎯 MODO TREINO: Partida oficial da semana já foi enviada
+        </span>
+      `}
+    </div>
+
+    <button id="btn-jogar-oficial" class="btn btn-primary btn-block" style="font-size: 1.25rem; padding: 14px; margin-top: 12px;">
+      🚀 JOGAR DESAFIO DA SEMANA
+    </button>
+  `;
+}
+
+function renderFormularioAutenticacao(currentState) {
   const { etapa, erro, info, emailDigitado } = fluxoAuth;
 
-  // Feedback de erro ou sucesso
   const mensagemBox = erro ? `
-    <div style="background: rgba(239, 71, 111, 0.15); border: 1px solid var(--coral); color: #FFA8BA; padding: 8px 12px; border-radius: 6px; font-size: 0.9rem;">
+    <div style="background: rgba(239, 71, 111, 0.15); border: 1px solid var(--coral); color: #FFA8BA; padding: 8px 12px; border-radius: 6px; font-size: 0.88rem; margin-bottom: 8px;">
       ⚠️ ${erro}
     </div>
   ` : (info ? `
-    <div style="background: rgba(6, 214, 160, 0.15); border: 1px solid var(--green); color: #72F2D1; padding: 8px 12px; border-radius: 6px; font-size: 0.9rem;">
+    <div style="background: rgba(6, 214, 160, 0.15); border: 1px solid var(--green); color: #72F2D1; padding: 8px 12px; border-radius: 6px; font-size: 0.88rem; margin-bottom: 8px;">
       ℹ️ ${info}
     </div>
   ` : '');
 
-  // 1. ETAPA: JÁ AUTENTICADO E PERFIL TRAVADO
-  if (etapa === 'logado' && currentState.jogador && currentState.area) {
-    return `
-      <div class="colaborador-header">
-        <div>
-          <div style="font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase;">Colaborador Conectado</div>
-          <div class="colaborador-nome">${currentState.jogador}</div>
-        </div>
-        <button id="btn-logout" class="btn btn-secondary btn-sm" title="Desconectar sessão">
-          Sair / Trocar
-        </button>
-      </div>
-
-      <div class="colaborador-area-lock">
-        <span class="badge badge-area">
-          🏛️ ${currentState.area}
-        </span>
-        <span class="lock-icon" title="Área vinculada ao perfil institucional">🔒 Área Fixada</span>
-      </div>
-
-      <div style="font-size: 0.9rem; color: var(--text-dim); margin-top: 2px;">
-        ${currentState.email}
-      </div>
-    `;
-  }
-
-  // 2. ETAPA: DIGITAR EMAIL INSTITUCIONAL
+  // 1. DIGITAR EMAIL INSTITUCIONAL
   if (etapa === 'email') {
     return `
-      <h3 class="titulo-card">Identificação do Colaborador</h3>
-      <p style="font-size: 0.95rem; color: var(--text-muted); margin-bottom: 8px;">
-        Informe seu e-mail corporativo do SEST SENAT para participar do ranking.
+      <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 8px;">
+        Informe seu e-mail institucional corporativo para pontuar pela sua área.
       </p>
 
       ${mensagemBox}
 
-      <div class="form-group" style="margin-top: 8px;">
+      <div class="form-group">
         <label class="form-label" for="input-email-login">E-mail Corporativo</label>
         <input type="email" id="input-email-login" placeholder="seu.nome@sestsenat.org.br" value="${emailDigitado}" />
       </div>
 
-      <button id="btn-enviar-otp" class="btn btn-primary btn-block">
+      <button id="btn-enviar-otp" class="btn btn-primary btn-block" style="margin-top: 10px;">
         Continuar com Código de Acesso
       </button>
     `;
   }
 
-  // 3. ETAPA: DIGITAR CÓDIGO OTP (MOCK: 123456)
+  // 2. DIGITAR CÓDIGO OTP (MOCK: 123456)
   if (etapa === 'otp') {
     return `
-      <h3 class="titulo-card">Código de Verificação</h3>
-      <p style="font-size: 0.95rem; color: var(--text-muted);">
-        Enviamos um código de 6 dígitos para <strong>${emailDigitado}</strong>.
+      <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 8px;">
+        Código enviado para <strong>${emailDigitado}</strong>.
       </p>
 
       ${mensagemBox}
 
-      <div class="form-group" style="margin-top: 8px;">
+      <div class="form-group">
         <label class="form-label" for="input-codigo-otp">Código de 6 Dígitos (Mock: 123456)</label>
         <input type="text" id="input-codigo-otp" maxlength="6" placeholder="123456" style="letter-spacing: 4px; font-weight: 700; text-align: center;" />
       </div>
 
-      <div style="display: flex; gap: 10px;">
-        <button id="btn-voltar-email" class="btn btn-secondary btn-block">Voltar</button>
-        <button id="btn-verificar-otp" class="btn btn-primary btn-block">Validar Código</button>
+      <div style="display: flex; gap: 8px; margin-top: 10px;">
+        <button id="btn-voltar-email" class="btn btn-secondary" style="flex: 1;">Voltar</button>
+        <button id="btn-verificar-otp" class="btn btn-primary" style="flex: 2;">Validar Código</button>
       </div>
     `;
   }
 
-  // 4. ETAPA: COMPLETAR PERFIL NA 1ª VEZ
+  // 3. COMPLETAR PERFIL NA 1ª VEZ
   if (etapa === 'perfil') {
     return `
-      <h3 class="titulo-card">Complete seu Perfil</h3>
-      <p style="font-size: 0.95rem; color: var(--text-muted);">
-        Primeiro acesso com <strong>${emailDigitado}</strong>. Escolha sua área de atuação (ela ficará travada após o cadastro).
+      <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 8px;">
+        Primeiro acesso! Preencha seu nome e escolha sua área de atuação (ela ficará travada após o cadastro).
       </p>
 
       ${mensagemBox}
 
-      <div class="form-group" style="margin-top: 8px;">
+      <div class="form-group">
         <label class="form-label" for="input-nome-perfil">Nome Completo</label>
         <input type="text" id="input-nome-perfil" placeholder="Ex: Rafael Scarpille" />
       </div>
 
       <div class="form-group">
-        <label class="form-label" for="select-area-perfil">Área / Unidade Institucional</label>
+        <label class="form-label" for="select-area-perfil">Área Institucional</label>
         <select id="select-area-perfil" class="form-select">
           <option value="">Carregando áreas...</option>
         </select>
       </div>
 
-      <button id="btn-salvar-perfil" class="btn btn-success btn-block">
+      <button id="btn-salvar-perfil" class="btn btn-success btn-block" style="margin-top: 10px;">
         Salvar e Bloquear Perfil
       </button>
     `;
@@ -213,11 +314,22 @@ export async function montar(container, currentState, navigate) {
   containerRef = container;
   navigateRef = navigate;
 
-  // Carrega opções do seletor de áreas se estiver na etapa de perfil
-  const selectArea = container.querySelector('#select-area-perfil');
-  if (selectArea) {
-    const areas = await Api.carregarAreas();
-    selectArea.innerHTML = `
+  atribuirEventos(container);
+
+  // Carrega opções de áreas para os selects disponíveis
+  const areas = await Api.carregarAreas();
+
+  const selectAreaConvidado = container.querySelector('#select-area-convidado');
+  if (selectAreaConvidado) {
+    selectAreaConvidado.innerHTML = `
+      <option value="">-- Selecione sua Área (Opcional) --</option>
+      ${areas.map(a => `<option value="${a.id}" data-sigla="${a.sigla}" data-nome="${a.nome}">${a.sigla} - ${a.nome}</option>`).join('')}
+    `;
+  }
+
+  const selectAreaPerfil = container.querySelector('#select-area-perfil');
+  if (selectAreaPerfil) {
+    selectAreaPerfil.innerHTML = `
       <option value="">-- Selecione sua Área Oficial --</option>
       ${areas.map(a => `<option value="${a.id}" data-sigla="${a.sigla}" data-nome="${a.nome}">${a.sigla} - ${a.nome}</option>`).join('')}
     `;
@@ -230,8 +342,6 @@ export async function montar(container, currentState, navigate) {
       state.set({ partida_vale_ranking: statusPartida.valeRanking });
     }
   }
-
-  atribuirEventos(container);
 }
 
 function reRender() {
@@ -242,7 +352,50 @@ function reRender() {
 }
 
 function atribuirEventos(container) {
-  // 1. Enviar OTP
+  // A. AÇÃO: JOGAR COMO CONVIDADO
+  const handlerJogarConvidado = async (btn) => {
+    btn.disabled = true;
+    btn.textContent = 'Carregando trilha...';
+
+    const selArea = container.querySelector('#select-area-convidado');
+    let areaId = null;
+    let areaNome = 'Convidado';
+
+    if (selArea && selArea.value) {
+      areaId = Number(selArea.value);
+      const opt = selArea.selectedOptions ? selArea.selectedOptions[0] : null;
+      if (opt && opt.dataset.nome) {
+        areaNome = `${opt.dataset.sigla} - ${opt.dataset.nome}`;
+      }
+    }
+
+    let cartas = [];
+    try {
+      cartas = await carregarCartas();
+    } catch (e) {
+      console.warn('Erro ao carregar cartas locais:', e);
+    }
+
+    state.iniciarPartidaConvidado({
+      area_id: areaId,
+      area: areaNome,
+      cartas: cartas
+    });
+
+    navigateRef('tabuleiro');
+  };
+
+  const btnJogarConvidado = container.querySelector('#btn-jogar-convidado');
+  if (btnJogarConvidado) {
+    btnJogarConvidado.onclick = () => handlerJogarConvidado(btnJogarConvidado);
+  }
+
+  const btnJogarConvidadoAlt = container.querySelector('#btn-jogar-convidado-alt');
+  if (btnJogarConvidadoAlt) {
+    btnJogarConvidadoAlt.onclick = () => handlerJogarConvidado(btnJogarConvidadoAlt);
+  }
+
+  // B. AUTENTICAÇÃO: Enviar OTP
   const btnEnviarOtp = container.querySelector('#btn-enviar-otp');
   if (btnEnviarOtp) {
     btnEnviarOtp.onclick = async () => {
@@ -258,13 +411,13 @@ function atribuirEventos(container) {
 
       fluxoAuth.emailDigitado = email;
       fluxoAuth.erro = '';
-      fluxoAuth.info = 'Código de acesso simulado enviado! Utilize o código mock: 123456';
+      fluxoAuth.info = 'Código de acesso enviado! Utilize o código mock: 123456';
       fluxoAuth.etapa = 'otp';
       reRender();
     };
   }
 
-  // 2. Voltar para e-mail
+  // C. Voltar para e-mail
   const btnVoltarEmail = container.querySelector('#btn-voltar-email');
   if (btnVoltarEmail) {
     btnVoltarEmail.onclick = () => {
@@ -275,7 +428,7 @@ function atribuirEventos(container) {
     };
   }
 
-  // 3. Validar OTP
+  // D. Validar OTP
   const btnVerificarOtp = container.querySelector('#btn-verificar-otp');
   if (btnVerificarOtp) {
     btnVerificarOtp.onclick = async () => {
@@ -289,7 +442,6 @@ function atribuirEventos(container) {
         return;
       }
 
-      // Tenta buscar perfil existente do colaborador
       const userId = res.user?.id || ('user_mock_' + fluxoAuth.emailDigitado.replace(/[^a-z0-9]/g, '_'));
       const perfilRemoto = await Api.buscarPerfil(userId);
 
@@ -300,7 +452,8 @@ function atribuirEventos(container) {
           email: fluxoAuth.emailDigitado,
           area: areaStr,
           area_id: perfilRemoto.area_id,
-          jogador_id: perfilRemoto.id
+          jogador_id: perfilRemoto.id,
+          modo_convidado: false
         });
         state.salvarJogadorLocal();
         fluxoAuth.etapa = 'logado';
@@ -310,15 +463,14 @@ function atribuirEventos(container) {
         return;
       }
 
-      // Se já possui perfil local cadastrado para esse e-mail
       const current = state.get();
       if (current.email === fluxoAuth.emailDigitado && current.jogador && current.area) {
+        state.set({ modo_convidado: false });
         fluxoAuth.etapa = 'logado';
         fluxoAuth.erro = '';
         fluxoAuth.info = '';
         reRender();
       } else {
-        // Primeiro acesso: pede perfil
         fluxoAuth.etapa = 'perfil';
         fluxoAuth.erro = '';
         fluxoAuth.info = 'Autenticado! Preencha seu nome e selecione sua área.';
@@ -327,7 +479,7 @@ function atribuirEventos(container) {
     };
   }
 
-  // 4. Salvar Perfil
+  // E. Salvar Perfil
   const btnSalvarPerfil = container.querySelector('#btn-salvar-perfil');
   if (btnSalvarPerfil) {
     btnSalvarPerfil.onclick = async () => {
@@ -336,45 +488,42 @@ function atribuirEventos(container) {
 
       const nome = inputNome ? inputNome.value.trim() : '';
       const areaId = selectArea ? selectArea.value : '';
-      const selectedOption = selectArea ? selectArea.selectedOptions[0] : null;
 
       if (!nome) {
         fluxoAuth.erro = 'Por favor, informe seu nome completo.';
         reRender();
         return;
       }
-      if (!areaId || !selectedOption) {
-        fluxoAuth.erro = 'Selecione uma área oficial do SEST SENAT.';
+      if (!areaId) {
+        fluxoAuth.erro = 'Por favor, selecione sua área de atuação oficial.';
         reRender();
         return;
       }
 
-      const areaNome = selectedOption.getAttribute('data-nome');
-      const areaSigla = selectedOption.getAttribute('data-sigla');
+      const opt = selectArea.selectedOptions[0];
+      const areaSigla = opt ? opt.dataset.sigla : 'TI';
+      const areaNome = opt ? opt.dataset.nome : 'Tecnologia da Informação';
       const areaIdNum = parseInt(areaId, 10);
 
-      try {
-        const sessao = await Api.obterSessao();
-        const userId = sessao?.user?.id || ('user_mock_' + fluxoAuth.emailDigitado.replace(/[^a-z0-9]/g, '_'));
-        const perfilCriado = await Api.criarPerfil({
-          userId,
-          nome,
-          areaId: areaIdNum,
-          email: fluxoAuth.emailDigitado
-        });
-        if (perfilCriado?.id) {
-          state.set({ jogador_id: perfilCriado.id });
-        }
-      } catch (err) {
-        console.warn('Registro de perfil no backend:', err.message);
+      const userId = 'user_mock_' + fluxoAuth.emailDigitado.replace(/[^a-z0-9]/g, '_');
+      const salvouRemoto = await Api.criarPerfil({
+        userId,
+        nome,
+        areaId: areaIdNum,
+        email: fluxoAuth.emailDigitado
+      });
+      if (salvouRemoto && !salvouRemoto.sucesso && salvouRemoto.erro) {
+        fluxoAuth.erro = salvouRemoto.erro;
+        reRender();
+        return;
       }
 
-      // Salva perfil no State e trava área
       state.set({
         jogador: nome,
         email: fluxoAuth.emailDigitado,
         area: `${areaSigla} - ${areaNome}`,
-        area_id: areaIdNum
+        area_id: areaIdNum,
+        modo_convidado: false
       });
       state.salvarJogadorLocal();
 
@@ -385,7 +534,7 @@ function atribuirEventos(container) {
     };
   }
 
-  // 5. Logout
+  // F. Logout
   const btnLogout = container.querySelector('#btn-logout');
   if (btnLogout) {
     btnLogout.onclick = async () => {
@@ -394,7 +543,8 @@ function atribuirEventos(container) {
         jogador: '',
         email: '',
         area: '',
-        area_id: null
+        area_id: null,
+        modo_convidado: false
       });
       state.salvarJogadorLocal();
       state.limparSessaoLocal();
@@ -410,22 +560,12 @@ function atribuirEventos(container) {
     };
   }
 
-  // 6. Botão JOGAR AGORA
-  const btnJogar = container.querySelector('#btn-jogar');
-  if (btnJogar) {
-    btnJogar.onclick = () => {
+  // G. Botão JOGAR DESAFIO DA SEMANA (Oficial)
+  const btnJogarOficial = container.querySelector('#btn-jogar-oficial');
+  if (btnJogarOficial) {
+    btnJogarOficial.onclick = () => {
       const currentState = state.get();
 
-      // Validação de autenticação prévia
-      if (!currentState.email || !currentState.jogador || !currentState.area) {
-        fluxoAuth.erro = 'Por favor, conecte-se com seu e-mail institucional antes de iniciar a partida.';
-        reRender();
-        const cardAuth = container.querySelector('#card-identificacao');
-        if (cardAuth) cardAuth.scrollIntoView({ behavior: 'smooth' });
-        return;
-      }
-
-      // 1ª barreira: Termo de privacidade aceito?
       if (!currentState.termo_privacidade_aceito) {
         abrirModalPrivacidade({
           onAceitar: () => {
@@ -441,20 +581,18 @@ function atribuirEventos(container) {
 
   function verificarTutorialESeguir() {
     const currentState = state.get();
-    // 2ª barreira: Tutorial visto?
     if (!currentState.tutorial_visto) {
       abrirModalTutorial({
         onConcluir: () => {
-          iniciarPartidaENavegar();
+          iniciarPartidaOficialENavegar();
         }
       });
       return;
     }
-
-    iniciarPartidaENavegar();
+    iniciarPartidaOficialENavegar();
   }
 
-  async function iniciarPartidaENavegar() {
+  async function iniciarPartidaOficialENavegar() {
     const currentState = state.get();
     let cartas = [];
     try {
@@ -470,37 +608,26 @@ function atribuirEventos(container) {
       jogador: currentState.jogador,
       area: currentState.area,
       area_id: currentState.area_id,
-      partida_vale_ranking: currentState.partida_vale_ranking,
-      cartas
+      semana: semanaAtual(),
+      cartas: cartas,
+      modo_convidado: false
     });
     navigateRef('tabuleiro');
   }
 
-  // 7. Botão Ver Ranking
+  // H. Botões de Navegação Auxiliares
   const btnRanking = container.querySelector('#btn-ver-ranking');
   if (btnRanking) {
-    btnRanking.onclick = () => {
-      navigateRef('ranking');
-    };
+    btnRanking.onclick = () => navigateRef('ranking');
   }
 
-  // 8. Botão Como Jogar (Rever Tutorial)
   const btnTutorial = container.querySelector('#btn-abrir-tutorial');
   if (btnTutorial) {
-    btnTutorial.onclick = () => {
-      abrirModalTutorial({ forcarAbertura: true });
-    };
+    btnTutorial.onclick = () => abrirModalTutorial();
   }
 
-  // 9. Botão Privacidade & LGPD (Consultar Termo)
   const btnPrivacidade = container.querySelector('#btn-abrir-privacidade');
   if (btnPrivacidade) {
-    btnPrivacidade.onclick = () => {
-      abrirModalPrivacidade({ somenteLeitura: true });
-    };
+    btnPrivacidade.onclick = () => abrirModalPrivacidade();
   }
-}
-
-export function desmontar(container) {
-  // Limpeza de referências
 }

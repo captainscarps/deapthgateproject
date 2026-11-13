@@ -115,8 +115,15 @@ serve(async (req) => {
       });
     }
 
+    const formatoSemanaValido = /^[0-9]{4}-W(0[1-9]|[1-4][0-9]|5[0-3])$/.test(semana);
+    if (!formatoSemanaValido) {
+      return new Response(JSON.stringify({ erro: `Formato de semana inválido: ${semana}.` }), {
+        status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" }
+      });
+    }
+
     const semanasValidas = calcularSemanasPermitidas();
-    if (!semanasValidas.includes(semana)) {
+    if (!body.dry_run && !semanasValidas.includes(semana)) {
       return new Response(JSON.stringify({ erro: `Semana ${semana} inválida. Permitidas: ${semanasValidas.join(", ")}.` }), {
         status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" }
       });
@@ -170,7 +177,7 @@ serve(async (req) => {
         });
       }
 
-      if (carta.opcoes && Array.isArray(carta.opcoes)) {
+      if (carta.opcoes && Array.isArray(carta.opcoes) && carta.opcoes.length > 0) {
         if (opIdx < 0 || opIdx >= carta.opcoes.length) {
           return new Response(JSON.stringify({ erro: `Índice de opção inválido (${opIdx}) para a carta '${cartaId}'.` }), {
             status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" }
@@ -204,6 +211,22 @@ serve(async (req) => {
     const bonusZeroArmadilhas = armadilhas === 0 ? 100 : 0;
     const pontosFinais = Math.max(0, ptsTokens + ptsDesafios + ptsPenseAntes + bonusZeroArmadilhas);
 
+    // MODO DRY_RUN: Calcula e devolve os pontos SEM gravar no banco
+    if (body.dry_run === true) {
+      return new Response(JSON.stringify({
+        sucesso: true,
+        dry_run: true,
+        pontos_oficiais: pontosFinais,
+        tokens_finais: tokens,
+        acertos: acertosDesafio,
+        armadilhas: armadilhas,
+        bonus_pense_antes: bonusPenseAntes,
+        conta_ranking: false
+      }), {
+        status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" }
+      });
+    }
+
     // 6. Grava com a pontuação auditada do SERVIDOR e jogada_em
     const { data: partida, error: partidaError } = await supabaseAdmin
       .from("partidas")
@@ -213,6 +236,7 @@ serve(async (req) => {
         pontos: pontosFinais,
         acertos: acertosDesafio,
         armadilhas: armadilhas,
+        bonus_pense_antes: bonusPenseAntes,
         semana: semana,
         versao_cartas: versaoCartas,
         historico: historico,

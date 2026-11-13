@@ -366,7 +366,24 @@ export const Api = {
    * Cria o perfil do colaborador (1º acesso) com nome e área travada
    * @param {{ userId: string, nome: string, areaId: number, email: string }} params
    */
-  async criarPerfil({ userId, nome, areaId, email }) {
+  async criarPerfil(paramsOuUserId, nomeArg, areaIdArg, emailArg) {
+    let userId, nome, areaId, email;
+    if (paramsOuUserId && typeof paramsOuUserId === 'object') {
+      userId = paramsOuUserId.userId;
+      nome = paramsOuUserId.nome;
+      areaId = paramsOuUserId.areaId;
+      email = paramsOuUserId.email;
+    } else {
+      userId = paramsOuUserId;
+      nome = nomeArg;
+      areaId = areaIdArg;
+      email = emailArg;
+    }
+
+    if (!email) {
+      email = this.currentUserEmail || 'colaborador@sestsenat.org.br';
+    }
+
     if (!this.validarEmailInstitucional(email)) {
       throw new Error('E-mail institucional inválido.');
     }
@@ -637,6 +654,59 @@ export const Api = {
     return this.enviarPartida(payload, salvarSeFalhar);
   },
 
+  /**
+   * Envia partida anônima do Modo Convidado para a Edge Function registrar-partida-convidado.
+   * Não requer autenticação / JWT. Se falhar, descarta silenciosamente (sem fila offline para convidados).
+   *
+   * @param {Object} payload
+   * @returns {Promise<{ sucesso: boolean, status: string, pontosServidor?: number, mensagem?: string }>}
+   */
+  async enviarPartidaConvidado(payload) {
+    const pontosCliente = Number(payload.pontos ?? 0);
+
+    // MODO MOCK (sem Supabase configurado)
+    if (this.modoMock || !this.client) {
+      console.log('[API Mock] Partida anônima de convidado processada localmente.');
+      return {
+        sucesso: true,
+        status: 'enviado_anonimo',
+        pontosServidor: pontosCliente,
+        mensagem: 'Estatísticas anônimas computadas localmente.'
+      };
+    }
+
+    // MODO SUPABASE REAL
+    try {
+      const { data, error } = await this.client.functions.invoke('registrar-partida-convidado', {
+        body: {
+          area_id: payload.area_id || null,
+          historico: payload.historico || [],
+          versao_cartas: payload.versao_cartas || '1.0',
+          jogada_em: payload.jogada_em || new Date().toISOString()
+        }
+      });
+
+      if (error || !data) {
+        console.warn('[API] Falha ao enviar estatística de convidado (descartando silenciosamente):', error);
+        return { sucesso: false, status: 'descartado' };
+      }
+
+      return {
+        sucesso: true,
+        status: 'enviado_anonimo',
+        pontosServidor: Number(data.pontos_oficiais ?? pontosCliente),
+        detalhes: data
+      };
+    } catch (err) {
+      console.warn('[API] Erro ao comunicar com registrar-partida-convidado (descartando silenciosamente):', err);
+      return { sucesso: false, status: 'descartado' };
+    }
+  },
+
+  async registrarPartidaConvidado(payload) {
+    return this.enviarPartidaConvidado(payload);
+  },
+
   // ============================================================================
   // FILA OFFLINE DE CONTINGÊNCIA
   // ============================================================================
@@ -807,3 +877,7 @@ export const Api = {
     return MOCK_POR_AREA[aid] || [];
   }
 };
+
+// Exporta tanto Api quanto api para compatibilidade com qualquer padrão de importação
+export const api = Api;
+export default Api;

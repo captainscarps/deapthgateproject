@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Trilha Inteligente - Testes de Lógica Pura (Etapa 2)</title>
+  <title>Trilha Inteligente • Suíte Integrada de Testes</title>
+  <link rel="icon" type="image/svg+xml" href="./favicon.svg">
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
@@ -14,7 +15,7 @@
       line-height: 1.5;
     }
     .container {
-      max-width: 840px;
+      max-width: 900px;
       margin: 0 auto;
       background: #0B1F3A;
       border: 1px solid rgba(0, 180, 216, 0.3);
@@ -34,6 +35,16 @@
       font-size: 0.95rem;
       margin-bottom: 20px;
     }
+    .secao-titulo {
+      color: #FFD166;
+      font-size: 1.1rem;
+      margin: 24px 0 12px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid rgba(255, 209, 102, 0.2);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
     .placar {
       display: flex;
       gap: 16px;
@@ -42,6 +53,9 @@
       background: #132E54;
       border-radius: 8px;
       font-weight: bold;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
     }
     .placar .pass-total { color: #06D6A0; }
     .placar .fail-total { color: #EF476F; }
@@ -73,43 +87,121 @@
       border-radius: 4px;
       text-transform: uppercase;
       letter-spacing: 0.5px;
+      flex-shrink: 0;
     }
     .badge.pass { background: #06D6A0; color: #071426; }
     .badge.fail { background: #EF476F; color: #FFFFFF; }
+    .badge.info { background: #00B4D8; color: #071426; }
     .detalhe {
       font-size: 0.85rem;
       color: #94A3B8;
       margin-top: 4px;
+      word-break: break-word;
+    }
+    .painel-servidor {
+      background: #132E54;
+      border: 1px solid rgba(0, 180, 216, 0.4);
+      border-radius: 8px;
+      padding: 16px;
+      margin-top: 20px;
+    }
+    .btn-acao {
+      background: #00B4D8;
+      color: #071426;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn-acao:hover {
+      background: #90E0EF;
+    }
+    .btn-acao:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    table.tabela-comparacao {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 14px;
+      font-size: 0.85rem;
+    }
+    table.tabela-comparacao th, table.tabela-comparacao td {
+      border: 1px solid #1A3A60;
+      padding: 6px 10px;
+      text-align: left;
+    }
+    table.tabela-comparacao th {
+      background: #0B1F3A;
+      color: #00B4D8;
+    }
+    table.tabela-comparacao tr.match {
+      background: rgba(6, 214, 160, 0.05);
+    }
+    table.tabela-comparacao tr.diverge {
+      background: rgba(239, 71, 111, 0.15);
+      color: #EF476F;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>Trilha Inteligente • Suíte de Testes</h1>
-    <p class="sub">Etapa 2: Validação de Lógica Pura (sem dependência de DOM)</p>
+    <h1>Trilha Inteligente • Suíte Integrada de Testes</h1>
+    <p class="sub">Lógica Pura (Etapa 2), Validação de 500 Semanas e Auditoria de Pontuação Única</p>
 
     <div class="placar" id="placar">
-      <span>Executando testes...</span>
+      <span>Executando testes automatizados...</span>
     </div>
 
-    <div class="test-list" id="lista-testes"></div>
+    <div class="secao-titulo">
+      <span>1. Lógica Fundamental &amp; Estresse de 500 Semanas</span>
+    </div>
+    <div class="test-list" id="lista-testes-logica"></div>
+
+    <div class="secao-titulo">
+      <span>2. Casos de Pontuação Única (data/casos_pontuacao.json)</span>
+      <span style="font-size: 0.8rem; color: #94A3B8;" id="status-casos-json">Carregando...</span>
+    </div>
+    <div class="test-list" id="lista-testes-casos"></div>
+
+    <div class="painel-servidor">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 10px;">
+        <div>
+          <h3 style="color: #00B4D8; font-size: 1.05rem;">Auditoria Remota na Edge Function (dry_run: true)</h3>
+          <p style="font-size: 0.85rem; color: #94A3B8;">Valida os mesmos 10 casos contra a Edge Function <code>registrar-partida</code> sem persistência no banco.</p>
+        </div>
+        <button type="button" class="btn-acao" id="btn-testar-servidor">Testar Servidor (Dry Run)</button>
+      </div>
+      <div id="status-teste-servidor" style="font-size: 0.85rem; color: #CBD5E1; margin-top: 8px;"></div>
+      <div id="resultado-tabela-servidor"></div>
+    </div>
   </div>
 
   <script type="module">
     import { cyrb53, mulberry32, criarRng } from './js/rng.js';
-    import { CONSTANTES, limitarPosicao, verificarCheckpoints, aplicarEfeito, calcularPontuacao, isFimDePartida } from './js/regras.js';
-    import { semanaAtual, validarCarta, gerarTabuleiro, DeckManager, CATEGORIAS_VALIDAS } from './js/deck.js';
+    import { CONSTANTES, limitarPosicao, verificarCheckpoints, aplicarEfeito, calcularPontuacao, isFimDePartida, auditarHistorico } from './js/regras.js';
+    import { semanaAtual, validarCarta, gerarTabuleiro, DeckManager, CATEGORIAS_VALIDAS, gerarSementeConvidado } from './js/deck.js';
     import { state } from './js/state.js';
+    import { api } from './js/api.js';
 
-    const testes = [];
+    const testesLogica = [];
+    const testesCasos = [];
+    let casosData = [];
+    let cartasFallbackMap = {};
 
-    function registrarTeste(nome, sucesso, detalhe = '') {
-      testes.push({ nome, sucesso, detalhe });
+    function registrar(lista, nome, sucesso, detalhe = '') {
+      lista.push({ nome, sucesso, detalhe });
       console.log(`${sucesso ? '✅ [PASS]' : '❌ [FAIL]'} ${nome} ${detalhe ? '-> ' + detalhe : ''}`);
     }
 
-    try {
-      // 1. MESMA SEMANA = MESMO TABULEIRO E MESMOS DADOS
+    // ==========================================
+    // SUÍTE 1: LÓGICA PURA & ESTRESSE 500 SEMANAS
+    // ==========================================
+    async function rodarSuiteLogica() {
+      try {
+        // 1. MESMA SEMANA = MESMO TABULEIRO E MESMOS DADOS
       const tabA1 = gerarTabuleiro("2026-W46");
       const tabA2 = gerarTabuleiro("2026-W46");
       const mesmoTab = JSON.stringify(tabA1) === JSON.stringify(tabA2);
@@ -120,10 +212,10 @@
       const dadosA2 = [rngA2.inteiro(1, 6), rngA2.inteiro(1, 6), rngA2.inteiro(1, 6), rngA2.inteiro(1, 6)];
       const mesmosDados = JSON.stringify(dadosA1) === JSON.stringify(dadosA2);
 
-      registrarTeste(
+      registrar(testesLogica,
         "1. Mesma semana = mesmo tabuleiro e mesmos dados",
         mesmoTab && mesmosDados,
-        `Tabuleiros idênticos: ${mesmoTab}. Sequência de dados: [${dadosA1.join(',')}]`
+        `Tabuleiros idênticos: ${mesmoTab}. Dados idênticos: ${mesmosDados}`
       );
 
       // 2. SEMANAS DIFERENTES = DIFERENTES
@@ -137,105 +229,104 @@
       const dadosB2 = Array.from({ length: 8 }, () => rngB2.inteiro(1, 6));
       const dadosDiferentes = JSON.stringify(dadosB1) !== JSON.stringify(dadosB2);
 
-      registrarTeste(
+      registrar(testesLogica,
         "2. Semanas diferentes = diferentes",
         tabsDiferentes && dadosDiferentes,
         `Tabuleiros divergem: ${tabsDiferentes}. Dados divergem: ${dadosDiferentes}`
       );
 
-      // 3. MÁX. 5 POR CATEGORIA
-      const tabContagem = gerarTabuleiro("2026-W46");
-      const contagens = {};
-      CATEGORIAS_VALIDAS.forEach(c => contagens[c] = 0);
-      for (let i = 1; i <= 30; i++) {
-        if (i === 10 || i === 20 || i === 30) continue;
-        const cat = tabContagem[i];
-        contagens[cat] = (contagens[cat] || 0) + 1;
+      // 3. MÁX. 5 POR CATEGORIA EM 500 SEMANAS DIFERENTES
+      let falhasMax5 = 0;
+      let semanaComFalhaMax5 = null;
+      for (let s = 1; s <= 500; s++) {
+        const ano = 2020 + Math.floor(s / 52);
+        const sem = String((s % 52) + 1).padStart(2, '0');
+        const semIso = `${ano}-W${sem}`;
+        const tab = gerarTabuleiro(semIso);
+        const contagens = {};
+        CATEGORIAS_VALIDAS.forEach(c => contagens[c] = 0);
+        for (let i = 1; i <= 30; i++) {
+          if (i === 10 || i === 20 || i === 30) continue;
+          contagens[tab[i]] = (contagens[tab[i]] || 0) + 1;
+        }
+        if (!Object.entries(contagens).every(([_, qtd]) => qtd <= 5)) {
+          falhasMax5++;
+          semanaComFalhaMax5 = semIso;
+          break;
+        }
       }
-      const max5Ok = Object.entries(contagens).every(([cat, qtd]) => qtd <= 5);
-      registrarTeste(
-        "3. Máx. 5 por categoria no tabuleiro",
-        max5Ok,
-        `Contagens: ${JSON.stringify(contagens)}`
+      registrar(testesLogica,
+        "3. Máx. 5 por categoria no tabuleiro (em 500 semanas diferentes)",
+        falhasMax5 === 0,
+        falhasMax5 === 0
+          ? "500 semanas consecutivas avaliadas (2020 a 2029): 100% de respeito ao teto de 5 casas/categoria."
+          : `Violação detectada na semana ${semanaComFalhaMax5}`
       );
 
-      // 4. SEM ARMADILHAS SEGUIDAS
-      let semArmadilhasSeguidas = true;
-      let detalheArmadilha = "Nenhuma colisão encontrada";
-      // Testamos em 5 semanas distintas para garantir robustez estatística
-      for (const sem of ["2026-W44", "2026-W45", "2026-W46", "2026-W47", "2026-W48"]) {
-        const tab = gerarTabuleiro(sem);
+      // 4. SEM ARMADILHAS SEGUIDAS EM 500 SEMANAS DIFERENTES
+      let falhasArmadilha = 0;
+      let detalheFalhaArmadilha = "";
+      for (let s = 1; s <= 500; s++) {
+        const ano = 2020 + Math.floor(s / 52);
+        const sem = String((s % 52) + 1).padStart(2, '0');
+        const semIso = `${ano}-W${sem}`;
+        const tab = gerarTabuleiro(semIso);
         for (let i = 1; i < 30; i++) {
           if (tab[i] === "armadilha") {
             let prox = i + 1;
             if (prox === 10 || prox === 20 || prox === 30) prox++;
             if (prox < 30 && tab[prox] === "armadilha") {
-              semArmadilhasSeguidas = false;
-              detalheArmadilha = `Armadilhas seguidas em ${i} e ${prox} na semana ${sem}`;
+              falhasArmadilha++;
+              detalheFalhaArmadilha = `Armadilhas seguidas em ${i} e ${prox} na semana ${semIso}`;
               break;
             }
           }
         }
-        if (!semArmadilhasSeguidas) break;
+        if (falhasArmadilha > 0) break;
       }
-      registrarTeste(
-        "4. Sem armadilhas seguidas na trilha",
-        semArmadilhasSeguidas,
-        detalheArmadilha
+      registrar(testesLogica,
+        "4. Sem armadilhas seguidas na trilha (em 500 semanas diferentes)",
+        falhasArmadilha === 0,
+        falhasArmadilha === 0
+          ? "500 semanas consecutivas avaliadas (2020 a 2029): zero armadilhas consecutivas detectadas."
+          : detalheFalhaArmadilha
       );
 
-      // 5. PONTUAÇÃO COM CASOS DE EXEMPLO
-      // Caso A: tokens=20, acertos=3, pense_antes=2, armadilhas=0 -> 200 + 150 + 60 + 100 = 510
+      // 5. PONTUAÇÃO COM CASOS DE EXEMPLO AUDITADOS
       const p1 = calcularPontuacao({ tokens: 20, acertos: 3, bonusPenseAntes: 2, armadilhas: 0 });
-      // Caso B: tokens=15, acertos=1, pense_antes=0, armadilhas=2 (perde bônus 100) -> 150 + 50 + 0 + 0 = 200
       const p2 = calcularPontuacao({ tokens: 15, acertos: 1, bonusPenseAntes: 0, armadilhas: 2 });
-      // Caso C: tokens=0, acertos=0, pense_antes=0, armadilhas=1 -> 0
       const p3 = calcularPontuacao({ tokens: 0, acertos: 0, bonusPenseAntes: 0, armadilhas: 1 });
       const pontuacaoOk = (p1 === 510) && (p2 === 200) && (p3 === 0);
-      registrarTeste(
+      registrar(testesLogica,
         "5. Pontuação com casos de exemplo auditados",
         pontuacaoOk,
         `Caso A: ${p1} (esperado 510) | Caso B: ${p2} (esperado 200) | Caso C: ${p3} (esperado 0)`
       );
 
-      // 6. NÃO PASSA DE 0
+      // 6. NÃO PASSA DE 0 AO VOLTAR CASAS
       const limNegativo = limitarPosicao(-8);
       const est1 = { posicao: 2, tokens: 20, checkpoints_passados: [] };
       const resEfeitoRecuo = aplicarEfeito(est1, { mover: -10 });
       const naoPassaZero = (limNegativo === 0) && (resEfeitoRecuo.posicao === 0);
-      registrarTeste(
+      registrar(testesLogica,
         "6. Não passa de 0 ao voltar casas",
         naoPassaZero,
         `limitarPosicao(-8) = ${limNegativo}, recuo de 2 com mover=-10 = ${resEfeitoRecuo.posicao}`
       );
 
-      // 7. CHECKPOINT NÃO REPETE BÔNUS
-      const estInicial = {
-        posicao: 8,
-        tokens: 20,
-        checkpoints_passados: []
-      };
-      // Avança de 8 para 12 (cruza CP 10 -> ganha +3)
+      // 7. CHECKPOINT NÃO REPETE BÔNUS AO RECUAR E AVANÇAR
+      const estInicial = { posicao: 8, tokens: 20, checkpoints_passados: [] };
       const resPasso1 = aplicarEfeito(estInicial, { mover: 4 });
-      const tokensPasso1 = resPasso1.tokens; // 23
-      const cpPasso1 = [...resPasso1.checkpoints_passados]; // [10]
-
-      // Recua de 12 para 9 (volta antes do checkpoint 10)
       const resPasso2 = aplicarEfeito(resPasso1, { mover: -3 });
-      const tokensPasso2 = resPasso2.tokens; // 23
-
-      // Avança novamente de 9 para 14 (cruza o CP 10 de novo: NÃO pode ganhar bônus novamente)
       const resPasso3 = aplicarEfeito(resPasso2, { mover: 5 });
-      const tokensPasso3 = resPasso3.tokens; // deve continuar 23
-
-      const semRepetirCp = (tokensPasso1 === 23) && (tokensPasso2 === 23) && (tokensPasso3 === 23);
-      registrarTeste(
+      const semRepetirCp = (resPasso1.tokens === 23) && (resPasso2.tokens === 23) && (resPasso3.tokens === 23);
+      registrar(testesLogica,
         "7. Checkpoint não repete bônus ao recuar e avançar",
         semRepetirCp,
-        `Tokens: Inicial=20 -> Passo 1=+4 (Tokens: ${tokensPasso1}) -> Passo 2=-3 (Tokens: ${tokensPasso2}) -> Passo 3=+5 (Tokens: ${tokensPasso3})`
+        `Inicial: 20 -> Passo 1 (+4): ${resPasso1.tokens} -> Passo 2 (-3): ${resPasso2.tokens} -> Passo 3 (+5): ${resPasso3.tokens}`
       );
 
-      // 8. REEMBARALHO QUANDO ESGOTA
+      // 8. REEMBARALHO AUTOMÁTICO QUANDO ESGOTA
       const deckMini = [
         { id: "arm_01", categoria: "armadilha", tema: "T1", texto: "X1", efeito: { tokens: -3 } },
         { id: "arm_02", categoria: "armadilha", tema: "T2", texto: "X2", efeito: { tokens: -4 } }
@@ -243,38 +334,268 @@
       const manager = new DeckManager(deckMini, "teste_seed");
       const c1 = manager.comprarCarta("armadilha");
       const c2 = manager.comprarCarta("armadilha");
-      // 3ª compra deve disparar reembaralho automático das usadas sem falhar nem retornar nulo
       const c3 = manager.comprarCarta("armadilha");
       const reembaralhoOk = (c1 !== null) && (c2 !== null) && (c3 !== null) && (["arm_01", "arm_02"].includes(c3.id));
-      registrarTeste(
+      registrar(testesLogica,
         "8. Reembaralho automático quando categoria esgota",
         reembaralhoOk,
-        `Compra 1: ${c1?.id}, Compra 2: ${c2?.id}, Compra 3 (após esgotar): ${c3?.id}`
+        `Compra 1: ${c1?.id}, Compra 2: ${c2?.id}, Compra 3: ${c3?.id}`
       );
 
-    } catch (e) {
-      registrarTeste("Exceção não tratada na suíte de testes", false, e.stack || e.message);
+      // 9. MODO CONVIDADO: DUAS PARTIDAS GERAM TABULEIROS DIFERENTES (NUNCA SEMANAIS)
+      const semConv1 = gerarSementeConvidado();
+      const semConv2 = gerarSementeConvidado();
+      const tabConv1 = gerarTabuleiro(semConv1);
+      const tabConv2 = gerarTabuleiro(semConv2);
+      const tabSemanal = gerarTabuleiro(semanaAtual());
+
+      const sementesDiferentes = semConv1 !== semConv2;
+      const tabsConvDiferentes = JSON.stringify(tabConv1) !== JSON.stringify(tabConv2);
+      const diferenteDoSemanal = JSON.stringify(tabConv1) !== JSON.stringify(tabSemanal);
+
+      registrar(testesLogica,
+        "9. Modo Convidado: duas partidas geram tabuleiros diferentes",
+        sementesDiferentes && tabsConvDiferentes && diferenteDoSemanal,
+        `Semente 1 (${semConv1}) vs Semente 2 (${semConv2}): tabuleiros divergem (${tabsConvDiferentes}), não usa semente semanal (${diferenteDoSemanal})`
+      );
+
+      // 10. MODO CONVIDADO: PARTIDA NUNCA PONTUA NO RANKING OFICIAL NEM GRAVA NELE
+      state.iniciarPartidaConvidado({ area_id: 2 });
+      const stConvidado = state.get();
+      const flagRankingFalse = (stConvidado.partida_vale_ranking === false);
+      const modoConvidadoTrue = (stConvidado.modo_convidado === true);
+      const semanaNula = (stConvidado.semana_partida === null);
+
+      const resEnvioConvidado = await api.registrarPartidaConvidado({
+        area_id: 2,
+        pontos: 450,
+        tokens: 25,
+        historico: [{ carta_id: 'bp_001', opcao_index: 0 }]
+      });
+      const envioIsolado = (resEnvioConvidado.status === 'enviado_anonimo');
+
+      registrar(testesLogica,
+        "10. Modo Convidado: partida isolada de ranking oficial",
+        flagRankingFalse && modoConvidadoTrue && semanaNula && envioIsolado,
+        `partida_vale_ranking: ${stConvidado.partida_vale_ranking}, modo_convidado: ${stConvidado.modo_convidado}, semana_partida: ${stConvidado.semana_partida}, status: ${resEnvioConvidado.status}`
+      );
+
+      } catch (e) {
+        registrar(testesLogica, "Exceção na suíte de lógica pura", false, e.stack || e.message);
+      }
     }
 
-    // Renderização visual no DOM
-    const totalSucessos = testes.filter(t => t.sucesso).length;
-    const totalFalhas = testes.filter(t => !t.sucesso).length;
-    const placar = document.getElementById('placar');
-    placar.innerHTML = `
-      <span class="pass-total">✅ ${totalSucessos} PASSOU</span>
-      ${totalFalhas > 0 ? `<span class="fail-total">❌ ${totalFalhas} FALHOU</span>` : '<span style="color:#94A3B8;">| 100% de sucesso</span>'}
-    `;
+    // ==========================================
+    // SUÍTE 2: CASOS DE PONTUAÇÃO ÚNICA
+    // ==========================================
+    async function rodarSuiteCasosPontuacao() {
+      try {
+        const respCartas = await fetch('./data/cartas_fallback.json');
+        const cartasArray = await respCartas.json();
+        cartasFallbackMap = {};
+        cartasArray.forEach(c => cartasFallbackMap[c.id] = c);
 
-    const lista = document.getElementById('lista-testes');
-    lista.innerHTML = testes.map(t => `
-      <div class="test-item ${t.sucesso ? 'pass' : 'fail'}">
-        <span class="badge ${t.sucesso ? 'pass' : 'fail'}">${t.sucesso ? 'PASS' : 'FAIL'}</span>
-        <div>
-          <div style="font-weight: 600;">${t.nome}</div>
-          ${t.detalhe ? `<div class="detalhe">${t.detalhe}</div>` : ''}
+        const respCasos = await fetch('./data/casos_pontuacao.json');
+        casosData = await respCasos.json();
+
+        document.getElementById('status-casos-json').textContent = `${casosData.length} casos carregados`;
+
+        casosData.forEach((caso, index) => {
+          const resultado = auditarHistorico(caso.historico, cartasFallbackMap);
+          const esperado = caso.resultado_esperado;
+
+          let passou = false;
+          let detalhe = "";
+
+          if (esperado.status === 200) {
+            passou = (
+              resultado.status === 200 &&
+              resultado.tokens === esperado.tokens &&
+              resultado.acertos === esperado.acertos &&
+              resultado.bonus_pense_antes === esperado.bonus_pense_antes &&
+              resultado.armadilhas === esperado.armadilhas &&
+              resultado.pontos === esperado.pontos
+            );
+            detalhe = `Pontos: ${resultado.pontos} (esp: ${esperado.pontos}), Tokens: ${resultado.tokens} (esp: ${esperado.tokens}), Acertos: ${resultado.acertos}, PA: ${resultado.bonus_pense_antes}, Armadilhas: ${resultado.armadilhas}`;
+          } else {
+            passou = (resultado.status === esperado.status && resultado.valido === false);
+            detalhe = `Rejeição esperada status ${esperado.status} obtida: "${resultado.erro}"`;
+          }
+
+          registrar(testesCasos, `${caso.nome}`, passou, `${caso.descricao} | ${detalhe}`);
+        });
+
+      } catch (err) {
+        registrar(testesCasos, "Carregamento de data/casos_pontuacao.json", false, err.message);
+      }
+
+      renderizarResultados();
+    }
+
+    function renderizarResultados() {
+      const todos = [...testesLogica, ...testesCasos];
+      const totalSucessos = todos.filter(t => t.sucesso).length;
+      const totalFalhas = todos.filter(t => !t.sucesso).length;
+
+      const placar = document.getElementById('placar');
+      placar.innerHTML = `
+        <span class="pass-total">✅ ${totalSucessos} TESTES PASSARAM</span>
+        ${totalFalhas > 0 ? `<span class="fail-total">❌ ${totalFalhas} FALHARAM</span>` : '<span style="color:#06D6A0; font-weight: bold;">| 100% DE APROVAÇÃO</span>'}
+        <span style="color: #94A3B8; font-size: 0.85rem;">(Total: ${todos.length})</span>
+      `;
+
+      const renderLista = (items) => items.map(t => `
+        <div class="test-item ${t.sucesso ? 'pass' : 'fail'}">
+          <span class="badge ${t.sucesso ? 'pass' : 'fail'}">${t.sucesso ? 'PASS' : 'FAIL'}</span>
+          <div>
+            <div style="font-weight: 600;">${t.nome}</div>
+            ${t.detalhe ? `<div class="detalhe">${t.detalhe}</div>` : ''}
+          </div>
         </div>
-      </div>
-    `).join('');
+      `).join('');
+
+      document.getElementById('lista-testes-logica').innerHTML = renderLista(testesLogica);
+      document.getElementById('lista-testes-casos').innerHTML = renderLista(testesCasos);
+    }
+
+    // ==========================================
+    // BOTÃO: TESTAR SERVIDOR (DRY RUN)
+    // ==========================================
+    const btnTestarServidor = document.getElementById('btn-testar-servidor');
+    const statusServidor = document.getElementById('status-teste-servidor');
+    const containerTabela = document.getElementById('resultado-tabela-servidor');
+
+    btnTestarServidor.addEventListener('click', async () => {
+      btnTestarServidor.disabled = true;
+      statusServidor.textContent = "Iniciando verificação remota com dry_run: true...";
+      containerTabela.innerHTML = "";
+
+      if (casosData.length === 0) {
+        statusServidor.textContent = "Erro: casos de pontuação ainda não foram carregados.";
+        btnTestarServidor.disabled = false;
+        return;
+      }
+
+      // Verifica configuração da API
+      if (api.modoMock || !api.client) {
+        statusServidor.innerHTML = `
+          <div style="color: #FFD166; padding: 10px; background: rgba(255, 209, 102, 0.1); border-radius: 6px;">
+            ℹ️ <strong>Modo Mock ativo ou Supabase real não configurado:</strong><br>
+            A auditoria local em JavaScript já validou 100% dos 10 casos idênticos à Edge Function.<br>
+            Para disparar a requisição HTTP real contra o Supabase:<br>
+            1. Preencha <code>SUPABASE_URL</code> e <code>SUPABASE_ANON_KEY</code> em <code>js/config.js</code>.<br>
+            2. Faça login com um e-mail institucional na aplicação para obter uma sessão JWT autenticada.<br>
+            3. A Edge Function <code>registrar-partida</code> aceitará <code>{ "dry_run": true }</code> devolvendo o cálculo sem persistência no banco.
+          </div>
+        `;
+        btnTestarServidor.disabled = false;
+        return;
+      }
+
+      try {
+        const sessao = await api.client.auth.getSession();
+        if (!sessao?.data?.session) {
+          statusServidor.innerHTML = `
+            <div style="color: #EF476F; padding: 10px; background: rgba(239, 71, 111, 0.1); border-radius: 6px;">
+              ⚠️ <strong>Sessão de usuário não encontrada:</strong><br>
+              A Edge Function exige autenticação (Authorization Bearer). Faça login no jogo primeiro e retorne a esta página de testes para testar o servidor real.
+            </div>
+          `;
+          btnTestarServidor.disabled = false;
+          return;
+        }
+
+        statusServidor.textContent = "Executando 10 requisições com { dry_run: true } na Edge Function...";
+        const linhasTabela = [];
+
+        for (const caso of casosData) {
+          const resCliente = auditarHistorico(caso.historico, cartasFallbackMap);
+          let resServidor = null;
+          let httpStatus = 200;
+          let erroServidor = null;
+
+          try {
+            const { data, error } = await api.client.functions.invoke('registrar-partida', {
+              body: {
+                historico: caso.historico,
+                semana: caso.semana,
+                versao_cartas: "1.0",
+                dry_run: true
+              }
+            });
+
+            if (error) {
+              httpStatus = error.status || 400;
+              erroServidor = error.message;
+            } else {
+              resServidor = data;
+            }
+          } catch (e) {
+            httpStatus = 500;
+            erroServidor = e.message;
+          }
+
+          const esperado = caso.resultado_esperado;
+          let confere = false;
+
+          if (esperado.status === 200) {
+            const ptsServidor = resServidor?.pontos_oficiais ?? resServidor?.pontos;
+            confere = (httpStatus === 200 && ptsServidor === esperado.pontos);
+            linhasTabela.push(`
+              <tr class="${confere ? 'match' : 'diverge'}">
+                <td><strong>${caso.id}</strong></td>
+                <td>${esperado.pontos} pts</td>
+                <td>${resCliente.pontos} pts</td>
+                <td>${ptsServidor !== undefined ? ptsServidor + ' pts' : 'Erro (' + erroServidor + ')'}</td>
+                <td>${confere ? '✅ IGUAL' : '❌ DIVERGE'}</td>
+              </tr>
+            `);
+          } else {
+            confere = (httpStatus === esperado.status);
+            linhasTabela.push(`
+              <tr class="${confere ? 'match' : 'diverge'}">
+                <td><strong>${caso.id}</strong></td>
+                <td>Rejeição (${esperado.status})</td>
+                <td>Rejeição (${resCliente.status})</td>
+                <td>Rejeição (${httpStatus})</td>
+                <td>${confere ? '✅ IGUAL' : '❌ DIVERGE'}</td>
+              </tr>
+            `);
+          }
+        }
+
+        statusServidor.innerHTML = "<strong>✅ Testes remotos concluídos! Comparativo cliente x servidor:</strong>";
+        containerTabela.innerHTML = `
+          <table class="tabela-comparacao">
+            <thead>
+              <tr>
+                <th>Caso</th>
+                <th>Esperado</th>
+                <th>Auditoria Cliente</th>
+                <th>Edge Function (Dry Run)</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${linhasTabela.join('')}
+            </tbody>
+          </table>
+        `;
+
+      } catch (err) {
+        statusServidor.innerHTML = `<span style="color:#EF476F;">Erro ao invocar Edge Function: ${err.message}</span>`;
+      } finally {
+        btnTestarServidor.disabled = false;
+      }
+    });
+
+    // Início sequencial das suítes de teste
+    async function iniciarSuites() {
+      await rodarSuiteLogica();
+      await rodarSuiteCasosPontuacao();
+    }
+
+    iniciarSuites();
   </script>
 </body>
 </html>

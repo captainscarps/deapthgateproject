@@ -62,9 +62,15 @@ export function render(currentState) {
             <span>🏢</span> Classificação de Áreas
           </button>
           <button id="tab-ranking-minha-area" class="ranking-tab-btn ${aba === 'minha_area' ? 'active' : ''}" role="tab" aria-selected="${aba === 'minha_area'}">
-            <span>👤</span> Minha Área
+            <span>👤</span> ${currentState.modo_convidado ? 'Visão por Área' : 'Minha Área'}
           </button>
         </nav>
+
+        ${currentState.modo_convidado ? `
+          <div style="font-size: 0.85rem; color: #94A3B8; background: rgba(0, 180, 216, 0.1); border: 1px solid rgba(0, 180, 216, 0.25); padding: 8px 12px; border-radius: 6px; margin-top: 10px;">
+            👀 <strong>Visualização de Convidado:</strong> você está acompanhando o ranking oficial em modo somente leitura.
+          </div>
+        ` : ''}
       </section>
 
       <!-- CONTEÚDO DO RANKING (ATUALIZADO DINAMICAMENTE) -->
@@ -137,8 +143,9 @@ function renderConteudoRanking(currentState) {
 }
 
 function renderListaAreas(listaAreas, currentState) {
-  const userAreaId = currentState.area_id ? Number(currentState.area_id) : null;
-  const userAreaSigla = currentState.area ? currentState.area.split('-')[0].trim() : '';
+  const ehConvidado = currentState.modo_convidado === true;
+  const userAreaId = !ehConvidado && currentState.area_id ? Number(currentState.area_id) : null;
+  const userAreaSigla = !ehConvidado && currentState.area ? currentState.area.split('-')[0].trim() : '';
 
   // Verifica se a área do usuário está no ranking consolidado
   const areaUsuarioNaLista = userAreaId 
@@ -147,7 +154,7 @@ function renderListaAreas(listaAreas, currentState) {
 
   let alertaQuorum = '';
   // Se o usuário possui área mas ela NÃO está na lista consolidada (HAVING count >= 3)
-  if (userAreaId && !areaUsuarioNaLista) {
+  if (!ehConvidado && userAreaId && !areaUsuarioNaLista) {
     alertaQuorum = `
       <div class="ranking-aviso-quorum" style="margin-bottom: 8px;">
         <span class="aviso-icone">⚠️</span>
@@ -206,13 +213,14 @@ function renderListaAreas(listaAreas, currentState) {
 }
 
 function renderListaMinhaArea(listaColaboradores, currentState) {
-  const userNome = (currentState.jogador || '').trim().toLowerCase();
+  const ehConvidado = currentState.modo_convidado === true;
+  const userNome = (!ehConvidado && currentState.jogador ? currentState.jogador : '').trim().toLowerCase();
   const userAreaStr = currentState.area || 'Sua Área';
   const totalParticipantes = listaColaboradores.length;
 
   // Aviso de quórum na própria área se houver menos de 3 jogadores
   let alertaQuorum = '';
-  if (totalParticipantes < 3) {
+  if (!ehConvidado && totalParticipantes < 3) {
     const faltam = 3 - totalParticipantes;
     alertaQuorum = `
       <div class="ranking-aviso-quorum" style="margin-bottom: 8px;">

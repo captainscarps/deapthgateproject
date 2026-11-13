@@ -4,60 +4,81 @@
 export const CONSTANTES = {
   TOKENS_INICIAIS: 20,
   CASA_INICIAL: 0,
-  CASA_FINAL: 30,
+  CASA_FINAL: 60,
+  CASA_FINAL_LEGADO: 30,
   DADO_MIN: 1,
   DADO_MAX: 6,
+  BONUS_CHECKPOINT_1: 3,
+  BONUS_CHECKPOINT_2: 5,
+  BONUS_CHECKPOINT_3: 0,
   BONUS_CHECKPOINT_10: 3,
   BONUS_CHECKPOINT_20: 5,
   BONUS_CHECKPOINT_30: 0,
-  MAX_RODADAS: 35
+  CHECKPOINT_1_NODO: 27,
+  CHECKPOINT_2_NODO: 53,
+  CHECKPOINT_3_NODO: 60,
+  MAX_RODADAS: 45
 };
 
 /**
- * Garante que a posição permaneça estritamente entre CASA_INICIAL (0) e CASA_FINAL (30)
+ * Garante que a posição permaneça estritamente entre CASA_INICIAL (0) e maxPos (padrão 60)
  * @param {number} pos
+ * @param {number} [maxPos]
  * @returns {number}
  */
-export function limitarPosicao(pos) {
+export function limitarPosicao(pos, maxPos = CONSTANTES.CASA_FINAL) {
   if (typeof pos !== 'number' || isNaN(pos)) return CONSTANTES.CASA_INICIAL;
-  return Math.max(CONSTANTES.CASA_INICIAL, Math.min(CONSTANTES.CASA_FINAL, Math.floor(pos)));
+  return Math.max(CONSTANTES.CASA_INICIAL, Math.min(maxPos, Math.floor(pos)));
 }
 
 /**
  * Verifica passagem ou parada em checkpoints.
+ * Suporta o novo tabuleiro em grafo (nós 27, 53, 60) e legado (10, 20, 30).
  * Regra: O bônus é concedido APENAS na PRIMEIRA vez que o peão alcança ou ultrapassa o checkpoint.
  * Voltar casas e passar novamente NÃO concede bônus.
  * 
  * @param {number} posicaoAnterior
  * @param {number} novaPosicao
  * @param {Iterable<number>|Array<number>} checkpointsPassados - Lista ou Set dos checkpoints já premiados
+ * @param {boolean} [modoGrafo=true]
  * @returns {{ bonusTokens: number, novosCheckpoints: number[], fimDePartida: boolean }}
  */
-export function verificarCheckpoints(posicaoAnterior, novaPosicao, checkpointsPassados = []) {
+export function verificarCheckpoints(posicaoAnterior, novaPosicao, checkpointsPassados = [], modoGrafo = true) {
   const visitados = new Set(checkpointsPassados || []);
   const novos = [];
   let bonusTokens = 0;
 
-  // Só verifica avanço para frente
+  // Checkpoints no grafo (27: CP1, 53: CP2, 60: CP3) e legado (10, 20, 30)
   if (novaPosicao > posicaoAnterior) {
-    if (posicaoAnterior < 10 && novaPosicao >= 10 && !visitados.has(10)) {
-      bonusTokens += CONSTANTES.BONUS_CHECKPOINT_10;
-      novos.push(10);
+    // Checkpoint 1 (Nó 27 no grafo ou 10 no legado)
+    const atingiuCp1 = (posicaoAnterior < 27 && novaPosicao >= 27) || (posicaoAnterior < 10 && novaPosicao >= 10);
+    if (atingiuCp1 && !visitados.has(27) && !visitados.has(10)) {
+      bonusTokens += CONSTANTES.BONUS_CHECKPOINT_1;
+      novos.push(27);
+      visitados.add(27);
       visitados.add(10);
     }
-    if (posicaoAnterior < 20 && novaPosicao >= 20 && !visitados.has(20)) {
-      bonusTokens += CONSTANTES.BONUS_CHECKPOINT_20;
-      novos.push(20);
+
+    // Checkpoint 2 (Nó 53 no grafo ou 20 no legado)
+    const atingiuCp2 = (posicaoAnterior < 53 && novaPosicao >= 53) || (posicaoAnterior < 20 && novaPosicao >= 20);
+    if (atingiuCp2 && !visitados.has(53) && !visitados.has(20)) {
+      bonusTokens += CONSTANTES.BONUS_CHECKPOINT_2;
+      novos.push(53);
+      visitados.add(53);
       visitados.add(20);
     }
-    if (novaPosicao >= 30 && !visitados.has(30)) {
-      bonusTokens += CONSTANTES.BONUS_CHECKPOINT_30;
-      novos.push(30);
+
+    // Checkpoint 3 / Portal Final (Nó 60 no grafo ou 30 no legado)
+    const atingiuCp3 = (novaPosicao >= 60) || (!modoGrafo && novaPosicao >= 30);
+    if (atingiuCp3 && !visitados.has(60) && !visitados.has(30)) {
+      bonusTokens += CONSTANTES.BONUS_CHECKPOINT_3;
+      novos.push(60);
+      visitados.add(60);
       visitados.add(30);
     }
   }
 
-  const fimDePartida = novaPosicao >= CONSTANTES.CASA_FINAL;
+  const fimDePartida = novaPosicao >= (modoGrafo ? 60 : 30);
 
   return {
     bonusTokens,
@@ -156,4 +177,90 @@ export function calcularPontuacao(params = {}) {
   const bonusZeroArmadilhas = armadilhas === 0 ? 100 : 0;
 
   return Math.max(0, ptsTokens + ptsDesafios + ptsPenseAntes + bonusZeroArmadilhas);
+}
+
+/**
+ * Auditoria oficial determinística de histórico de partida.
+ * Idêntica à Edge Function registrar-partida do Supabase.
+ *
+ * @param {Array<{ carta_id: string, opcao_index?: number }>} historico
+ * @param {Record<string, any>} [cartasDicionario]
+ * @returns {{ valido: boolean, status: number, sucesso: boolean, erro?: string, tokens?: number, acertos?: number, bonus_pense_antes?: number, armadilhas?: number, pontos?: number }}
+ */
+export function auditarHistorico(historico, cartasDicionario = {}) {
+  if (!Array.isArray(historico) || historico.length === 0) {
+    return { valido: false, status: 400, sucesso: false, erro: "Histórico de jogadas vazio ou ausente." };
+  }
+
+  if (historico.length > 35) {
+    return { valido: false, status: 400, sucesso: false, erro: "Número de jogadas excede o limite máximo permitido por partida (35)." };
+  }
+
+  let tokens = CONSTANTES.TOKENS_INICIAIS; // 20
+  let acertos = 0;
+  let bonusPenseAntes = 0;
+  let armadilhas = 0;
+
+  for (let i = 0; i < historico.length; i++) {
+    const item = historico[i];
+    const cartaId = String(item?.carta_id || "");
+    const opIdx = Number(item?.opcao_index ?? 0);
+
+    const carta = cartasDicionario[cartaId];
+    if (!carta) {
+      return {
+        valido: false,
+        status: 400,
+        sucesso: false,
+        erro: `Carta inexistente ou não autorizada no histórico: '${cartaId}'.`
+      };
+    }
+
+    if (carta.opcoes && Array.isArray(carta.opcoes) && carta.opcoes.length > 0) {
+      if (opIdx < 0 || opIdx >= carta.opcoes.length) {
+        return {
+          valido: false,
+          status: 400,
+          sucesso: false,
+          erro: `Índice de opção inválido (${opIdx}) para a carta '${cartaId}'.`
+        };
+      }
+      const opcao = carta.opcoes[opIdx];
+      tokens += Number(opcao?.tokens || 0);
+
+      if (carta.categoria === "desafio" && opcao?.correta === true) {
+        acertos++;
+      }
+      if (opcao?.bonus_pense_antes === true) {
+        bonusPenseAntes++;
+      }
+    } else if (carta.efeito) {
+      tokens += Number(carta.efeito?.tokens || 0);
+      if (carta.categoria === "armadilha" || carta.efeito?.armadilha === true) {
+        armadilhas++;
+      }
+    }
+  }
+
+  // Bônus oficiais dos checkpoints: Casa 10 (+3), Casa 20 (+5), Casa 30 (+0)
+  tokens += CONSTANTES.BONUS_CHECKPOINT_10 + CONSTANTES.BONUS_CHECKPOINT_20;
+  tokens = Math.max(0, tokens);
+
+  const pontos = calcularPontuacao({
+    tokens,
+    acertos,
+    bonusPenseAntes,
+    armadilhas
+  });
+
+  return {
+    valido: true,
+    status: 200,
+    sucesso: true,
+    tokens,
+    acertos,
+    bonus_pense_antes: bonusPenseAntes,
+    armadilhas,
+    pontos
+  };
 }

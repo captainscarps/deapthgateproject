@@ -1,8 +1,419 @@
-/* css/telas.css - Estilos específicos das telas do Trilha Inteligente */
+/* ==============================================================================
+   VISUAL RETRO ARCADE / TOY / CIDADE DOS DADOS & LAYOUT DESKTOP
+   ============================================================================== */
+
+/* Grid de 3 Colunas no Desktop (>= 1200px) */
+@media (min-width: 1200px) {
+  .tela-tabuleiro {
+    display: grid !important;
+    grid-template-columns: 260px 1fr 280px !important;
+    grid-template-rows: 1fr !important;
+    gap: 16px !important;
+    width: 100% !important;
+    height: 100% !important;
+    max-height: calc(100vh - 80px) !important;
+    overflow: hidden !important;
+    align-items: stretch !important;
+  }
+
+  .painel-lateral-esquerdo {
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: flex-start !important;
+    gap: 16px !important;
+    height: 100% !important;
+    padding: 16px !important;
+    overflow-y: auto !important;
+  }
+
+  .painel-lateral-esquerdo .btn-rodape-esquerdo {
+    margin-top: auto !important;
+    padding-top: 10px;
+  }
+
+  .painel-central-tabuleiro {
+    display: flex !important;
+    flex-direction: column !important;
+    height: 100% !important;
+    overflow: hidden !important;
+    position: relative !important;
+  }
+
+  .painel-central-tabuleiro .trilha-wrapper {
+    height: 100% !important;
+    max-height: 100% !important;
+    border-radius: 14px !important;
+  }
+
+  .painel-lateral-direito {
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: flex-start !important;
+    gap: 14px !important;
+    height: 100% !important;
+    padding: 16px !important;
+    overflow-y: auto !important;
+  }
+
+  .painel-lateral-direito .legenda-tabuleiro-rodape {
+    margin-top: auto !important;
+    padding-top: 10px;
+  }
+}
+
+/* Tablet e Mobile (< 1200px): Estrutura Vertical */
+@media (max-width: 1199px) {
+  .tela-tabuleiro {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+  }
+
+  .painel-lateral-esquerdo {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 12px;
+  }
+
+  .painel-central-tabuleiro {
+    width: 100%;
+  }
+
+  .painel-lateral-direito {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 12px;
+  }
+
+  .painel-lateral-esquerdo .item-desktop-only,
+  .painel-lateral-direito .item-desktop-only {
+    display: none !important;
+  }
+}
+
+/* Painel Arcade com Parafusos e Sombra Dura */
+.painel-arcade {
+  background: var(--navy-panel);
+  border: 2.5px solid var(--navy-darkest);
+  border-radius: 12px;
+  box-shadow: 0 4px 0 var(--navy-darkest);
+  position: relative;
+}
+
+/* Caixa de Tokens em Destaque (Silkscreen Pixel Font) */
+.hud-tokens-destaque {
+  background: var(--navy-darkest);
+  border: 2px solid var(--navy-panel);
+  border-radius: 10px;
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.7);
+}
+
+.hud-tokens-destaque .token-rotulo {
+  font-family: var(--font-title);
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.hud-tokens-destaque .token-numero {
+  font-family: var(--font-pixel);
+  font-size: 1.85rem;
+  font-weight: 700;
+  color: var(--gold);
+  line-height: 1;
+}
+
+/* Ficha Hexagonal de Token "01" */
+.ficha-hex-token {
+  width: 32px;
+  height: 36px;
+  display: inline-block;
+  vertical-align: middle;
+  filter: drop-shadow(0 2px 0 var(--navy-darkest));
+}
+
+/* Barra de Progresso dos 3 Checkpoints */
+.progresso-checkpoints-card {
+  background: var(--navy-card);
+  border: 2px solid var(--navy-darkest);
+  border-radius: 8px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.checkpoint-prog-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  padding: 4px 6px;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.checkpoint-prog-item.conquistado {
+  background: rgba(255, 201, 60, 0.12);
+  border-color: rgba(255, 201, 60, 0.4);
+  color: var(--text-white);
+}
+
+.checkpoint-prog-item.ativo-proximo {
+  background: rgba(0, 180, 216, 0.12);
+  border-color: rgba(0, 180, 216, 0.5);
+  color: var(--cyan);
+}
+
+.cp-prog-icon {
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-pixel);
+  font-size: 0.75rem;
+  font-weight: 700;
+  border-radius: 4px;
+  background: var(--navy-darkest);
+  color: var(--text-dim);
+}
+
+.checkpoint-prog-item.conquistado .cp-prog-icon {
+  background: var(--gold);
+  color: var(--navy-darkest);
+}
+
+.checkpoint-prog-item.ativo-proximo .cp-prog-icon {
+  background: var(--cyan);
+  color: var(--navy-darkest);
+}
+
+/* ==============================================================================
+   MASCOTE ORIGINAL "DADINHO" (4 REAÇÕES: NEUTRO, PULANDO, FELIZ, ASSUSTADO)
+   ============================================================================== */
+.dadinho-mascote-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Expressões controladas por classe */
+.dadinho-mascote-svg .exp-neutro,
+.dadinho-mascote-svg .exp-pulando,
+.dadinho-mascote-svg .exp-feliz,
+.dadinho-mascote-svg .exp-assustado {
+  display: none;
+}
+
+.dadinho-neutro .exp-neutro { display: inline !important; }
+.dadinho-pulando .exp-pulando { display: inline !important; }
+.dadinho-feliz .exp-feliz { display: inline !important; }
+.dadinho-assustado .exp-assustado { display: inline !important; }
+
+/* Animações e tremores do Dadinho */
+.peao-corpo-wrapper.dadinho-assustado {
+  animation: dadinho-tremer 0.15s infinite alternate ease-in-out;
+}
+
+@keyframes dadinho-tremer {
+  0% { transform: rotateX(calc(-1 * var(--incl))) rotateZ(-4deg) translateX(-1px); }
+  100% { transform: rotateX(calc(-1 * var(--incl))) rotateZ(4deg) translateX(1px); }
+}
+
+.peao-corpo-wrapper.dadinho-feliz {
+  animation: dadinho-comemorar 0.6s infinite alternate ease-in-out;
+}
+
+@keyframes dadinho-comemorar {
+  0% { transform: rotateX(calc(-1 * var(--incl))) translateY(0) scale(1); }
+  100% { transform: rotateX(calc(-1 * var(--incl))) translateY(-6px) scale(1.05); }
+}
+
+/* ==============================================================================
+   CENÁRIO: CIDADE DOS DADOS (PROPS ORIGINAIS 2.5D)
+   ============================================================================== */
+
+/* 1. Prédios em Gráfico de Barras */
+.prop-predios-grafico {
+  top: 14px;
+  left: 20px;
+  width: 60px;
+  height: 64px;
+}
+
+/* 2. Morro em Gráfico de Linha */
+.prop-morro-grafico {
+  top: 18px;
+  right: 28px;
+  width: 68px;
+  height: 48px;
+}
+
+/* 3. Praça em Gráfico de Pizza */
+.prop-praca-pizza {
+  bottom: 24px;
+  left: 18px;
+  width: 52px;
+  height: 38px;
+}
+
+/* ==============================================================================
+   VERSO DE CARTA ESTILO PLANILHA DIEX
+   ============================================================================== */
+.modal-dialog-carta {
+  background: var(--navy-panel) !important;
+  border: 3px solid var(--navy-darkest) !important;
+  box-shadow: 0 8px 0 var(--navy-darkest) !important;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Padrão de Planilha no Verso e Cabeçalho */
+.modal-dialog-carta::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: 
+    linear-gradient(rgba(0, 180, 216, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 180, 216, 0.04) 1px, transparent 1px);
+  background-size: 20px 20px;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.carta-flip-conteudo {
+  position: relative;
+  z-index: 2;
+}
+
+/* Selo DIEX */
+.selo-diex-planilha {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--navy-darkest);
+  border: 1.5px solid var(--border-arcade);
+  border-radius: 4px;
+  padding: 3px 8px;
+  font-family: var(--font-pixel);
+  font-size: 0.7rem;
+  color: var(--cyan);
+  text-transform: uppercase;
+}
+
+/* Atalhos de Teclado nas Opções da Carta [1] [2] [3] */
+.btn-opcao-carta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  background: var(--navy-card);
+  border: 2px solid var(--navy-darkest);
+  border-radius: 8px;
+  padding: 12px 14px;
+  margin-bottom: 8px;
+  color: var(--text-white);
+  font-family: var(--font-body);
+  font-size: 1.02rem;
+  line-height: 1.35;
+  cursor: pointer;
+  box-shadow: 0 3px 0 var(--navy-darkest);
+  transition: transform 0.08s ease, box-shadow 0.08s ease, background 0.1s ease;
+  text-align: left;
+}
+
+.btn-opcao-carta:hover:not(:disabled) {
+  background: var(--navy-light);
+  border-color: var(--cyan);
+}
+
+.btn-opcao-carta:active:not(:disabled) {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 var(--navy-darkest);
+}
+
+.opcao-badge-atalho {
+  font-family: var(--font-pixel);
+  font-size: 0.8rem;
+  font-weight: 700;
+  background: var(--navy-darkest);
+  color: var(--cyan);
+  border: 1.5px solid var(--border-arcade);
+  border-radius: 4px;
+  padding: 2px 7px;
+  line-height: 1;
+}
 
 /* ==============================================================================
    TELA DE INÍCIO
    ============================================================================== */
+/* ==============================================================================
+   TELA DE INÍCIO & RESULTADO NO DESKTOP (2 COLUNAS)
+   ============================================================================== */
+@media (min-width: 1200px) {
+  .tela-inicio {
+    display: grid !important;
+    grid-template-columns: 1fr 1.05fr !important;
+    gap: 24px !important;
+    align-items: start !important;
+    max-width: 1120px !important;
+    margin: 10px auto 0 auto !important;
+    height: auto !important;
+  }
+
+  .tela-inicio .inicio-coluna-esquerda {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .tela-inicio .inicio-coluna-direita {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .tela-resultado {
+    display: grid !important;
+    grid-template-columns: 1fr 1.15fr !important;
+    gap: 24px !important;
+    align-items: start !important;
+    max-width: 1120px !important;
+    margin: 10px auto 0 auto !important;
+  }
+
+  .tela-resultado .resultado-coluna-esquerda {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .tela-resultado .resultado-coluna-direita {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .tela-ranking {
+    max-width: 1020px !important;
+    margin: 10px auto 0 auto !important;
+  }
+}
+
 .tela-inicio {
   display: flex;
   flex-direction: column;
@@ -76,6 +487,84 @@
 .lock-icon {
   font-size: 0.85rem;
   opacity: 0.8;
+}
+
+/* Grid de dois caminhos da Tela Inicial (Modo Convidado x Login Institucional) */
+.caminhos-inicio-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin: 10px 0 16px;
+}
+
+@media (max-width: 680px) {
+  .caminhos-inicio-grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+}
+
+.card-caminho {
+  background: var(--navy-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s, border-color 0.2s;
+}
+
+.card-caminho:hover {
+  border-color: var(--cyan);
+}
+
+.card-caminho.destaque-convidado {
+  border-color: rgba(0, 180, 216, 0.45);
+  background: linear-gradient(180deg, rgba(16, 38, 68, 0.8), rgba(11, 31, 58, 0.95));
+}
+
+.card-caminho.destaque-colaborador {
+  border-color: rgba(255, 209, 102, 0.45);
+  background: linear-gradient(180deg, rgba(20, 45, 78, 0.8), rgba(11, 31, 58, 0.95));
+}
+
+.card-caminho-topo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.card-caminho-icone {
+  font-size: 1.8rem;
+  line-height: 1;
+}
+
+.card-caminho-titulo {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text-white);
+}
+
+.card-caminho-desc {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+.hud-selo-convidado {
+  background: rgba(255, 209, 102, 0.15);
+  border: 1px solid rgba(255, 209, 102, 0.4);
+  color: #FFD166;
+  font-size: 0.82rem;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 6px;
+  text-align: center;
+  letter-spacing: 0.3px;
+  margin-top: 4px;
 }
 
 /* Ações Principais de Início */
@@ -315,119 +804,1003 @@
   font-weight: 600;
 }
 
-/* Área de Rolagem do Tabuleiro */
+/* ==============================================================================
+   VISUAL 2.5D: DIORAMA DE TABULEIRO (CSS 3D COM UMA ROTAÇÃO SÓ & SCALE-TO-FIT)
+   ============================================================================== */
+
+:root {
+  --incl: 50deg;
+  --persp: 1600px;
+}
+
+@media (max-width: 768px) {
+  :root {
+    --incl: 38deg;
+    --persp: 1000px;
+  }
+}
+
+/* Botão de Alternância de Visão 2.5D / Plana no HUD */
+.hud-botoes-topo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-toggle-visao {
+  background: var(--navy-card);
+  border: 2px solid var(--navy-darkest);
+  color: var(--cyan);
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-family: var(--font-title);
+  font-size: 0.95rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  box-shadow: 0 3px 0 var(--navy-darkest);
+  transition: transform 0.08s ease, box-shadow 0.08s ease;
+  user-select: none;
+}
+
+.btn-toggle-visao:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 var(--navy-darkest);
+}
+
+.btn-toggle-visao:hover {
+  background: var(--navy-light);
+  border-color: var(--cyan);
+}
+
+/* Moldura e Mesa do Diorama */
 .trilha-wrapper {
-  background: var(--navy-bg);
-  border: 1px solid var(--border);
+  background: #061528;
+  border: 3px solid var(--navy-darkest);
   border-radius: 14px;
-  padding: 12px;
-  overflow-y: auto;
-  max-height: calc(100vh - 300px);
+  padding: 0;
+  overflow: hidden;
+  height: 100%;
+  max-height: calc(100vh - 80px);
   position: relative;
+  box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.8), 0 6px 0 var(--navy-darkest);
+}
+
+/* Cena 3D: perspective explícita sobre MESA DE MADEIRA EM TONS QUENTES */
+.cena-tabuleiro-3d {
+  width: 100%;
+  height: 100%;
+  perspective: var(--persp);
+  perspective-origin: 50% 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+  /* TEXTURA DE MESA DE MADEIRA EM TONS QUENTES (CONTRASTE QUENTE/FRIO) */
+  background:
+    radial-gradient(ellipse at 50% 50%, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.72) 100%),
+    repeating-linear-gradient(90deg, rgba(30, 15, 6, 0.15) 0px, rgba(30, 15, 6, 0.15) 2px, transparent 2px, transparent 150px),
+    repeating-linear-gradient(0deg, #3D1F0E 0px, #4F2A14 28px, #361709 56px, #593018 84px, #44220E 112px) !important;
+  box-shadow: inset 0 0 120px rgba(0, 0, 0, 0.88);
+  transition: transform 0.3s ease;
+}
+
+/* Foco na Carta (Leve escurecimento sem blur pesado) */
+.cena-tabuleiro-3d.cena-foco-carta {
+  filter: brightness(0.5);
+  transform: scale(0.98);
+}
+
+/* CÂMERA: Ponto central rigorosamente no centro da .cena (left: 50%; top: 50%) */
+.tabuleiro-camera {
+  transform-style: preserve-3d;
+  will-change: transform;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 0;
+  height: 0;
+  max-width: none;
+  transform-origin: 0 0;
+}
+
+/* MESA INCLINADA 3D: Origem (0, 0), transladada por (-X, -Y) da casa atual (1440x880 px) */
+.tabuleiro-3d {
+  width: 1440px;
+  height: 880px;
+  transform-style: preserve-3d;
+  transform-origin: 0 0;
+  position: absolute;
+  left: 0;
+  top: 0;
+  will-change: transform;
+}
+
+/* PLACA BASE DO DIORAMA: Em módulos quadrados com emendas visíveis (impressão 3D) */
+.diorama-placa {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 26px;
+  background-color: #12385C;
+  /* EMENDAS MODULARES EM PEÇAS QUADRADAS DE ~100px */
+  background-image:
+    repeating-linear-gradient(0deg, transparent 0, transparent 97px, rgba(0, 180, 216, 0.28) 97px, rgba(5, 16, 31, 0.85) 100px),
+    repeating-linear-gradient(90deg, transparent 0, transparent 97px, rgba(0, 180, 216, 0.28) 97px, rgba(5, 16, 31, 0.85) 100px);
+  border: 4px solid var(--cyan);
+  box-shadow: 0 14px 0 #071D33,
+              0 24px 0 #030E1A,
+              0 38px 42px rgba(0, 0, 0, 0.95);
+  transform-style: preserve-3d;
 }
 
 /* Grade Serpente (6 colunas) */
 .tabuleiro-grid {
   display: grid;
   grid-template-columns: repeat(6, 1fr);
-  gap: 6px;
+  gap: 12px 14px;
   width: 100%;
+  transform-style: preserve-3d;
+  position: relative;
+  z-index: 10;
 }
 
+/* CAMINHO CONTÍNUO EM SVG (FAIXAS ESCURAS COM BORDAS CIANO E SETAS) */
+.trilha-caminho-svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 2;
+  overflow: visible;
+}
+
+/* SETAS DIRECIONAIS EM RELEVO NO CAMINHO */
+.seta-caminho {
+  position: absolute;
+  font-size: 0.95rem;
+  font-weight: 900;
+  color: #FFFFFF;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
+  opacity: 0.85;
+  pointer-events: none;
+  z-index: 5;
+  transform: rotateX(calc(-1 * var(--incl)));
+  transform-origin: center bottom;
+}
+
+/* CONTAINER DAS CASAS EM GRAFO (COORDENADAS ABSOLUTAS EM PX) */
+.tabuleiro-grafo-casas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  z-index: 10;
+  pointer-events: auto;
+}
+
+.casa-nodo-pos {
+  position: absolute;
+  transform-style: preserve-3d;
+  transform: translate(-50%, -50%);
+  cursor: pointer;
+  z-index: 10;
+}
+
+/* CASAS COMO DISCOS ELEVADOS EM 2 CAMADAS */
 .casa-tile {
   min-height: 52px;
-  border-radius: 8px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  user-select: none;
+  transform-style: preserve-3d;
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  padding: 0;
+  transition: transform 0.25s ease, filter 0.25s ease;
+}
+
+/* HUB CENTRAL CIRCULAR: "CENTRAL DE DADOS" COM MOSTRADOR GIRATÓRIO */
+.hub-central-box {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  width: 136px;
+  height: 136px;
+  border-radius: 50%;
+  transform-style: preserve-3d;
+  z-index: 12;
+  cursor: pointer;
+}
+
+.hub-anel-elevado {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: radial-gradient(circle at 45% 45%, #183D68 0%, #0A1C30 100%);
+  border: 4px solid var(--gold);
+  box-shadow: 0 8px 0 #05101F, 0 14px 18px rgba(0, 0, 0, 0.8), inset 0 0 12px rgba(255, 201, 60, 0.4);
+  transform: translateZ(18px);
+  transform-style: preserve-3d;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hub-mostrador-svg {
+  width: 90%;
+  height: 90%;
+}
+
+.hub-ponteiro-agulha {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 6px;
+  height: 52px;
+  background: linear-gradient(180deg, #FFC93C 0%, #D4A325 100%);
+  border: 1px solid #FFFBE6;
+  border-radius: 3px;
+  transform-origin: 50% 88%;
+  transform: translate(-50%, -88%) rotate(0deg);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.7);
+  z-index: 15;
+  transition: transform 0.1s linear;
+}
+
+.hub-centro-pivo {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--gold);
+  border: 2px solid #05101F;
+  transform: translate(-50%, -50%);
+  z-index: 16;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
+}
+
+.hub-placa-titulo {
+  position: absolute;
+  bottom: -22px;
+  left: 50%;
+  transform: translateX(-50%) rotateX(calc(-1 * var(--incl)));
+  transform-origin: center bottom;
+  background: rgba(10, 28, 48, 0.95);
+  border: 1.5px solid var(--gold);
+  border-radius: 6px;
+  padding: 2px 8px;
+  font-family: var(--font-pixel);
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--gold);
+  white-space: nowrap;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.8);
+  pointer-events: none;
+  z-index: 30;
+}
+
+/* Base Branca mais Larga do Disco */
+.casa-disco-base {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: #E2E8F0;
+  border: 1px solid #CBD5E1;
+  box-shadow: 0 4px 0 #94A3B8,
+              0 8px 0 #64748B,
+              0 12px 14px rgba(0, 0, 0, 0.65);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: translateZ(12px);
+  transform-style: preserve-3d;
+  transition: all 0.25s ease;
+  position: relative;
+}
+
+/* Topo do Disco na Cor da Categoria com Textura Fosca */
+.casa-disco-topo {
+  width: 82%;
+  height: 82%;
+  border-radius: 50%;
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.22) 0%, rgba(0, 0, 0, 0.25) 100%),
+              repeating-linear-gradient(0deg, transparent 0px, transparent 2px, rgba(255, 255, 255, 0.035) 2px, rgba(255, 255, 255, 0.035) 3px),
+              var(--cat-bg, #183866);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.3),
+              0 2px 0 var(--lateral-1, #0E2442),
+              0 4px 0 var(--lateral-2, #0A1B32);
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: space-between;
-  padding: 4px 2px;
+  justify-content: center;
+  transform: translateZ(4px);
+  transform-style: preserve-3d;
   position: relative;
-  border: 1.5px solid rgba(255, 255, 255, 0.12);
-  background: var(--navy-card);
-  transition: transform 0.2s, box-shadow 0.2s;
-  user-select: none;
 }
 
-.casa-tile.ativa {
-  border-color: var(--cyan);
-  box-shadow: 0 0 12px var(--cyan-glow);
+/* Checkpoint: Disco Maior e Torre Dourada */
+.casa-tile.casa-checkpoint .casa-disco-base {
+  width: 54px;
+  height: 54px;
+  background: #FFF2B2;
+  border-color: #FFD166;
+  transform: translateZ(28px);
+  box-shadow: 0 6px 0 #D4A325,
+              0 12px 0 #B08215,
+              0 18px 0 #8A630B,
+              0 24px 0 #664603,
+              0 30px 22px rgba(0, 0, 0, 0.8);
+}
+
+.casa-tile.casa-checkpoint .casa-disco-topo {
+  width: 84%;
+  height: 84%;
+  background: linear-gradient(145deg, #FFE885 0%, #C99616 100%),
+              repeating-linear-gradient(0deg, transparent 0px, transparent 2px, rgba(255, 255, 255, 0.05) 2px, rgba(255, 255, 255, 0.05) 3px);
+  border-color: #FFFBE6;
+  box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.6),
+              0 3px 0 #9E740E;
+}
+
+/* Placa em pé do Checkpoint (Billboard Única) */
+.checkpoint-placa {
+  position: absolute;
+  top: -28px;
+  left: 50%;
+  transform: translateX(-50%) rotateX(calc(-1 * var(--incl)));
+  transform-origin: center bottom;
+  background: rgba(14, 30, 54, 0.95);
+  border: 1.5px solid var(--gold);
+  border-radius: 6px;
+  padding: 3px 8px;
+  font-size: 0.7rem;
+  font-weight: 800;
+  color: var(--gold);
+  white-space: nowrap;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.8);
+  pointer-events: none;
+  z-index: 30;
+}
+
+/* Armadilha: Disco Afundado (-6px) */
+.casa-tile.casa-armadilha .casa-disco-base {
+  transform: translateZ(-6px);
+  background: #2D141C;
+  border-color: rgba(239, 71, 111, 0.6);
+  box-shadow: inset 0 4px 10px rgba(0, 0, 0, 0.9),
+              inset 0 0 6px rgba(239, 71, 111, 0.45),
+              0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.casa-tile.casa-armadilha .casa-disco-topo {
+  box-shadow: inset 0 3px 6px rgba(0, 0, 0, 0.8);
+}
+
+/* BILLBOARD: Ícones e Números Em Pé (Leitura Perfeita) */
+.casa-num.billboard,
+.casa-icone.billboard {
+  transform: rotateX(calc(-1 * var(--incl)));
+  transform-origin: center bottom;
+  backface-visibility: hidden;
+  will-change: transform;
 }
 
 .casa-num {
-  font-size: 0.75rem;
+  font-family: var(--font-pixel);
+  font-size: 10px;
   font-weight: 700;
-  color: rgba(255, 255, 255, 0.6);
+  color: #94A3B8;
   line-height: 1;
+  margin-bottom: 2px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
 }
 
 .casa-icone {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 24px;
+  height: 22px;
 }
 
 .casa-icone svg {
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
+  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.7));
 }
 
-/* Cores por Categoria */
-.casa-inicio {
-  background: rgba(0, 180, 216, 0.2);
-  border-color: var(--cyan);
-}
-.casa-checkpoint {
-  background: linear-gradient(135deg, rgba(255, 209, 102, 0.25) 0%, rgba(255, 183, 3, 0.15) 100%);
-  border-color: var(--gold);
-  box-shadow: 0 0 8px rgba(255, 209, 102, 0.3);
-}
-.casa-boa_pratica {
-  background: rgba(6, 214, 160, 0.15);
-  border-color: rgba(6, 214, 160, 0.5);
-}
-.casa-pense_antes {
-  background: rgba(114, 9, 183, 0.2);
-  border-color: rgba(114, 9, 183, 0.6);
-}
-.casa-desafio {
-  background: rgba(244, 162, 97, 0.18);
-  border-color: rgba(244, 162, 97, 0.5);
-}
-.casa-armadilha {
-  background: rgba(239, 71, 111, 0.2);
-  border-color: rgba(239, 71, 111, 0.6);
-}
-.casa-conexao {
-  background: rgba(69, 123, 157, 0.2);
-  border-color: rgba(69, 123, 157, 0.5);
-}
-.casa-evento {
-  background: rgba(231, 111, 81, 0.2);
-  border-color: rgba(231, 111, 81, 0.5);
+/* Cores das Categorias */
+.casa-inicio { --cat-bg: #00B4D8; --lateral-1: #0088A3; --lateral-2: #006073; }
+.casa-checkpoint { --cat-bg: #FFD166; --lateral-1: #D1A334; --lateral-2: #946912; }
+.casa-boa_pratica { --cat-bg: #06D6A0; --lateral-1: #05A37A; --lateral-2: #03684D; }
+.casa-pense_antes { --cat-bg: #7209B7; --lateral-1: #550787; --lateral-2: #380459; }
+.casa-desafio { --cat-bg: #F4A261; --lateral-1: #C2773A; --lateral-2: #8F5120; }
+.casa-armadilha { --cat-bg: #EF476F; --lateral-1: #BD2D50; --lateral-2: #8A1A34; }
+.casa-conexao { --cat-bg: #457B9D; --lateral-1: #325B75; --lateral-2: #213C4D; }
+.casa-evento { --cat-bg: #E76F51; --lateral-1: #B54D33; --lateral-2: #80311D; }
+
+/* Casa Atual com Brilho Ciano Pulsante */
+.casa-tile.ativa .casa-disco-base {
+  border-color: #00F0FF !important;
+  box-shadow: 0 0 16px rgba(0, 240, 255, 0.9), 0 4px 0 #94A3B8, 0 8px 0 #64748B !important;
+  animation: pulso-disco-ativo 1.4s infinite alternate ease-in-out;
+  z-index: 25;
 }
 
-/* O Peão do Jogador */
-.peao-jogador {
+@keyframes pulso-disco-ativo {
+  0% { filter: brightness(1) drop-shadow(0 0 4px rgba(0, 240, 255, 0.5)); }
+  100% { filter: brightness(1.2) drop-shadow(0 0 14px rgba(0, 240, 255, 0.95)); }
+}
+
+/* Casas Já Visitadas (Esmaecidas) */
+.casa-tile.visitada .casa-disco-base {
+  opacity: 0.65;
+  filter: saturate(0.7) brightness(0.85);
+}
+.casa-tile.visitada:hover .casa-disco-base {
+  opacity: 0.9;
+}
+
+/* ==============================================================================
+   OBJETOS DE CENÁRIO (DIORAMA IMPRESSO EM 3D • DECORATIVOS)
+   ============================================================================== */
+
+/* Portal "Guardião dos Dados" (Final da Trilha / Casa 30) */
+.portal-guardiao-cenario {
+  position: absolute;
+  bottom: 8px;
+  right: 12px;
+  width: 74px;
+  height: 84px;
+  transform: rotateX(calc(-1 * var(--incl)));
+  transform-origin: center bottom;
+  pointer-events: none;
+  z-index: 35;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.portal-arco-svg {
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.8)) drop-shadow(0 0 10px rgba(0, 240, 255, 0.5));
+}
+
+/* Miniaturas de Cenário Espalhadas (Ônibus, Caminhão, Rack, Nuvem, Cubos) */
+.cenario-prop {
+  position: absolute;
+  pointer-events: none;
+  transform: rotateX(calc(-1 * var(--incl)));
+  transform-origin: center bottom;
+  z-index: 22;
+  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.75));
+}
+
+.cenario-prop-sombra {
+  position: absolute;
+  bottom: -2px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0) 70%);
+}
+
+/* Mini Ônibus SEST SENAT */
+.prop-onibus {
+  bottom: 22px;
+  left: 20px;
+  width: 52px;
+  height: 38px;
+}
+
+/* Mini Caminhão SEST SENAT */
+.prop-caminhao {
+  top: 18px;
+  right: 18px;
+  width: 48px;
+  height: 36px;
+}
+
+/* Mini Rack de Servidor */
+.prop-server {
+  top: 90px;
+  left: 6px;
+  width: 32px;
+  height: 48px;
+}
+
+/* Mini Nuvem */
+.prop-nuvem {
+  top: 165px;
+  right: 10px;
+  width: 44px;
+  height: 34px;
+}
+
+/* Cubos de Dados Binários (0101) */
+.prop-cubo-dados {
+  bottom: 24px;
+  left: 100px;
+  width: 30px;
+  height: 30px;
+}
+
+/* ==============================================================================
+   MESA: PILHA DE FICHAS DE TOKEN E PÓDIO DO DADO
+   ============================================================================== */
+
+/* Container da Mesa Lateral no Desktop */
+.mesa-lateral-desktop {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+/* Pilha de Fichas de Tokens em 3D */
+.pilha-tokens-mesa {
+  position: relative;
+  width: 42px;
+  height: 48px;
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: center;
+  justify-content: flex-start;
+  perspective: 400px;
+}
+
+.ficha-token-item {
+  width: 38px;
+  height: 8px;
+  border-radius: 50%;
+  background: linear-gradient(145deg, #FFE885 0%, #D4A325 100%);
+  border: 1px solid #FFFBE6;
+  box-shadow: 0 2px 0 #946912, 0 3px 4px rgba(0, 0, 0, 0.6);
+  margin-bottom: -5px;
+  transition: transform 0.25s ease, opacity 0.25s ease;
+}
+
+/* Pódio do Dado 3D */
+.titulo-podio-box {
+  text-align: center;
+  margin-bottom: 16px;
+  padding-bottom: 4px;
+}
+
+.dado-podio-box {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #16365C 0%, #081B30 100%);
+  border: 2px solid var(--cyan);
+  box-shadow: 0 4px 0 #051424, 0 8px 12px rgba(0, 0, 0, 0.7), inset 0 0 10px rgba(0, 180, 216, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  margin: 0 auto 16px auto !important;
+}
+
+/* ==============================================================================
+   PEÃO = MASCOTE ORIGINAL (MINIATURA IMPRESSA COM OLHOS E SQUASH)
+   ============================================================================== */
+.peao-container {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+  width: 34px;
+  height: 50px;
+  pointer-events: none;
+  z-index: 60;
+  transform-style: preserve-3d;
+}
+
+.peao-sombra {
+  position: absolute;
+  bottom: 0px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 28px;
+  height: 12px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0) 70%);
+  pointer-events: none;
+  transform-origin: center center;
+  will-change: transform, opacity;
+}
+
+.peao-corpo-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 34px;
+  height: 50px;
+  transform: rotateX(calc(-1 * var(--incl)));
+  transform-origin: center 44px;
+  will-change: transform;
+}
+
+.peao-mascote-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.65));
+}
+
+.peao-aura-pulso {
+  position: absolute;
+  bottom: 2px;
+  left: 50%;
+  transform: translateX(-50%);
   width: 28px;
   height: 28px;
-  background: radial-gradient(circle at 35% 35%, #00F0FF, #0077B6);
-  border: 2px solid #FFFFFF;
   border-radius: 50%;
-  box-shadow: 0 0 12px rgba(0, 240, 255, 0.9), 0 4px 8px rgba(0,0,0,0.6);
-  z-index: 20;
+  border: 1.5px solid var(--cyan);
+  opacity: 0;
+  animation: pulso-peao-aura 1.8s infinite ease-out;
+  pointer-events: none;
+}
+
+@keyframes pulso-peao-aura {
+  0% { transform: translateX(-50%) scale(0.6); opacity: 0.8; }
+  100% { transform: translateX(-50%) scale(1.6); opacity: 0; }
+}
+
+/* Partículas Simples em CSS ao Atingir Checkpoint */
+.checkpoint-particulas-box {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+  z-index: 80;
+}
+
+.particula-spark {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--gold);
+  box-shadow: 0 0 8px var(--gold);
+  animation: spark-voo 0.9s cubic-bezier(0.2, 0.8, 0.3, 1) forwards;
+  animation-delay: var(--delay, 0s);
+}
+
+.particula-spark:nth-child(even) {
+  background: var(--cyan);
+  box-shadow: 0 0 8px var(--cyan);
+}
+
+@keyframes spark-voo {
+  0% { transform: translate(0, 0) scale(1); opacity: 1; }
+  100% { transform: translate(var(--dx, 20px), var(--dy, -40px)) scale(0.2); opacity: 0; }
+}
+
+/* CUBO 3D DO DADO CSS (GRANDE ~96px COM CONTORNO RETRO ARCADE) */
+.dado-3d-scene {
+  width: 120px;
+  height: 120px;
+  perspective: 600px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.75rem;
-  font-weight: 900;
-  color: #FFFFFF;
-  pointer-events: none;
+  user-select: none;
+  margin: 0 auto;
+}
+
+.dado-cubo {
+  width: 96px;
+  height: 96px;
+  position: relative;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.dado-face {
+  position: absolute;
+  width: 96px;
+  height: 96px;
+  background: #0E2849;
+  border: 3px solid var(--navy-darkest);
+  border-radius: 14px;
+  box-shadow: inset 0 0 10px rgba(0, 180, 216, 0.35);
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  padding: 8px;
+  box-sizing: border-box;
+}
+
+/* Posições das 6 Faces no Espaço 3D (Cubo de 96px -> metade = 48px) */
+.dado-face-1 { transform: translateZ(48px); }
+.dado-face-2 { transform: rotateY(90deg) translateZ(48px); }
+.dado-face-3 { transform: rotateY(180deg) translateZ(48px); }
+.dado-face-4 { transform: rotateY(-90deg) translateZ(48px); }
+.dado-face-5 { transform: rotateX(90deg) translateZ(48px); }
+.dado-face-6 { transform: rotateX(-90deg) translateZ(48px); }
+
+/* Pips do Dado Proporcionais */
+.pip {
+  width: 16px;
+  height: 16px;
+  background: #FFFFFF;
+  border-radius: 50%;
+  border: 2px solid var(--navy-darkest);
+  box-shadow: 0 0 6px var(--cyan);
+  align-self: center;
+  justify-self: center;
+}
+
+.pip-tl { grid-area: 1 / 1; }
+.pip-tr { grid-area: 1 / 3; }
+.pip-ml { grid-area: 2 / 1; }
+.pip-center { grid-area: 2 / 2; }
+.pip-mr { grid-area: 2 / 3; }
+.pip-bl { grid-area: 3 / 1; }
+.pip-br { grid-area: 3 / 3; }
+
+/* LEGENDA DAS CATEGORIAS (GRADE DE 2 COLUNAS • 7 CATEGORIAS COM SVGs) */
+.legenda-tabuleiro-grade {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  width: 100%;
+}
+
+.legenda-item-linha {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text-white);
+  white-space: nowrap;
+  background: var(--navy-darkest);
+  border: 1.5px solid var(--navy-card);
+  border-radius: 6px;
+  padding: 4px 8px;
+}
+
+.legenda-item-linha svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+/* MODO VISÃO PLANA (2D TRADICIONAL) */
+.trilha-wrapper.visao-plana {
+  --incl: 0deg !important;
+  --persp: 99999px !important;
+}
+
+.trilha-wrapper.visao-plana #tabuleiro-3d {
+  transform: none !important;
+  transform-origin: 50% 50% !important;
+}
+
+.trilha-wrapper.visao-plana .billboard {
+  transform: none !important;
+}
+
+.trilha-wrapper.visao-plana .portal-guardiao-cenario,
+.trilha-wrapper.visao-plana .cenario-prop {
+  display: none !important;
+}
+
+.trilha-wrapper.visao-plana .cena-tabuleiro-3d {
+  perspective: none !important;
+  background-image: none !important;
+  background-color: var(--navy-bg) !important;
+  padding: 8px;
+  filter: none !important;
+  transform: none !important;
+}
+
+.trilha-wrapper.visao-plana .tabuleiro-camera,
+.trilha-wrapper.visao-plana .tabuleiro-3d,
+.trilha-wrapper.visao-plana .diorama-placa {
+  transform: none !important;
+  max-width: 100% !important;
+  padding: 0 !important;
+  box-shadow: none !important;
+  border: none !important;
+  background: transparent !important;
+}
+
+.trilha-wrapper.visao-plana .casa-tile {
+  transform: none !important;
+}
+
+.trilha-wrapper.visao-plana .casa-disco-base {
+  transform: none !important;
+  box-shadow: none !important;
+  background: var(--navy-card) !important;
+  border-radius: 8px !important;
+  width: 100% !important;
+  height: 52px !important;
+}
+
+.trilha-wrapper.visao-plana .casa-disco-topo {
+  width: 100% !important;
+  height: 100% !important;
+  border-radius: 8px !important;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+.trilha-wrapper.visao-plana .checkpoint-placa {
+  display: none !important;
+}
+
+.trilha-wrapper.visao-plana .casa-num.billboard,
+.trilha-wrapper.visao-plana .casa-icone.billboard,
+.trilha-wrapper.visao-plana .peao-corpo-wrapper {
+  transform: none !important;
+}
+
+/* MODO BAIXA POTÊNCIA AUTOMÁTICO (Desempenho Móvel) */
+.trilha-wrapper.modo-baixa-potencia .cenario-prop:not(.prop-essencial) {
+  display: none !important;
+}
+.trilha-wrapper.modo-baixa-potencia .casa-disco-base {
+  box-shadow: 0 4px 0 #94A3B8, 0 6px 8px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* ==============================================================================
+   CONTROLES FLUTUANTES, MODAL DE BIFURCAÇÃO & CENTRAL DE DADOS
+   ============================================================================== */
+
+/* Botão Flutuante: "Ver Tabuleiro Todo (3s)" */
+.btn-visao-geral-3s {
+  position: absolute;
+  bottom: 16px;
+  right: 16px;
+  z-index: 50;
+  background: rgba(10, 28, 48, 0.94);
+  border: 2px solid var(--cyan);
+  color: var(--cyan);
+  border-radius: 24px;
+  padding: 8px 16px;
+  font-family: var(--font-title);
+  font-size: 0.9rem;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.25s ease;
+  backdrop-filter: blur(4px);
+}
+
+.btn-visao-geral-3s:hover {
+  background: var(--cyan);
+  color: var(--navy-darkest);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px rgba(0, 180, 216, 0.4);
+}
+
+.btn-visao-geral-3s.ativo-timer {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: var(--navy-darkest);
+}
+
+/* Modal de Escolha da Bifurcação Pedagógica */
+.modal-bifurcacao-grade {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-top: 16px;
+  width: 100%;
+}
+
+@media (max-width: 650px) {
+  .modal-bifurcacao-grade {
+    grid-template-columns: 1fr;
+  }
+}
+
+.bifurcacao-card-opcao {
+  background: var(--navy-panel);
+  border: 2.5px solid var(--border-arcade);
+  border-radius: 14px;
+  padding: 16px 18px;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.25s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.bifurcacao-card-opcao:hover {
+  border-color: var(--cyan);
+  transform: translateY(-4px);
+  box-shadow: 0 10px 20px rgba(0, 180, 216, 0.35);
+}
+
+.bifurcacao-card-opcao.opcao-atalho {
+  border-color: rgba(239, 71, 111, 0.5);
+}
+
+.bifurcacao-card-opcao.opcao-atalho:hover {
+  border-color: #EF476F;
+  box-shadow: 0 10px 20px rgba(239, 71, 111, 0.4);
+}
+
+.bifurcacao-card-opcao.opcao-segura {
+  border-color: rgba(60, 203, 127, 0.5);
+}
+
+.bifurcacao-card-opcao.opcao-segura:hover {
+  border-color: #3CCB7F;
+  box-shadow: 0 10px 20px rgba(60, 203, 127, 0.4);
+}
+
+/* Modal do Hub Central (Mostrador Grande) */
+.hub-mostrador-modal-box {
+  width: 190px;
+  height: 190px;
+  border-radius: 50%;
+  margin: 14px auto;
+  background: radial-gradient(circle at 45% 45%, #16365C 0%, #081B30 100%);
+  border: 5px solid var(--gold);
+  box-shadow: 0 8px 0 #05101F, 0 16px 22px rgba(0, 0, 0, 0.8), inset 0 0 16px rgba(255, 201, 60, 0.4);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hub-ponteiro-modal {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 8px;
+  height: 78px;
+  background: linear-gradient(180deg, #FFC93C 0%, #D4A325 100%);
+  border: 1.5px solid #FFFBE6;
+  border-radius: 4px;
+  transform-origin: 50% 88%;
+  transform: translate(-50%, -88%) rotate(0deg);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.8);
+  z-index: 20;
+}
+
+/* ACESSIBILIDADE: PREFERS-REDUCED-MOTION */
+@media (prefers-reduced-motion: reduce) {
+  .cena-tabuleiro-3d,
+  .tabuleiro-3d,
+  .tabuleiro-camera,
+  .dado-cubo,
+  .peao-corpo-wrapper,
+  .peao-sombra {
+    transition: none !important;
+    animation: none !important;
+  }
+  .checkpoint-particulas-box {
+    display: none !important;
+  }
 }
 
 /* Barra de Ação do Dado */
@@ -435,10 +1808,11 @@
   background: var(--navy-panel);
   border: 1px solid var(--border);
   border-radius: 12px;
-  padding: 12px 16px;
+  padding: 10px 14px;
   display: flex;
   align-items: center;
-  gap: 14px;
+  justify-content: space-between;
+  gap: 12px;
 }
 
 .dado-display-box {

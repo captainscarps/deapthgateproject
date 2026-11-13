@@ -21,6 +21,15 @@ Para viabilizar a experiência do usuário e os rankings institucionais, coletam
 
 ---
 
+### 2.1. MODO CONVIDADO (PARTICIPAÇÃO TOTALMENTE ANÔNIMA)
+O jogo disponibiliza a modalidade de participação como **Convidado**, permitindo que qualquer interessado jogue sem realizar cadastro ou login com e-mail.
+- **Anonimização Completa:** Nenhum nome, e-mail, identificador de dispositivo, endereço IP ou dado pessoal é coletado ou registrado. Não há qualquer vínculo com contas de jogadores.
+- **Área Opcional:** O participante pode, se desejar, indicar apenas sua área de atuação de forma voluntária.
+- **Finalidade Exclusiva:** As estatísticas anônimas das partidas de convidados são transmitidas de forma isolada à tabela `partidas_convidado` com o único propósito de analisar tendências pedagógicas e aprimorar o conteúdo dos treinamentos corporativos de governança de IA.
+- **Isolamento de Rankings:** Partidas realizadas em Modo Convidado não pontuam, não interferem e nunca são computadas nos rankings semanais institucionais.
+
+---
+
 ### 3. FINALIDADE DO TRATAMENTO
 Os dados coletados destinam-se exclusivamente para:
 1. **Composição dos Rankings Semanais:** Exibição da pontuação individual e cálculo da pontuação média por área institucional.

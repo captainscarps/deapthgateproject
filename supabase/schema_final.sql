@@ -83,6 +83,7 @@ CREATE TABLE IF NOT EXISTS public.partidas (
     pontos INT NOT NULL CHECK (pontos >= 0 AND pontos <= 2000),
     acertos INT NOT NULL DEFAULT 0 CHECK (acertos >= 0),
     armadilhas INT NOT NULL DEFAULT 0 CHECK (armadilhas >= 0),
+    bonus_pense_antes INT NOT NULL DEFAULT 0 CHECK (bonus_pense_antes >= 0),
     semana TEXT NOT NULL CHECK (semana ~ '^[0-9]{4}-W(0[1-9]|[1-4][0-9]|5[0-3])$'),
     versao_cartas TEXT NOT NULL DEFAULT '1.0',
     historico JSONB NOT NULL DEFAULT '[]'::jsonb,
@@ -233,3 +234,21 @@ CREATE POLICY "partidas_insert_proprio" ON public.partidas FOR INSERT TO authent
 -- GRANTS DE EXECUÇÃO DAS FUNÇÕES RPC DE RANKING
 GRANT EXECUTE ON FUNCTION public.get_ranking_areas(TEXT) TO anon, authenticated;
 GRANT EXECUTE ON FUNCTION public.get_ranking_area(TEXT, INT) TO anon, authenticated;
+
+-- 9. TABELA DE PARTIDAS DE CONVIDADOS (Dados Anônimos para Aprimoramento Pedagógico)
+CREATE TABLE IF NOT EXISTS public.partidas_convidado (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    area_id INT REFERENCES public.areas(id) ON DELETE SET NULL,
+    pontos INT NOT NULL CHECK (pontos >= 0 AND pontos <= 2000),
+    acertos INT NOT NULL DEFAULT 0 CHECK (acertos >= 0),
+    armadilhas INT NOT NULL DEFAULT 0 CHECK (armadilhas >= 0),
+    bonus_pense_antes INT NOT NULL DEFAULT 0 CHECK (bonus_pense_antes >= 0),
+    historico JSONB NOT NULL DEFAULT '[]'::jsonb,
+    jogada_em TIMESTAMPTZ NOT NULL DEFAULT timezone('utc'::text, now()),
+    criado_em TIMESTAMPTZ NOT NULL DEFAULT timezone('utc'::text, now())
+);
+
+ALTER TABLE public.partidas_convidado ENABLE ROW LEVEL SECURITY;
+-- RLS ESTRITA: Nenhuma permissão de SELECT para frontends públicos (anon/authenticated).
+-- Inserção é feita EXCLUSIVAMENTE pela Edge Function registrar-partida-convidado (via service_role).
+-- Funções de ranking NÃO consultam esta tabela sob nenhuma hipótese.

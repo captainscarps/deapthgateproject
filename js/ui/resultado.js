@@ -1,7 +1,6 @@
-// js/ui/resultado.js - Tela de Conclusão, Pontuação Animada, Envio e Checklist
+// js/ui/resultado.js - Tela de Resultado, Homologação e Checklist Pense Antes
 import { state } from '../state.js';
 import { Api } from '../api.js';
-import { calcularPontuacao } from '../regras.js';
 
 let containerRef = null;
 let navigateRef = null;
@@ -11,137 +10,172 @@ export function render(currentState) {
   const acertos = currentState.acertos_desafio || 0;
   const bonusPense = currentState.bonus_pense_antes || 0;
   const armadilhas = currentState.armadilhas || 0;
-  const valeRanking = !!currentState.partida_vale_ranking;
+  const pontuacaoCliente = currentState.pontuacao_final || 0;
+  const valeRanking = currentState.partida_vale_ranking === true;
+  const ehConvidado = currentState.modo_convidado === true;
 
+  // Detalhamento dos componentes
   const ptsTokens = tokens * 10;
   const ptsDesafios = acertos * 50;
   const ptsPenseAntes = bonusPense * 30;
-  const bonusZeroArmadilhas = armadilhas === 0 ? 100 : 0;
-  const pontuacaoCliente = Math.max(0, ptsTokens + ptsDesafios + ptsPenseAntes + bonusZeroArmadilhas);
 
   return `
     <div class="tela-resultado fade-in">
       
-      <!-- HERO DE RESULTADO -->
-      <section class="painel" style="text-align: center; border-color: var(--cyan);">
-        <div style="font-size: 2.8rem; margin-bottom: 4px;">🏆</div>
-        <h2 class="titulo-secao" style="margin-bottom: 2px; font-size: 1.75rem;">Jornada Concluída!</h2>
-        <p style="color: var(--gold); font-size: 1.05rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">
-          Guardião dos Dados
-        </p>
+      <!-- COLUNA ESQUERDA: PONTUAÇÃO, DETALHAMENTO & AÇÕES -->
+      <div class="resultado-coluna-esquerda">
+        <!-- HERO DE RESULTADO -->
+        <section class="painel painel-arcade" style="text-align: center; border-color: var(--cyan);">
+          <span class="parafuso-canto top-left"></span>
+          <span class="parafuso-canto top-right"></span>
+          <span class="parafuso-canto bottom-left"></span>
+          <span class="parafuso-canto bottom-right"></span>
 
-        <!-- CONTADOR DE PONTUAÇÃO ANIMADO -->
-        <div class="pontos-contador-box">
-          <div style="font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px;">Pontuação Oficial</div>
-          <div class="pontos-contador" id="pontos-contador-valor" data-valor="${pontuacaoCliente}">0</div>
-          <div style="margin-top: 6px;">
-            ${valeRanking ? `
-              <span class="badge badge-oficial" style="font-size: 0.85rem;">
-                🏆 OFICIAL • Computada para o Ranking da sua Área!
-              </span>
-            ` : `
-              <span class="badge badge-treino" style="font-size: 0.85rem;">
-                🎯 TREINO • Partida de prática e aperfeiçoamento
-              </span>
-            `}
+          <div style="font-size: 2.8rem; margin-bottom: 4px;">🏆</div>
+          <h2 class="titulo-secao" style="margin-bottom: 2px; font-size: 1.75rem;">Jornada Concluída!</h2>
+          <p style="color: var(--gold); font-size: 1.05rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">
+            Guardião dos Dados
+          </p>
+
+          <!-- CONTADOR DE PONTUAÇÃO ANIMADO -->
+          <div class="pontos-contador-box">
+            <div style="font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px;">Pontuação Final</div>
+            <div class="pontos-contador fonte-pixel" id="pontos-contador-valor" data-valor="${pontuacaoCliente}">0</div>
+            <div style="margin-top: 6px;">
+              ${ehConvidado ? `
+                <span class="badge badge-treino" style="font-size: 0.85rem; border: 1px solid var(--gold); color: #FFD166; background: rgba(255, 209, 102, 0.15);">
+                  👤 Modo convidado: não conta para o ranking
+                </span>
+              ` : (valeRanking ? `
+                <span class="badge badge-oficial" style="font-size: 0.85rem;">
+                  🏆 OFICIAL • Computada para o Ranking da sua Área!
+                </span>
+              ` : `
+                <span class="badge badge-treino" style="font-size: 0.85rem;">
+                  🎯 TREINO • Partida de prática e aperfeiçoamento
+                </span>
+              `)}
+            </div>
           </div>
-        </div>
 
-        <!-- STATUS DE HOMOLOGAÇÃO / ENVIO DA PARTIDA -->
-        <div id="envio-status-container" class="envio-status-box enviando">
-          <span class="spinner-circulo"></span>
-          <span id="envio-status-msg">Homologando partida com o servidor de auditoria...</span>
-        </div>
+          <!-- STATUS DE HOMOLOGAÇÃO / ENVIO DA PARTIDA -->
+          <div id="envio-status-container" class="envio-status-box enviando">
+            <span class="spinner-circulo"></span>
+            <span id="envio-status-msg">${ehConvidado ? 'Registrando estatísticas anônimas...' : 'Homologando partida com o servidor de auditoria...'}</span>
+          </div>
 
-        <div style="font-size: 1rem; color: #E2E8F0; margin-top: 10px;">
-          Parabéns, <strong>${currentState.jogador || 'Colaborador'}</strong>! Sua atuação fortalece a governança de IA no <strong>SEST SENAT</strong>.
-        </div>
-      </section>
+          <div style="font-size: 1rem; color: #E2E8F0; margin-top: 10px;">
+            ${ehConvidado 
+              ? 'Parabéns pela conclusão da trilha! Praticar com antecedência fortalece a cultura de governança de IA.'
+              : `Parabéns, <strong>${currentState.jogador || 'Colaborador'}</strong>! Sua atuação fortalece a governança de IA no <strong>SEST SENAT</strong>.`}
+          </div>
+        </section>
 
-      <!-- RESUMO RÁPIDO DE MÉTRICAS -->
-      <section class="resumo-metricas-grid">
-        <div class="metrica-card">
-          <span class="metrica-card-valor" style="color: var(--green);">${acertos}</span>
-          <span class="metrica-card-rotulo">Acertos</span>
-        </div>
-        <div class="metrica-card">
-          <span class="metrica-card-valor" style="color: ${armadilhas === 0 ? 'var(--green)' : 'var(--coral)'};">${armadilhas}</span>
-          <span class="metrica-card-rotulo">Armadilhas</span>
-        </div>
-        <div class="metrica-card">
-          <span class="metrica-card-valor" style="color: var(--amber);">${bonusPense}</span>
-          <span class="metrica-card-rotulo">Pensou Antes</span>
-        </div>
-      </section>
+        <!-- RESUMO RÁPIDO DE MÉTRICAS -->
+        <section class="resumo-metricas-grid">
+          <div class="metrica-card">
+            <span class="metrica-card-valor" style="color: var(--green);">${acertos}</span>
+            <span class="metrica-card-rotulo">Acertos</span>
+          </div>
+          <div class="metrica-card">
+            <span class="metrica-card-valor" style="color: ${armadilhas === 0 ? 'var(--green)' : 'var(--coral)'};">${armadilhas}</span>
+            <span class="metrica-card-rotulo">Armadilhas</span>
+          </div>
+          <div class="metrica-card">
+            <span class="metrica-card-valor" style="color: var(--amber);">${bonusPense}</span>
+            <span class="metrica-card-rotulo">Pensou Antes</span>
+          </div>
+        </section>
 
-      <!-- DETALHAMENTO DA PONTUAÇÃO -->
-      <section class="card" style="display: flex; flex-direction: column; gap: 8px;">
-        <h3 class="titulo-card" style="font-size: 1.05rem; color: var(--cyan); border-bottom: 1px solid var(--border); padding-bottom: 4px;">
-          Detalhamento por Componente
-        </h3>
+        <!-- DETALHAMENTO DA PONTUAÇÃO -->
+        <section class="card" style="display: flex; flex-direction: column; gap: 8px;">
+          <h3 class="titulo-card" style="font-size: 1.05rem; color: var(--cyan); border-bottom: 1px solid var(--border); padding-bottom: 4px;">
+            Detalhamento por Componente
+          </h3>
 
-        <div style="display: flex; justify-content: space-between; font-size: 0.95rem;">
-          <span style="color: var(--text-muted);">Tokens Restantes (${tokens} × 10):</span>
-          <span style="font-weight: 700; color: var(--gold);">+${ptsTokens} pts</span>
-        </div>
+          <div style="display: flex; justify-content: space-between; font-size: 0.95rem;">
+            <span style="color: var(--text-muted);">Tokens Restantes (${tokens} × 10):</span>
+            <span style="font-family: var(--font-pixel); font-weight: 700; color: var(--gold);">+${ptsTokens} pts</span>
+          </div>
 
-        <div style="display: flex; justify-content: space-between; font-size: 0.95rem;">
-          <span style="color: var(--text-muted);">Acertos em Desafios (${acertos} × 50):</span>
-          <span style="font-weight: 700; color: var(--green);">+${ptsDesafios} pts</span>
-        </div>
+          <div style="display: flex; justify-content: space-between; font-size: 0.95rem;">
+            <span style="color: var(--text-muted);">Acertos em Desafios (${acertos} × 50):</span>
+            <span style="font-family: var(--font-pixel); font-weight: 700; color: var(--green);">+${ptsDesafios} pts</span>
+          </div>
 
-        <div style="display: flex; justify-content: space-between; font-size: 0.95rem;">
-          <span style="color: var(--text-muted);">Bônus "Pense Antes" (${bonusPense} × 30):</span>
-          <span style="font-weight: 700; color: var(--cyan);">+${ptsPenseAntes} pts</span>
-        </div>
+          <div style="display: flex; justify-content: space-between; font-size: 0.95rem;">
+            <span style="color: var(--text-muted);">Bônus "Pense Antes" (${bonusPense} × 30):</span>
+            <span style="font-family: var(--font-pixel); font-weight: 700; color: var(--cyan);">+${ptsPenseAntes} pts</span>
+          </div>
 
-        <div style="display: flex; justify-content: space-between; font-size: 0.95rem;">
-          <span style="color: var(--text-muted);">Consciência Ética (Zero Armadilhas):</span>
-          <span style="font-weight: 700; color: ${armadilhas === 0 ? 'var(--green)' : 'var(--text-dim)'};">
-            ${armadilhas === 0 ? '+100 pts' : '0 pts (' + armadilhas + ' armadilhas)'}
-          </span>
-        </div>
-      </section>
+          <div style="display: flex; justify-content: space-between; font-size: 0.95rem;">
+            <span style="color: var(--text-muted);">Consciência Ética (Zero Armadilhas):</span>
+            <span style="font-family: var(--font-pixel); font-weight: 700; color: ${armadilhas === 0 ? 'var(--green)' : 'var(--text-dim)'};">
+              ${armadilhas === 0 ? '+100 pts' : '0 pts (' + armadilhas + ' armadilhas)'}
+            </span>
+          </div>
+        </section>
 
-      <!-- CARD CHECKLIST PENSE ANTES -->
-      <section class="card card-pense-antes">
-        <div class="card-pense-antes-header">
-          <span style="font-size: 1.3rem;">💡</span>
-          <h3 style="color: var(--cyan); font-size: 1.1rem; text-transform: uppercase;">Checklist de Bolso • "Pense Antes"</h3>
-        </div>
-        <p style="font-size: 0.9rem; color: var(--text-muted);">
-          Lembre-se sempre destas 4 perguntas essenciais antes de usar IA no SEST SENAT:
-        </p>
+        <!-- BOTÕES DE NAVEGAÇÃO -->
+        <section class="resultado-acoes" style="display: flex; flex-direction: column; gap: 8px; margin-top: 4px;">
+          <button id="btn-resultado-jogar-novamente" class="btn btn-primary btn-block" style="font-size: 1.15rem; padding: 14px;">
+            🔄 ${ehConvidado ? 'Jogar Outra Trilha como Convidado' : 'Jogar Novamente (Modo Treino)'}
+          </button>
+          <button id="btn-resultado-ranking" class="btn btn-secondary btn-block">
+            🏅 Ver Ranking da Semana
+          </button>
+        </section>
+      </div>
 
-        <ol class="checklist-pense-antes">
-          <li>
-            <strong>1. Preciso mesmo de IA para isso?</strong>
-            <span>Problemas simples se resolvem melhor com escuta ativa, bom senso e ferramentas básicas.</span>
-          </li>
-          <li>
-            <strong>2. Já existe algo pronto?</strong>
-            <span>Consulte o catálogo da TI institucional e as soluções já contratadas para evitar custos duplicados.</span>
-          </li>
-          <li>
-            <strong>3. Alguma área já faz algo parecido?</strong>
-            <span>Compartilhe iniciativas com outras unidades e departamentos para estimular a colaboração em rede.</span>
-          </li>
-          <li>
-            <strong>4. Que dados vou usar e posso usá-los nessa ferramenta?</strong>
-            <span>Nunca compartilhe dados pessoais sensíveis, senhas ou documentos restritos em IAs públicas externas.</span>
-          </li>
-        </ol>
-      </section>
+      <!-- COLUNA DIREITA: CHECKLIST PENSE ANTES & CTA LOGIN -->
+      <div class="resultado-coluna-direita">
+        ${ehConvidado ? `
+          <!-- CHAMADA PARA LOGIN DO CONVIDADO (NÃO CONVERTE PARTIDA) -->
+          <section class="card painel-arcade" style="background: linear-gradient(135deg, rgba(0, 180, 216, 0.15), rgba(11, 31, 58, 0.95)); border: 2px solid var(--cyan); text-align: center; padding: 18px;">
+            <span class="parafuso-canto top-left"></span>
+            <span class="parafuso-canto top-right"></span>
+            <span style="font-size: 2.2rem;">🏛️</span>
+            <h3 style="color: var(--cyan); margin: 6px 0 4px; font-size: 1.25rem; font-family: var(--font-title); font-weight: 800;">Quer aparecer no ranking da sua área?</h3>
+            <p style="font-size: 0.95rem; color: #E2E8F0; margin-bottom: 14px; line-height: 1.4;">
+              Entre com seu e-mail institucional e jogue o <strong>Desafio da Semana</strong> oficial.
+            </p>
+            <button id="btn-login-cta" class="btn btn-primary btn-block" style="font-size: 1.1rem; padding: 12px;">
+              🔐 Entrar com E-mail Institucional
+            </button>
+          </section>
+        ` : ''}
 
-      <!-- BOTÕES DE AÇÃO -->
-      <section style="display: flex; flex-direction: column; gap: 10px; margin-top: 6px;">
-        <button id="btn-resultado-ranking" class="btn btn-primary btn-block">
-          🏅 Ver Ranking Semanal
-        </button>
-        <button id="btn-resultado-jogar-novamente" class="btn btn-secondary btn-block">
-          🔄 Jogar de Novo (Treino)
-        </button>
-      </section>
+        <!-- CARD CHECKLIST PENSE ANTES -->
+        <section class="card card-pense-antes painel-arcade">
+          <span class="parafuso-canto top-left"></span>
+          <span class="parafuso-canto top-right"></span>
+          <div class="card-pense-antes-header">
+            <span style="font-size: 1.4rem;">💡</span>
+            <h3 style="color: var(--cyan); font-size: 1.15rem; font-family: var(--font-title); font-weight: 800; text-transform: uppercase;">Checklist de Bolso • "Pense Antes"</h3>
+          </div>
+          <p style="font-size: 0.88rem; color: var(--text-dim); margin-bottom: 12px;">
+            Guarde estas 4 perguntas antes de colar dados em qualquer ferramenta ou assistente de IA:
+          </p>
+          <ol class="checklist-pense-antes-lista">
+            <li>
+              <strong>1. Preciso mesmo de IA para isso?</strong>
+              <span>Avalie se uma regra simples ou automação padrão já atende com segurança.</span>
+            </li>
+            <li>
+              <strong>2. Já existe algo pronto?</strong>
+              <span>Consulte o portfólio oficial do SEST SENAT antes de usar ferramentas externas.</span>
+            </li>
+            <li>
+              <strong>3. Alguma área já faz algo parecido?</strong>
+              <span>Alinhe com TI e Inovação para evitar retrabalho e silos tecnológicos.</span>
+            </li>
+            <li>
+              <strong>4. Que dados vou usar e posso usá-los nessa ferramenta?</strong>
+              <span>Nunca insira CPF, prontuários, dados sensíveis ou informações sigilosas em IAs públicas!</span>
+            </li>
+          </ol>
+        </section>
+      </div>
 
     </div>
   `;
@@ -157,7 +191,7 @@ export async function montar(container, currentState, navigate) {
   // 1. Inicia animação de contagem da pontuação
   animarPontuacao(elContador, 0, pontosCliente);
 
-  // 2. Transmite partida via Api.registrarPartida
+  // 2. Transmite partida (anônima se convidado, oficial/treino se colaborador)
   await processarEnvioPartida(container, currentState, pontosCliente, elContador);
 
   // 3. Ações dos botões
@@ -169,22 +203,37 @@ export async function montar(container, currentState, navigate) {
   const btnReplay = container.querySelector('#btn-resultado-jogar-novamente');
   if (btnReplay) {
     btnReplay.onclick = () => {
-      // Inicia como modo treino
-      state.novaPartida({
-        jogador: currentState.jogador,
-        area: currentState.area,
-        area_id: currentState.area_id,
-        partida_vale_ranking: false
-      });
+      if (currentState.modo_convidado) {
+        state.iniciarPartidaConvidado({
+          area_id: currentState.area_id,
+          area: currentState.area,
+          cartas: state.deckManager ? state.deckManager.todasCartas : []
+        });
+      } else {
+        state.novaPartida({
+          jogador: currentState.jogador,
+          area: currentState.area,
+          area_id: currentState.area_id,
+          partida_vale_ranking: false
+        });
+      }
       navigate('tabuleiro');
+    };
+  }
+
+  // 4. Botão CTA para Login (Convidado quer ir para o desafio semanal)
+  const btnLoginCta = container.querySelector('#btn-login-cta');
+  if (btnLoginCta) {
+    btnLoginCta.onclick = () => {
+      // Navega para a tela inicial para fazer login.
+      // IMPORTANTE: Partida de convidado NUNCA é convertida em oficial.
+      navigate('inicio');
     };
   }
 }
 
-// Animação de contagem numérica
 function animarPontuacao(elemento, inicio, fim, duracao = 1.4) {
   if (!elemento) return;
-
   if (window.gsap) {
     const obj = { val: inicio };
     gsap.to(obj, {
@@ -200,11 +249,41 @@ function animarPontuacao(elemento, inicio, fim, duracao = 1.4) {
   }
 }
 
-// Envia a partida e trata resposta do servidor
 async function processarEnvioPartida(container, currentState, pontosCliente, elContador) {
   const statusBox = container.querySelector('#envio-status-container');
-  const statusMsg = container.querySelector('#envio-status-msg');
+  if (!statusBox) return;
 
+  const ehConvidado = currentState.modo_convidado === true;
+
+  // CASO A: MODO CONVIDADO (Envio anônimo; sem fila offline em caso de falha)
+  if (ehConvidado) {
+    try {
+      const res = await Api.registrarPartidaConvidado({
+        area_id: currentState.area_id || null,
+        pontos: pontosCliente,
+        tokens: currentState.tokens,
+        acertos: currentState.acertos_desafio,
+        bonusPenseAntes: currentState.bonus_pense_antes,
+        armadilhas: currentState.armadilhas,
+        historico: currentState.historico,
+        jogada_em: currentState.jogada_em || new Date().toISOString()
+      });
+
+      if (res && res.sucesso) {
+        statusBox.className = 'envio-status-box sucesso';
+        statusBox.innerHTML = `<span>📊</span> <span>Estatísticas anônimas registradas para aprimoramento contínuo.</span>`;
+      } else {
+        // Descarte silencioso sem fila offline
+        statusBox.style.display = 'none';
+      }
+    } catch {
+      // Descarte silencioso
+      statusBox.style.display = 'none';
+    }
+    return;
+  }
+
+  // CASO B: COLABORADOR LOGADO (Envio oficial/treino com auditoria)
   const payload = {
     jogador_id: currentState.jogador_id || 'jog_mock',
     email: currentState.email,
@@ -227,10 +306,8 @@ async function processarEnvioPartida(container, currentState, pontosCliente, elC
 
     if (res.status === 'enviado') {
       if (res.divergencia && res.pontosServidor !== pontosCliente) {
-        // Se o servidor recalculou e encontrou divergência oficial
         statusBox.className = 'envio-status-box sucesso';
         statusBox.innerHTML = `<span>⚖️</span> <span>Pontuação auditada e homologada pelo servidor: <strong>${res.pontosServidor} pts</strong></span>`;
-        // Atualiza contador com a pontuação oficial do servidor
         animarPontuacao(elContador, pontosCliente, res.pontosServidor, 0.8);
         state.set({ pontuacao_final: res.pontosServidor });
       } else {
@@ -241,7 +318,7 @@ async function processarEnvioPartida(container, currentState, pontosCliente, elC
       statusBox.className = 'envio-status-box aviso';
       statusBox.innerHTML = `<span>💾</span> <span>Sem conexão imediata. Partida salva para reenviar automaticamente.</span>`;
     }
-  } catch (err) {
+  } catch {
     statusBox.className = 'envio-status-box aviso';
     statusBox.innerHTML = `<span>💾</span> <span>Partida salva localmente no dispositivo para envio posterior.</span>`;
   }

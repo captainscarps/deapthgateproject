@@ -2,7 +2,7 @@
 // NUNCA ACESSA O DOM
 
 import { CONSTANTES, limitarPosicao, verificarCheckpoints, aplicarEfeito, isFimDePartida, calcularPontuacao } from './regras.js';
-import { semanaAtual, gerarTabuleiro, DeckManager } from './deck.js';
+import { semanaAtual, gerarTabuleiro, DeckManager, gerarSementeConvidado, GRAFO_PADRAO, gerarTabuleiroGrafo } from './deck.js';
 import { criarRng } from './rng.js';
 
 const STORAGE_KEYS = {
@@ -22,6 +22,7 @@ class StateManager {
       area: '',
       area_id: null,
       email: '',
+      modo_convidado: false,
       
       tokens: CONSTANTES.TOKENS_INICIAIS,
       posicao: CONSTANTES.CASA_INICIAL,
@@ -40,6 +41,9 @@ class StateManager {
       jogada_em: '',
       semana_partida: semanaAtual(),
       tabuleiro: [],
+      grafoTabuleiro: GRAFO_PADRAO,
+      bifurcacaoPendente: null,
+      hubEventosSorteados: [],
       
       tutorial_visto: false,
       termo_privacidade_aceito: false
@@ -115,27 +119,41 @@ class StateManager {
    * @param {Object} params
    */
   novaPartida(params = {}) {
-    const semana = params.semana || semanaAtual();
-    const nomeJogador = params.jogador || this.state.jogador || 'Colaborador';
-    const areaJogador = params.area || this.state.area || 'TI';
-    const valeRanking = params.partida_vale_ranking !== undefined ? !!params.partida_vale_ranking : true;
+    const ehConvidado = params.modo_convidado === true;
+    
+    // Se for convidado: gera semente aleatória criptográfica
+    // Se for oficial/treino logado: usa a semente determinística semanal
+    const semente = ehConvidado
+      ? gerarSementeConvidado()
+      : (params.semana || semanaAtual());
 
-    // Inicializa RNG determinístico semanal do dado
-    this.rngDado = criarRng(`${semana}_dado`);
+    const nomeJogador = ehConvidado ? 'Convidado' : (params.jogador || this.state.jogador || 'Colaborador');
+    const areaJogador = params.area || (ehConvidado ? (params.area_id ? 'Área ' + params.area_id : 'Convidado') : (this.state.area || 'TI'));
+    const valeRanking = ehConvidado ? false : (params.partida_vale_ranking !== undefined ? !!params.partida_vale_ranking : true);
 
-    // Gera tabuleiro da semana
-    const novoTabuleiro = gerarTabuleiro(semana, params.cartasPorCategoria);
+    // Inicializa RNG do dado (semente aleatória para convidado; semanal para oficial)
+    this.rngDado = criarRng(`${semente}_dado`);
+
+    // Tabuleiro: prioriza Grafo Diorama Modular (61 nós) com fallback para legado
+    const grafo = params.usarGrafo !== false ? (params.grafoTabuleiro || GRAFO_PADRAO) : null;
+    let novoTabuleiro = null;
+    if (grafo) {
+      novoTabuleiro = gerarTabuleiroGrafo(semente, grafo);
+    } else {
+      novoTabuleiro = gerarTabuleiro(semente, params.cartasPorCategoria);
+    }
 
     // Inicializa deck se cartas forem fornecidas
     if (params.cartas && Array.isArray(params.cartas)) {
-      this.deckManager = new DeckManager(params.cartas, `${semana}_cartas`);
+      this.deckManager = new DeckManager(params.cartas, `${semente}_cartas`);
     }
 
     this.state = {
       ...this.state,
+      modo_convidado: ehConvidado,
       jogador: nomeJogador,
       area: areaJogador,
-      area_id: params.area_id ?? this.state.area_id,
+      area_id: params.area_id ?? (ehConvidado ? null : this.state.area_id),
       tokens: CONSTANTES.TOKENS_INICIAIS,
       posicao: CONSTANTES.CASA_INICIAL,
       acertos_desafio: 0,
@@ -150,13 +168,26 @@ class StateManager {
       pontuacao_final: 0,
       partida_finalizada: false,
       jogada_em: new Date().toISOString(),
-      semana_partida: semana,
-      tabuleiro: novoTabuleiro
+      semana_partida: ehConvidado ? null : semente,
+      tabuleiro: novoTabuleiro,
+      grafoTabuleiro: grafo,
+      bifurcacaoPendente: null,
+      hubEventosSorteados: []
     };
 
-    this.salvarJogadorLocal();
+    if (!ehConvidado) {
+      this.salvarJogadorLocal();
+    }
     this.emit('nova_partida', this.state);
     this.emit('change', this.state);
+  }
+
+  /**
+   * Atalho para iniciar partida anônima em Modo Convidado
+   * @param {Object} [params]
+   */
+  iniciarPartidaConvidado(params = {}) {
+    return this.novaPartida({ ...params, modo_convidado: true });
   }
 
   /**
@@ -178,15 +209,111 @@ class StateManager {
   }
 
   /**
-   * Move o peão pelo tabuleiro aplicando limites e bônus de checkpoint
+   * Move o peão pelo tabuleiro aplicando limites, grafo com bifurcações e bônus de checkpoint
    * @param {number} casas
-   * @returns {{ novaPosicao: number, bonusTokens: number, fimDePartida: boolean }}
+   * @param {number|null} [caminhoEscolhido=null]
+   * @returns {{ novaPosicao: number, caminhoPercorrido: number[], bonusTokens: number, fimDePartida: boolean, parouEmBifurcacao: boolean, bifurcacaoPendente: Object|null, hubAtivado: boolean }}
    */
-  mover(casas) {
+  mover(casas, caminhoEscolhido = null) {
     const posAnterior = this.state.posicao;
-    const posCalculada = limitarPosicao(posAnterior + Number(casas || 0));
+    const grafo = this.state.grafoTabuleiro;
 
-    const cpRes = verificarCheckpoints(posAnterior, posCalculada, this.state.checkpoints_passados);
+    // Se estiver usando o novo tabuleiro em grafo (61 nós com ramificações)
+    if (grafo && Array.isArray(grafo.casas) && grafo.casas.length > 0) {
+      let passos = Number(casas || 0);
+      let currId = posAnterior;
+      let parouEmBifurcacao = false;
+      let bifurcacaoPendente = null;
+      let hubAtivado = false;
+      let bonusTokensAcumulado = 0;
+      const visitados = new Set(this.state.checkpoints_passados || []);
+      const caminhoPercorrido = [currId];
+
+      while (passos > 0) {
+        const nodo = grafo.casas.find(c => c.id === currId);
+        if (!nodo || !nodo.proximos || nodo.proximos.length === 0) {
+          // Chegou ao fim do grafo (Portal Final / Casa 60)
+          break;
+        }
+
+        let proxId = null;
+        if (nodo.proximos.length === 1) {
+          proxId = nodo.proximos[0];
+        } else {
+          // Bifurcação!
+          if (caminhoEscolhido !== null && nodo.proximos.includes(caminhoEscolhido)) {
+            proxId = caminhoEscolhido;
+            caminhoEscolhido = null; // consumido
+          } else {
+            // Pausa movimento para o jogador escolher o caminho
+            parouEmBifurcacao = true;
+            bifurcacaoPendente = {
+              noOrigem: currId,
+              passosRestantes: passos,
+              bifurcacao: nodo.bifurcacao
+            };
+            break;
+          }
+        }
+
+        currId = proxId;
+        caminhoPercorrido.push(currId);
+        passos--;
+
+        // Verifica passagem pelo Hub Central (Nó 33)
+        if (currId === 33 && !visitados.has(33)) {
+          hubAtivado = true;
+          visitados.add(33);
+        }
+
+        // Verifica checkpoints no grafo (27: CP1, 53: CP2, 60: CP3)
+        if (currId === 27 && !visitados.has(27)) {
+          bonusTokensAcumulado += CONSTANTES.BONUS_CHECKPOINT_1;
+          visitados.add(27);
+        }
+        if (currId === 53 && !visitados.has(53)) {
+          bonusTokensAcumulado += CONSTANTES.BONUS_CHECKPOINT_2;
+          visitados.add(53);
+        }
+        if (currId >= 60 && !visitados.has(60)) {
+          bonusTokensAcumulado += CONSTANTES.BONUS_CHECKPOINT_3;
+          visitados.add(60);
+          break;
+        }
+      }
+
+      const novosTokens = Math.max(0, this.state.tokens + bonusTokensAcumulado);
+      const fimDePartida = currId >= 60 || isFimDePartida({ posicao: currId, tokens: novosTokens, rodada: this.state.rodada });
+
+      const atualizacoes = {
+        posicao: currId,
+        tokens: novosTokens,
+        checkpoints_passados: Array.from(visitados),
+        bifurcacaoPendente: bifurcacaoPendente
+      };
+
+      this.set(atualizacoes);
+
+      if (fimDePartida) {
+        this.finalizarPartida();
+      }
+
+      this.emit('movimento', { de: posAnterior, para: currId, bonus: bonusTokensAcumulado, caminho: caminhoPercorrido });
+
+      return {
+        novaPosicao: currId,
+        caminhoPercorrido,
+        bonusTokens: bonusTokensAcumulado,
+        fimDePartida,
+        parouEmBifurcacao,
+        bifurcacaoPendente,
+        hubAtivado
+      };
+    }
+
+    // Modo legado linear (31 casas)
+    const posCalculada = limitarPosicao(posAnterior + Number(casas || 0), 30);
+    const cpRes = verificarCheckpoints(posAnterior, posCalculada, this.state.checkpoints_passados, false);
     const novosTokens = Math.max(0, this.state.tokens + cpRes.bonusTokens);
 
     const atualizacoes = {
@@ -205,9 +332,88 @@ class StateManager {
     this.emit('movimento', { de: posAnterior, para: posCalculada, bonus: cpRes.bonusTokens });
     return {
       novaPosicao: posCalculada,
+      caminhoPercorrido: [posAnterior, posCalculada],
       bonusTokens: cpRes.bonusTokens,
-      fimDePartida: cpRes.fimDePartida
+      fimDePartida: cpRes.fimDePartida,
+      parouEmBifurcacao: false,
+      bifurcacaoPendente: null,
+      hubAtivado: false
     };
+  }
+
+  /**
+   * Resolução da bifurcação pelo jogador
+   * @param {number} noOrigem
+   * @param {number} proximoNo
+   * @param {string} [nomeEscolha]
+   */
+  escolherCaminhoBifurcacao(noOrigem, proximoNo, nomeEscolha = '') {
+    const pendente = this.state.bifurcacaoPendente;
+    const item = {
+      tipo: 'bifurcacao',
+      no_origem: Number(noOrigem),
+      escolha: Number(proximoNo),
+      nome: String(nomeEscolha),
+      jogada_em: new Date().toISOString(),
+      timestamp: Date.now()
+    };
+
+    const passosRestantes = pendente ? pendente.passosRestantes : 0;
+    this.set({
+      historico: [...this.state.historico, item],
+      bifurcacaoPendente: null
+    });
+
+    // Continua movimento a partir da escolha
+    if (passosRestantes > 0) {
+      return this.mover(passosRestantes, proximoNo);
+    }
+    return { novaPosicao: this.state.posicao, bonusTokens: 0, fimDePartida: false };
+  }
+
+  /**
+   * Sorteia e aplica evento do Hub Central de Dados
+   * @param {Object} [eventoPreSorteado]
+   * @returns {Object} Evento sorteado
+   */
+  sortearEventoHub(eventoPreSorteado = null) {
+    const grafo = this.state.grafoTabuleiro;
+    const eventos = grafo?.hub?.eventos || [
+      { id: "ev_1", rotulo: "+3 Tokens", tokens: 3, desc: "Auditoria de dados concluída!" }
+    ];
+
+    let ev = eventoPreSorteado;
+    if (!ev) {
+      if (this.rngDado) {
+        ev = this.rngDado.escolher(eventos);
+      } else {
+        ev = eventos[Math.floor(Math.random() * eventos.length)];
+      }
+    }
+
+    if (ev.tokens) {
+      this.set({ tokens: Math.max(0, this.state.tokens + ev.tokens) });
+    }
+    if (ev.mover) {
+      this.mover(ev.mover);
+    }
+
+    const item = {
+      tipo: 'hub_evento',
+      evento_id: ev.id,
+      rotulo: ev.rotulo,
+      desc: ev.desc,
+      jogada_em: new Date().toISOString(),
+      timestamp: Date.now()
+    };
+
+    this.set({
+      historico: [...this.state.historico, item],
+      hubEventosSorteados: [...this.state.hubEventosSorteados, ev]
+    });
+
+    this.emit('hub_evento', ev);
+    return ev;
   }
 
   /**
@@ -270,6 +476,7 @@ class StateManager {
    * Salva dados básicos do jogador e preferências no localStorage
    */
   salvarJogadorLocal(dados = {}) {
+    if (this.state.modo_convidado) return;
     try {
       if (typeof localStorage === 'undefined') return;
       const payload = {

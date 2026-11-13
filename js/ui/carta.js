@@ -63,28 +63,34 @@ export function abrirModalCarta(carta, { rng = null } = {}) {
       <div class="modal-dialog modal-dialog-carta" id="modal-dialog-carta">
         <div class="carta-flip-conteudo">
           
-          <!-- CABEÇALHO -->
-          <div class="carta-header">
-            <div class="carta-categoria-tag" style="color: ${corCat};">
+          <!-- CABEÇALHO COM SELO DIEX -->
+          <div class="carta-header" style="display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid var(--navy-darkest); padding-bottom: 8px;">
+            <div class="carta-categoria-tag" style="color: ${corCat}; font-weight: 800; text-transform: uppercase;">
               <span>●</span>
               <span>${catNome}</span>
             </div>
-            <div class="carta-tema-tag">
-              Tema: ${carta.tema ? carta.tema.toUpperCase() : 'GERAL'}
+            <div class="selo-diex-planilha">
+              <span>📊</span>
+              <span>DIEX · IA Ética</span>
             </div>
           </div>
 
           <!-- CORPO -->
-          <div class="carta-body">
-            <p class="carta-texto-situacao" id="carta-texto-situacao">
+          <div class="carta-body" style="padding-top: 14px;">
+            <div style="font-size: 0.82rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; margin-bottom: 6px;">
+              Tema: ${carta.tema ? carta.tema.toUpperCase() : 'GERAL'}
+            </div>
+
+            <p class="carta-texto-situacao" id="carta-texto-situacao" style="font-family: var(--font-body); font-size: 1.05rem; line-height: 1.5; color: var(--text-white);">
               ${carta.texto}
             </p>
 
             ${temOpcoes ? `
-              <div class="carta-opcoes-lista" id="lista-opcoes-carta">
+              <div class="carta-opcoes-lista" id="lista-opcoes-carta" style="margin-top: 12px;">
                 ${opcoesParaExibir.map((op, idx) => `
                   <button type="button" class="btn-opcao-carta" data-idx-original="${op.indexOriginal}" data-idx-shuffled="${idx}" id="btn-opcao-${idx}">
-                    <span class="opcao-letra">${String.fromCharCode(65 + idx)}</span>
+                    <span class="opcao-badge-atalho">[${idx + 1}]</span>
+                    <span class="opcao-letra" style="font-weight: 800; color: var(--gold);">${String.fromCharCode(65 + idx)}</span>
                     <span style="flex: 1;">${op.texto}</span>
                   </button>
                 `).join('')}
@@ -136,8 +142,18 @@ export function abrirModalCarta(carta, { rng = null } = {}) {
 
     // Navegação por teclado
     const onKeyDown = (e) => {
+      // Escape fecha carta informativa ou carta respondida
+      if (e.key === 'Escape') {
+        const footerVisivel = modalEl.querySelector('#carta-modal-footer')?.style.display !== 'none';
+        if (!temOpcoes || footerVisivel) {
+          e.preventDefault();
+          fechar();
+          return;
+        }
+      }
+
       if (!temOpcoes) {
-        if (e.key === 'Enter' || e.key === ' ' || e.key === 'Escape') {
+        if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault();
           fechar();
         }
