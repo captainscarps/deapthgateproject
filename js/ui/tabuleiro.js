@@ -6,6 +6,15 @@ import { abrirModalCarta } from './carta.js';
 import { Audio } from '../audio.js';
 import { GRAFO_PADRAO, centroCasa } from '../deck.js';
 import { renderAvatarSVG, renderPeaoAvatarHTML, AVATAR_PADRAO } from '../avatar.js';
+import { ico } from '../icones.js';
+import { confete, tokensVoando, tremer } from '../fx.js';
+import { rotuloSequencia } from '../regras.js';
+
+function rotuloBotaoRolar(st) {
+  if (st.pular_proxima_rodada) return `${ico('relogio')} PASSAR VEZ`;
+  const custo = st.custo_proxima_rolagem || calcularCustoRolagem(st.voltas_completas || 0);
+  return `${ico('dado')} ROLAR DADO <span class="btn-rolar-custo">−${custo} ${ico('token')}</span>`;
+}
 
 let containerRef = null;
 let navigateRef = null;
@@ -30,9 +39,9 @@ export const ICONES_SVG = {
 };
 
 const NOMES_CHECKPOINTS = {
-  20: "🚩 Checkpoint 1: Dado Protegido",
-  40: "🚩 Checkpoint 2: IA Bem Usada",
-  60: "🏛️ Checkpoint 3: Portal Final"
+  20: "CP 1 · Dado Protegido",
+  40: "CP 2 · IA Bem Usada",
+  60: "CP 3 · Portal Final"
 };
 
 const NOMES_CATEGORIAS = {
@@ -187,49 +196,20 @@ export function render(currentState) {
           <span class="flutuante-token" id="flutuante-tokens">+0</span>
         </div>
 
-        <!-- Posição Atual do Peão no Grafo -->
-        <div class="card item-desktop-only" style="padding: 10px 12px; text-align: center;">
-          <div style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; font-weight: 800;">Posição na Trilha</div>
-          <div style="font-family: var(--font-pixel); font-size: 1.35rem; color: var(--cyan); margin-top: 2px;">
-            CASA ${posAtual} <span style="font-size: 0.85rem; color: var(--text-muted);">/ 60</span>
-          </div>
+        <!-- Progresso na volta + checkpoints (barra compacta) -->
+        <div class="hud-progresso-volta" id="hud-progresso-volta">
+          ${renderProgressoVolta(currentState)}
         </div>
 
-        <!-- Progresso dos 3 Checkpoints de Governança -->
-        <div class="progresso-checkpoints-card item-desktop-only">
-          <div style="font-family: var(--font-title); font-size: 0.85rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase;">
-            🛡️ Checkpoints de Governança
-          </div>
-          
-          <div class="checkpoint-prog-item ${cp1 ? 'conquistado' : (posAtual < 20 ? 'ativo-proximo' : '')}">
-            <span class="cp-prog-icon">${cp1 ? '✓' : '1'}</span>
-            <div style="line-height: 1.2;">
-              <div style="font-weight: 800;">Casa 20: Dado Protegido (CP 1)</div>
-              <div style="font-size: 0.72rem; color: var(--text-muted);">Etapa 1: Coleta e Classificação</div>
-            </div>
-          </div>
-
-          <div class="checkpoint-prog-item ${cp2 ? 'conquistado' : (posAtual >= 20 && posAtual < 40 ? 'ativo-proximo' : '')}">
-            <span class="cp-prog-icon">${cp2 ? '✓' : '2'}</span>
-            <div style="line-height: 1.2;">
-              <div style="font-weight: 800;">Casa 40: IA Bem Usada (CP 2)</div>
-              <div style="font-size: 0.72rem; color: var(--text-muted);">Etapa 2: Supervisão Ética e Métricas</div>
-            </div>
-          </div>
-
-          <div class="checkpoint-prog-item ${cp3 ? 'conquistado' : (posAtual >= 40 ? 'ativo-proximo' : '')}">
-            <span class="cp-prog-icon">${cp3 ? '✓' : '3'}</span>
-            <div style="line-height: 1.2;">
-              <div style="font-weight: 800;">Casa 60: Guardião dos Dados (CP 3)</div>
-              <div style="font-size: 0.72rem; color: var(--text-muted);">Etapa 3: Portal Final de Excelência</div>
-            </div>
-          </div>
+        <!-- Sequência de acertos (combo) -->
+        <div class="hud-combo" id="hud-combo">
+          ${renderCombo(currentState)}
         </div>
 
         <!-- Controles de Acessibilidade no Rodapé -->
         <div class="btn-rodape-esquerdo">
           <button id="btn-toggle-visao" class="btn btn-secondary btn-block" style="padding: 10px 12px; font-size: 0.95rem;" title="Alternar visão 2.5D / Plana">
-            <span id="icone-visao-modo">📐</span>
+            <span id="icone-visao-modo">${ico('plano')}</span>
             <span id="rotulo-visao-modo">Visão Plana</span>
           </button>
         </div>
@@ -241,7 +221,7 @@ export function render(currentState) {
       <main class="painel-central-tabuleiro">
         ${currentState.pular_proxima_rodada ? `
           <div class="alerta-pular-box" id="aviso-pular-rodada">
-            ⚠️ Você precisa pular esta rodada devido a um efeito de carta!
+            ${ico('alerta')} Você precisa pular esta rodada devido a um efeito de carta!
           </div>
         ` : ''}
 
@@ -249,10 +229,10 @@ export function render(currentState) {
           <!-- Controles Flutuantes da Câmera -->
           <div class="controles-camera-flutuantes">
             <button id="btn-visao-geral" class="btn-visao-geral-3s" title="Afastar câmera e visualizar tabuleiro completo">
-              🔍 Ver Tabuleiro Todo (3s)
+              ${ico('lupa')} Ver tabuleiro todo
             </button>
             <button id="btn-toggle-camera-modo" class="btn-toggle-camera-modo" title="Alternar entre Modo Mesa e Seguir Peão">
-              🎯 Seguir Peão
+              ${ico('alvo')} Seguir peão
             </button>
           </div>
 
@@ -466,7 +446,7 @@ export function render(currentState) {
         <!-- TÍTULO ACIMA DO DADO -->
         <div class="titulo-podio-box" style="text-align: center;">
           <div style="font-family: var(--font-title); font-size: 1.15rem; font-weight: 900; color: var(--gold); text-transform: uppercase; letter-spacing: 0.5px;">
-            🎲 PÓDIO DO DADO
+            Pódio do Dado
           </div>
         </div>
 
@@ -487,13 +467,13 @@ export function render(currentState) {
         <!-- Botão de Ação Arcade Logo Abaixo do Dado -->
         <div>
           <button id="btn-rolar-dado" class="btn btn-primary btn-block" style="font-size: 1.15rem; padding: 14px 16px; letter-spacing: 0.5px;">
-            ${currentState.pular_proxima_rodada ? 'PASSAR VEZ' : `🎲 ROLAR DADO · -${custoRolagem} 🪙`}
+            ${rotuloBotaoRolar(currentState)}
           </button>
           <div class="item-desktop-only" style="text-align: center; margin-top: 6px; font-size: 0.75rem; color: var(--text-muted);">
             Atalho: <span class="opcao-badge-atalho" style="font-size: 0.7rem;">ESPAÇO</span> ou <span class="opcao-badge-atalho" style="font-size: 0.7rem;">ENTER</span>
           </div>
           <button id="btn-encerrar-partida" class="btn btn-outline btn-block btn-sm" style="margin-top: 8px; border-color: rgba(232, 72, 79, 0.6); color: #FF7A3D;" title="Encerrar a partida agora e garantir a pontuação acumulada">
-            🛑 Encerrar Partida
+            ${ico('parar')} Encerrar partida
           </button>
         </div>
 
@@ -533,10 +513,10 @@ export function render(currentState) {
       <div id="modal-checkpoint" class="modal-backdrop" role="dialog" aria-modal="true">
         <div class="modal-dialog" style="text-align: center;">
           <div class="modal-header" style="justify-content: center;">
-            <h3 id="cp-modal-titulo" style="color: var(--gold);">🛡️ Checkpoint Conquistado!</h3>
+            <h3 id="cp-modal-titulo" style="color: var(--gold);">Checkpoint conquistado!</h3>
           </div>
           <div class="modal-body" style="align-items: center;">
-            <div style="font-size: 3rem; margin: 4px 0;">✨</div>
+            <div class="cp-modal-escudo">${ICONES_SVG.checkpoint}</div>
             <h4 id="cp-modal-nome" style="font-size: 1.4rem; color: var(--text-white);"></h4>
             <p id="cp-modal-desc" style="color: var(--text-muted); font-size: 1.05rem;"></p>
             <div id="cp-modal-bonus" style="font-family: var(--font-pixel); font-size: 1.8rem; font-weight: 700; color: var(--gold); margin: 6px 0;"></div>
@@ -553,7 +533,7 @@ export function render(currentState) {
       <div id="modal-bifurcacao" class="modal-backdrop" role="dialog" aria-modal="true">
         <div class="modal-dialog" style="max-width: 640px; text-align: center;">
           <div class="modal-header" style="justify-content: center;">
-            <h3 id="bif-modal-titulo" style="color: var(--gold);">⚡ Escolha de Rota</h3>
+            <h3 id="bif-modal-titulo" style="color: var(--gold);">Escolha de rota</h3>
           </div>
           <div class="modal-body">
             <p id="bif-modal-pergunta" style="color: var(--text-white); font-size: 1.1rem; font-weight: 700; margin-bottom: 8px;">
@@ -568,7 +548,7 @@ export function render(currentState) {
       <div id="modal-hub-central" class="modal-backdrop" role="dialog" aria-modal="true">
         <div class="modal-dialog" style="text-align: center;">
           <div class="modal-header" style="justify-content: center;">
-            <h3 style="color: var(--gold);">🎲 Central de Dados: Sorteio de Evento</h3>
+            <h3 style="color: var(--gold);">Central de Dados: sorteio de evento</h3>
           </div>
           <div class="modal-body" style="align-items: center;">
             <div class="hub-mostrador-modal-box">
@@ -594,6 +574,23 @@ export function render(currentState) {
         </div>
       </div>
 
+      <!-- 4. MODAL DE TOKENS ESGOTADOS (mensagem educativa) -->
+      <div id="modal-tokens-esgotados" class="modal-backdrop ativo" role="dialog" aria-modal="true" style="display: none;">
+        <div class="modal-dialog" style="text-align: center; max-width: 460px;">
+          <div class="modal-header" style="justify-content: center;">
+            <h3 style="color: var(--coral);">Tokens esgotados</h3>
+          </div>
+          <div class="modal-body" style="align-items: center;">
+            <div class="cp-modal-escudo" style="color: var(--gold);">${ico('token')}</div>
+            <p style="font-size: 1.25rem; font-weight: 800; color: var(--text-white);">Toda IA consome recursos. Use com consciência.</p>
+            <p style="color: var(--text-muted);">Cada consulta a um modelo de IA gasta energia e dinheiro. Planejar antes de usar é parte da governança.</p>
+          </div>
+          <div class="modal-footer" style="justify-content: center;">
+            <button type="button" class="btn btn-primary" id="btn-ver-resultado-esgotado">Ver meu resultado</button>
+          </div>
+        </div>
+      </div>
+
     </div>
   `;
 }
@@ -605,6 +602,45 @@ function renderFichasToken(qtd) {
     html += `<div class="ficha-token-item" style="z-index: ${i};"></div>`;
   }
   return html;
+}
+
+// Casas 61–65 são atalhos das bifurcações: convertidas para o progresso equivalente na volta
+const PROGRESSO_ATALHOS = { 61: 14, 62: 16, 63: 18, 64: 36, 65: 38 };
+
+function renderProgressoVolta(st) {
+  const pos = PROGRESSO_ATALHOS[st.posicao] ?? (st.posicao || 0);
+  const pct = Math.min(100, Math.round((pos / 60) * 100));
+  const cps = [20, 40, 60];
+  const nomes = { 20: 'Dado Protegido', 40: 'IA Bem Usada', 60: 'Portal Final' };
+  const voltaNum = (st.voltas_completas || 0) + 1;
+  return `
+    <div class="hud-prog-topo">
+      <span class="hud-prog-rotulo">Volta ${voltaNum}</span>
+      <span class="hud-prog-casa">Casa <strong>${pos}</strong>/60</span>
+    </div>
+    <div class="hud-prog-trilho">
+      <div class="hud-prog-preenchido" style="width: ${pct}%;"></div>
+      ${cps.map(cp => `
+        <span class="hud-prog-cp ${pos >= cp ? 'ok' : ''}" style="left: ${(cp / 60) * 100}%;" title="Casa ${cp}: ${nomes[cp]}">
+          ${pos >= cp ? ico('check') : cp / 20}
+        </span>`).join('')}
+    </div>
+    <div class="hud-prog-proximo">${pos < 60 ? `Próximo: <strong>${nomes[cps.find(c => c > pos) || 60]}</strong>` : 'Volta completa!'}</div>
+  `;
+}
+
+function renderCombo(st) {
+  const seq = st.sequencia_acertos || 0;
+  const rot = rotuloSequencia(seq);
+  const marcas = [1, 2, 3, 4, 5].map(i => `<span class="combo-marca ${seq >= i ? 'on' : ''} ${i >= 3 ? 'quente' : ''}"></span>`).join('');
+  return `
+    <div class="hud-combo-topo">
+      <span class="hud-combo-rotulo">${ico('fogo')} Sequência de acertos</span>
+      <span class="hud-combo-valor ${rot ? 'ativo' : ''}">${rot || `${seq}×`}</span>
+    </div>
+    <div class="hud-combo-marcas">${marcas}</div>
+    <div class="hud-combo-dica">${seq >= 5 ? '+2 tokens por acerto!' : (seq >= 3 ? '+1 token por acerto · 5 seguidas = +2' : '3 acertos seguidos = bônus de tokens')}</div>
+  `;
 }
 
 function renderHTMLPeao(currentState) {
@@ -638,7 +674,7 @@ export function montar(container, currentState, navigate) {
   const visaoPlanaSalva = localStorage.getItem('trilha_visao_plana') === 'true';
   if (visaoPlanaSalva && trilhaWrapper) {
     trilhaWrapper.classList.add('visao-plana');
-    if (iconeVisao) iconeVisao.textContent = '📏';
+    if (iconeVisao) iconeVisao.innerHTML = ico('plano');
     if (rotuloVisao) rotuloVisao.textContent = 'Visão Plana';
   }
 
@@ -647,11 +683,11 @@ export function montar(container, currentState, navigate) {
     btnToggleVisao.onclick = () => {
       const estaPlana = trilhaWrapper.classList.toggle('visao-plana');
       if (estaPlana) {
-        if (iconeVisao) iconeVisao.textContent = '📏';
+        if (iconeVisao) iconeVisao.innerHTML = ico('plano');
         if (rotuloVisao) rotuloVisao.textContent = 'Visão Plana';
         localStorage.setItem('trilha_visao_plana', 'true');
       } else {
-        if (iconeVisao) iconeVisao.textContent = '📐';
+        if (iconeVisao) iconeVisao.innerHTML = ico('plano');
         if (rotuloVisao) rotuloVisao.textContent = 'Diorama 2.5D';
         localStorage.setItem('trilha_visao_plana', 'false');
       }
@@ -672,8 +708,10 @@ export function montar(container, currentState, navigate) {
     btnToggleCameraModo.onclick = () => {
       if (modoCameraAtual === 'mesa') {
         aplicarModoSeguir(state.get().posicao, true);
+        localStorage.setItem('trilha_camera_modo', 'seguir');
       } else {
         aplicarModoMesa(true);
+        localStorage.setItem('trilha_camera_modo', 'mesa');
       }
     };
   }
@@ -705,7 +743,7 @@ export function montar(container, currentState, navigate) {
       if (st.pular_proxima_rodada) {
         state.set({ pular_proxima_rodada: false });
         const cProx = calcularCustoRolagem(st.voltas_completas || 0);
-        btnRolar.innerHTML = `<span class="dado-btn-icone">🎲</span> ROLAR DADO &middot; -${cProx} 🪙`;
+        btnRolar.innerHTML = rotuloBotaoRolar(state.get());
         const aviso = container.querySelector('#aviso-pular-rodada');
         if (aviso) aviso.remove();
         return;
@@ -767,7 +805,10 @@ export function montar(container, currentState, navigate) {
           mostrarTokensFlutuantes(resMov.bonusTokens);
           atualizarHUD(state.get());
           atualizarPilhaTokens(state.get().tokens);
-          await exibirModalCheckpoint(resMov.novaPosicao, resMov.bonusTokens);
+          // O modal deve mostrar o checkpoint que foi CRUZADO, não a casa onde o peão parou
+          const cpCruzado = [...(resMov.caminhoPercorrido || [])].reverse().find(c => c === 20 || c === 40 || c === 60)
+            ?? (resMov.voltaCompletada ? 60 : resMov.novaPosicao);
+          await exibirModalCheckpoint(cpCruzado, resMov.bonusTokens);
         }
 
         // Se os tokens esgotaram na rolagem/movimento
@@ -830,7 +871,8 @@ export function montar(container, currentState, navigate) {
         const stFinal = state.get();
         if (!stFinal.partida_finalizada) {
           btnRolar.disabled = false;
-          btnRolar.textContent = stFinal.pular_proxima_rodada ? 'PASSAR VEZ' : 'ROLAR DADO';
+          btnRolar.innerHTML = rotuloBotaoRolar(stFinal);
+          atualizarHUD(stFinal);
         }
       }
     };
@@ -876,7 +918,8 @@ export function montar(container, currentState, navigate) {
   }
 
   // Define modo inicial por breakpoint: Desktop (>= 1200px) inicia em 'mesa', mobile/tablet em 'seguir'
-  modoCameraAtual = window.innerWidth >= 1200 ? 'mesa' : 'seguir';
+  // Padrão: seguir o peão (casas legíveis). "Ver tabuleiro todo" continua disponível.
+  modoCameraAtual = localStorage.getItem('trilha_camera_modo') === 'mesa' ? 'mesa' : 'seguir';
   setModoCamera(modoCameraAtual);
   // Executa enquadramento inicial após renderização do DOM
   setTimeout(() => {
@@ -899,7 +942,7 @@ export function setModoCamera(modo) {
   modoCameraAtual = modo;
   const btnToggle = containerRef?.querySelector('#btn-toggle-camera-modo');
   if (btnToggle) {
-    btnToggle.innerHTML = modo === 'mesa' ? '🎯 Seguir Peão' : '🗺️ Modo Mesa';
+    btnToggle.innerHTML = modo === 'mesa' ? `${ico('alvo')} Seguir peão` : `${ico('lupa')} Modo mesa`;
     btnToggle.title = modo === 'mesa' ? 'Mudar para câmera que segue o peão' : 'Mudar para visão de mesa completa';
   }
 }
@@ -1013,7 +1056,7 @@ export function calcularEnquadramentoSeguir(casaNum) {
   const discCenterX_unscaled = (discCenterX_screen - vRect.left - curPanX) / curZoom;
   const discCenterY_unscaled = (discCenterY_screen - vRect.top - curPanY) / curZoom;
 
-  const zoomFixo = window.innerWidth < 768 ? 1.5 : 1.6;
+  const zoomFixo = window.innerWidth < 768 ? 1.5 : 1.25;
   const targetX = vRect.width * 0.50;
   const targetY = vRect.height * 0.60;
 
@@ -1083,7 +1126,7 @@ function aplicarTransformEnquadramento(panX, panY, zoom, duracao = 0) {
  */
 export function recalcularEnquadramento(animar = false) {
   const isDesktop = window.innerWidth >= 1200;
-  if (modoCameraAtual === 'mesa' || (isDesktop && modoCameraAtual !== 'seguir')) {
+  if (modoCameraAtual === 'mesa') {
     aplicarModoMesa(animar);
   } else {
     aplicarModoSeguir(state.get().posicao, animar);
@@ -1465,19 +1508,18 @@ function exibirModalCheckpoint(casa, bonus) {
     const bonusEl = modal.querySelector('#cp-modal-bonus');
     const btnFechar = modal.querySelector('#btn-fechar-checkpoint');
 
-    if (casa === 27 || casa === 10) {
+    if (casa === 20) {
       nomeEl.textContent = "Checkpoint 1: Dado Protegido";
       descEl.textContent = "Parabéns! Seus dados foram validados segundo os padrões corporativos de governança.";
-      bonusEl.textContent = `+${bonus} Tokens`;
-    } else if (casa === 53 || casa === 20) {
+    } else if (casa === 40) {
       nomeEl.textContent = "Checkpoint 2: IA Bem Usada";
       descEl.textContent = "Excelente! Você demonstrou maturidade no uso produtivo e seguro das ferramentas de IA.";
-      bonusEl.textContent = `+${bonus} Tokens`;
     } else {
       nomeEl.textContent = "Checkpoint 3: Guardião dos Dados";
-      descEl.textContent = "Fim da Trilha! Você alcançou o destino final com excelência e conformidade LGPD.";
-      bonusEl.textContent = "";
+      descEl.textContent = "Volta completa! A trilha continua — cada volta vale +150 pontos, mas o dado fica mais caro.";
     }
+    bonusEl.textContent = bonus > 0 ? `+${bonus} tokens` : '';
+    confete({ quantidade: 110 });
 
     const fechar = () => {
       modal.classList.remove('ativo');
@@ -1511,6 +1553,8 @@ function atualizarPilhaTokens(novoSaldo) {
 function mostrarTokensFlutuantes(delta) {
   const flutuante = containerRef.querySelector('#flutuante-tokens');
   if (!flutuante) return;
+  tokensVoando(delta, containerRef.querySelector('#hud-tokens-box'));
+  if (delta < 0) tremer(containerRef.querySelector('#hud-tokens-box'));
 
   const positivo = delta >= 0;
   flutuante.textContent = `${positivo ? '+' : ''}${delta}`;
@@ -1525,8 +1569,15 @@ function mostrarTokensFlutuantes(delta) {
 }
 
 function atualizarHUD(st) {
+  if (!containerRef) return;
   const tokensEl = containerRef.querySelector('#hud-tokens-valor');
   if (tokensEl) tokensEl.textContent = st.tokens;
+  const box = containerRef.querySelector('#hud-tokens-box');
+  if (box) box.classList.toggle('tokens-criticos', (st.tokens || 0) <= 5);
+  const prog = containerRef.querySelector('#hud-progresso-volta');
+  if (prog) prog.innerHTML = renderProgressoVolta(st);
+  const combo = containerRef.querySelector('#hud-combo');
+  if (combo) combo.innerHTML = renderCombo(st);
 }
 
 export function desmontar() {

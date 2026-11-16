@@ -7,13 +7,15 @@ import * as TelaTabuleiro from './ui/tabuleiro.js';
 import * as TelaCarta from './ui/carta.js';
 import * as TelaResultado from './ui/resultado.js';
 import * as TelaRanking from './ui/ranking.js';
+import * as TelaLiga from './ui/liga.js';
 
 const TELAS = {
   inicio: TelaInicio,
   tabuleiro: TelaTabuleiro,
   carta: TelaCarta,
   resultado: TelaResultado,
-  ranking: TelaRanking
+  ranking: TelaRanking,
+  liga: TelaLiga
 };
 
 let telaAtiva = null;

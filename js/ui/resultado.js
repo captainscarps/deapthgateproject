@@ -2,6 +2,37 @@
 import { state } from '../state.js';
 import { Api } from '../api.js';
 import { renderAvatarSVG, AVATAR_PADRAO } from '../avatar.js';
+import { relatorioAprendizagem } from '../temas.js';
+import { ico } from '../icones.js';
+import { confete } from '../fx.js';
+
+function renderRelatorio(st) {
+  const rel = relatorioAprendizagem(st.respostas_tema || {});
+  const seq = st.maior_sequencia || 0;
+  if (!rel.temas.length) {
+    return `<p class="relatorio-vazio">Você não respondeu perguntas nesta partida. Caia em casas de <strong>Desafio</strong> e <strong>Pense Antes</strong> para gerar seu relatório.</p>`;
+  }
+  return `
+    ${rel.temas.map(t => `
+      <div class="relatorio-linha">
+        <span class="relatorio-nome">${t.nome}</span>
+        <span class="relatorio-taxa">${t.acertos}/${t.total}</span>
+        <div class="relatorio-barra"><span style="width: ${Math.round(t.taxa * 100)}%; background: ${t.cor};"></span></div>
+      </div>`).join('')}
+    <div class="relatorio-destaques">
+      <div class="relatorio-destaque forte">
+        <strong>Seu ponto forte</strong>
+        ${rel.forte ? rel.forte.nome : 'Continue jogando para descobrir'}
+      </div>
+      <div class="relatorio-destaque reforcar">
+        <strong>Vale reforçar</strong>
+        ${rel.reforcar ? rel.reforcar.nome : 'Nada por enquanto. Mandou bem!'}
+      </div>
+    </div>
+    <div style="font-size: 0.88rem; color: var(--text-muted); display: flex; align-items: center; gap: 6px;">
+      ${ico('fogo')} Maior sequência de acertos: <strong style="color: var(--orange);">${seq}</strong>
+    </div>`;
+}
 
 let containerRef = null;
 let navigateRef = null;
@@ -39,7 +70,7 @@ export function render(currentState) {
           <span class="parafuso-canto bottom-left"></span>
           <span class="parafuso-canto bottom-right"></span>
 
-          <div style="font-size: 2.8rem; margin-bottom: 4px;">🏆</div>
+          <div class="ico-grande" style="width: 52px; height: 52px; margin: 0 auto 4px; color: var(--gold);">${ico('trofeu')}</div>
           <h2 class="titulo-secao" style="margin-bottom: 2px; font-size: 1.75rem;">Jornada Concluída!</h2>
           <p style="color: var(--gold); font-size: 1.05rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">
             Guardião dos Dados
@@ -106,6 +137,21 @@ export function render(currentState) {
           </div>
         </section>
 
+        <!-- RELATÓRIO DE APRENDIZAGEM POR TEMA -->
+        <section class="card relatorio-aprendizagem">
+          <div class="relatorio-titulo">${ico('livro')} Seu relatório de aprendizagem</div>
+          ${renderRelatorio(currentState)}
+        </section>
+
+        <!-- ENTRADA PARA A LIGA -->
+        <button type="button" id="btn-resultado-liga" class="btn-liga-entrada">
+          ${ico('espadas')}
+          <span>
+            <span class="btn-liga-entrada-titulo">Liga & Duelos <span class="badge-novo">NOVO</span></span>
+            <span class="btn-liga-entrada-sub">Desafie colegas numa bateria de perguntas contra o tempo</span>
+          </span>
+        </button>
+
         <!-- DETALHAMENTO DA PONTUAÇÃO -->
         <section class="card" style="display: flex; flex-direction: column; gap: 8px;">
           <h3 class="titulo-card" style="font-size: 1.05rem; color: var(--cyan); border-bottom: 1px solid var(--border); padding-bottom: 4px;">
@@ -148,10 +194,10 @@ export function render(currentState) {
         <!-- BOTÕES DE NAVEGAÇÃO -->
         <section class="resultado-acoes" style="display: flex; flex-direction: column; gap: 8px; margin-top: 4px;">
           <button id="btn-resultado-jogar-novamente" class="btn btn-primary btn-block" style="font-size: 1.15rem; padding: 14px;">
-            🔄 ${ehConvidado ? 'Jogar Outra Trilha como Convidado' : 'Jogar Novamente (Modo Treino)'}
+            ${ico('repetir')} ${ehConvidado ? 'Jogar Outra Trilha como Convidado' : 'Jogar Novamente (Modo Treino)'}
           </button>
           <button id="btn-resultado-ranking" class="btn btn-secondary btn-block">
-            🏅 Ver Ranking da Semana
+            ${ico('ranking')} Ver ranking da semana
           </button>
         </section>
       </div>
@@ -219,6 +265,10 @@ export async function montar(container, currentState, navigate) {
 
   // 1. Inicia animação de contagem da pontuação
   animarPontuacao(elContador, 0, pontosCliente);
+  setTimeout(() => confete({ quantidade: 120 }), 300);
+
+  const btnLiga = container.querySelector('#btn-resultado-liga');
+  if (btnLiga) btnLiga.onclick = () => navigate('liga');
 
   // 2. Transmite partida (anônima se convidado, oficial/treino se colaborador)
   await processarEnvioPartida(container, currentState, pontosCliente, elContador);

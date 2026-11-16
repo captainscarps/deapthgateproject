@@ -140,7 +140,7 @@
     "resultado_esperado": {
       "status": 200,
       "sucesso": true,
-      "tokens": 39,
+      "tokens": 41,
       "acertos": 0,
       "bonus_pense_antes": 4,
       "armadilhas": 0,
@@ -1877,7 +1877,7 @@
     "resultado_esperado": {
       "status": 200,
       "sucesso": true,
-      "tokens": 40,
+      "tokens": 42,
       "acertos": 4,
       "bonus_pense_antes": 0,
       "armadilhas": 0,

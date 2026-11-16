@@ -131,6 +131,32 @@ export function verificarCheckpoints(posicaoAnterior, novaPosicao, checkpointsPa
  * @param {Object} efeito
  * @returns {Object} Novo estado atualizado
  */
+/**
+ * Sequência de acertos (combo): bônus de tokens por resposta correta consecutiva
+ * em cartas de múltipla escolha (desafio e pense_antes). Erro zera a sequência.
+ *  - 3ª e 4ª resposta correta seguida: +1 token
+ *  - 5ª em diante: +2 tokens
+ * Não altera a fórmula de pontos; afeta somente o saldo de tokens.
+ * @param {number} sequencia - tamanho da sequência JÁ incluindo a resposta atual
+ * @returns {number}
+ */
+export function calcularBonusSequencia(sequencia = 0) {
+  if (sequencia >= 5) return 2;
+  if (sequencia >= 3) return 1;
+  return 0;
+}
+
+/**
+ * Multiplicador exibido na interface para a sequência atual.
+ * @param {number} sequencia
+ * @returns {string|null}
+ */
+export function rotuloSequencia(sequencia = 0) {
+  if (sequencia >= 5) return 'COMBO ×2';
+  if (sequencia >= 3) return 'COMBO ×1,5';
+  return null;
+}
+
 export function aplicarEfeito(estado, efeito = {}) {
   const copia = { ...estado };
   const checkpointsPassados = new Set(copia.checkpoints_passados || []);
@@ -268,6 +294,7 @@ export function auditarHistorico(historico, cartasDicionario = {}, metaPartida =
   let armadilhas = 0;
   let casasAvancadas = 0;
   let voltas = 0;
+  let sequencia = 0;
 
   for (let i = 0; i < historico.length; i++) {
     const item = historico[i];
@@ -319,6 +346,13 @@ export function auditarHistorico(historico, cartasDicionario = {}, metaPartida =
 
       if (carta.categoria === "desafio" && opcao?.correta === true) {
         acertos++;
+      }
+      // Sequência de acertos (combo) — espelha StateManager.registrarResposta
+      if (opcao?.correta === true) {
+        sequencia++;
+        tokens += calcularBonusSequencia(sequencia);
+      } else {
+        sequencia = 0;
       }
       if (opcao?.bonus_pense_antes === true) {
         bonusPenseAntes++;
