@@ -17,6 +17,17 @@ export function categoria(id) {
 
 let cache = null;
 
+/** Status que entram no jogo. 'rascunho' e 'revisao' ficam só na área do admin. */
+export const STATUS_NO_JOGO = ['aprovada', 'exemplo'];
+export const CHAVE_BANCO_LOCAL = 'roleta_admin_banco_v1';
+
+/** Modo de teste do admin: index.html?banco=local usa o banco salvo na área do admin. */
+export function usandoBancoLocal() {
+  try {
+    return new URLSearchParams(location.search).get('banco') === 'local' && !!localStorage.getItem(CHAVE_BANCO_LOCAL);
+  } catch (_) { return false; }
+}
+
 async function lerJson(url) {
   try {
     const r = await fetch(url);
@@ -28,8 +39,13 @@ async function lerJson(url) {
 /** Carrega (uma vez) o banco completo, agrupado por categoria. */
 export async function carregarBanco() {
   if (cache) return cache;
-  const dados = await lerJson('data/perguntas.json');
+  let dados = null;
+  if (usandoBancoLocal()) {
+    try { dados = JSON.parse(localStorage.getItem(CHAVE_BANCO_LOCAL)); } catch (_) { dados = null; }
+  }
+  if (!dados) dados = await lerJson('data/perguntas.json');
   const lista = ((dados && dados.perguntas) || []).filter(p =>
+    STATUS_NO_JOGO.includes(p.status || 'aprovada') &&
     Array.isArray(p.alternativas) && p.alternativas.length >= 2 && p.correta >= 0 && p.correta < p.alternativas.length);
 
   const porCategoria = Object.fromEntries(CATEGORIAS.map(c => [c.id, []]));

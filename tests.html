@@ -14,7 +14,7 @@
 </head>
 <body>
   <h1>Testes automáticos • Roleta da Governança</h1>
-  <p>Valida o banco de perguntas (data/perguntas.json) e o desenho de todas as opções de personagem.</p>
+  <p>Valida o banco de perguntas (data/perguntas.json), as fontes (data/fontes.json) e o desenho de todas as opções de personagem.</p>
   <div class="placar" id="placar">Rodando...</div>
   <ul id="lista"></ul>
   <script type="module">
@@ -57,6 +57,20 @@
     // 5. Explicação presente
     const semExp = perguntas.filter(p => !String(p.explicacao || '').trim());
     registrar('Toda pergunta tem explicação', semExp.length === 0, semExp.map(p => p.id).join(', '));
+
+    // 5b. Status e fontes
+    const STATUS = ['aprovada', 'exemplo', 'revisao', 'rascunho'];
+    const statusRuim = perguntas.filter(p => p.status && !STATUS.includes(p.status));
+    registrar('Status das perguntas válidos', statusRuim.length === 0, statusRuim.map(p => p.id).join(', '));
+    const fontesJson = await (await fetch('data/fontes.json')).json();
+    const idsFontes = new Set((fontesJson.fontes || []).map(f => f.id));
+    registrar('IDs de fontes únicos', idsFontes.size === (fontesJson.fontes || []).length, `${idsFontes.size} fontes`);
+    const semFonte = perguntas.filter(p => p.fonte_id && !idsFontes.has(p.fonte_id));
+    registrar('Toda fonte citada nas perguntas existe em fontes.json', semFonte.length === 0, semFonte.map(p => `${p.id}→${p.fonte_id}`).join(', '));
+    const textoVazado = (fontesJson.fontes || []).filter(f => 'texto' in f);
+    registrar('fontes.json não contém o texto integral dos documentos', textoVazado.length === 0, textoVazado.map(f => f.id).join(', '));
+    const pendentes = perguntas.filter(p => p.status === 'revisao' || p.status === 'rascunho');
+    registrar('Nenhuma pergunta em revisão/rascunho publicada por engano (aviso)', true, pendentes.length ? `${pendentes.length} ficarão fora do jogo` : 'ok');
 
     // 6. Mínimo por categoria (para uma partida não repetir demais)
     const banco = await carregarBanco();

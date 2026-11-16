@@ -356,3 +356,5 @@ html:has(body.pagina-roleta) { background: #071426; }
   .avatar-aba-painel { max-height: none; }
   .criador-botoes-rapidos { justify-content: center; }
 }
+.aviso-banco-local { background: rgba(255, 183, 3, 0.12); border: 2px dashed #FFB703; color: #FFE7A3; border-radius: 12px; padding: 8px 12px; font-size: 0.88rem; display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+.aviso-banco-local a { color: #FFF; font-weight: 800; }

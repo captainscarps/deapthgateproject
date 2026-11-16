@@ -209,3 +209,12 @@ Cada tarefa: implementar → prints antes/depois → `tests.html` e `smoke.html`
 - Próximos passos sugeridos: duelos e liga semanal na Roleta; login institucional e ranking por área; perguntas reais de Políticas SEST SENAT; meta de ~50 perguntas por categoria.
 
 > As seções 1 a 11 acima descrevem a fase da Trilha e ficam como registro histórico.
+
+## 13. Área do admin para fontes e perguntas — 16/11/2026
+- `admin.html` (sem link no jogo): **Fontes** → **Gerar perguntas** → **Revisão** → **Publicar**.
+- Fontes aceitam texto colado ou arquivos `.txt/.md/.pdf/.docx` (PDF via pdf.js e Word via mammoth, carregados sob demanda por CDN).
+- Geração: divisão por artigos/seções, pedido pronto para IA homologada (com regras de qualidade e formato JSON), importação validada, criação manual por trecho.
+- Perguntas ganharam `status`, `fonte_id` e `referencia`; o jogo usa só `aprovada` e `exemplo`.
+- Teste seguro: `index.html?banco=local` usa o banco do admin só naquele navegador.
+- Publicação por exportação de `perguntas.json` e `fontes.json` (texto integral dos documentos nunca sai do navegador).
+- Próximo passo natural: com Supabase + login institucional, salvar fontes/perguntas no banco e publicar direto, com perfis de acesso (admin, revisor DPO).

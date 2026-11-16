@@ -1,0 +1,84 @@
+{
+ "versao": 1,
+ "observacao": "Fontes que servem de insumo para as perguntas. Gerenciadas pela área do admin (admin.html).",
+ "fontes": [
+  {
+   "id": "lei_13709_2018",
+   "titulo": "Lei Geral de Proteção de Dados (LGPD)",
+   "tipo": "lei",
+   "orgao": "Congresso Nacional",
+   "referencia_oficial": "Lei nº 13.709/2018",
+   "vigencia": "2020-09-18",
+   "url": "https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/lei/l13709.htm",
+   "categorias": [
+    "lgpd"
+   ],
+   "status": "vigente",
+   "resumo": "Regras para o tratamento de dados pessoais por pessoas físicas e jurídicas, inclusive o poder público."
+  },
+  {
+   "id": "anpd_res_15_2024",
+   "titulo": "Regulamento de Comunicação de Incidente de Segurança",
+   "tipo": "norma",
+   "orgao": "ANPD",
+   "referencia_oficial": "Resolução CD/ANPD nº 15/2024",
+   "vigencia": "2024-04-26",
+   "url": "https://www.gov.br/anpd/",
+   "categorias": [
+    "lgpd",
+    "seguranca"
+   ],
+   "status": "vigente",
+   "resumo": "Procedimentos e prazos para comunicar à ANPD e aos titulares incidentes de segurança com dados pessoais."
+  },
+  {
+   "id": "politicas_exemplo",
+   "titulo": "Políticas internas — exemplos provisórios",
+   "tipo": "politica",
+   "orgao": "SEST SENAT",
+   "referencia_oficial": "(aguardando documentos oficiais)",
+   "vigencia": "",
+   "url": "",
+   "categorias": [
+    "politicas"
+   ],
+   "status": "provisoria",
+   "resumo": "Perguntas genéricas de boas práticas institucionais. Substituir pelas políticas oficiais (uso de IA, segurança da informação, classificação da informação)."
+  },
+  {
+   "id": "boas_praticas",
+   "titulo": "Boas práticas de mercado (conteúdo autoral)",
+   "tipo": "guia",
+   "orgao": "Equipe do jogo",
+   "referencia_oficial": "",
+   "vigencia": "",
+   "url": "",
+   "categorias": [
+    "ia",
+    "seguranca",
+    "governanca",
+    "pense_antes"
+   ],
+   "status": "vigente",
+   "resumo": "Conceitos amplamente aceitos de IA responsável, segurança da informação e governança de dados."
+  },
+  {
+   "id": "acervo_trilha",
+   "titulo": "Acervo de cartas da Trilha Inteligente",
+   "tipo": "acervo",
+   "orgao": "Equipe do jogo",
+   "referencia_oficial": "",
+   "vigencia": "",
+   "url": "",
+   "categorias": [
+    "lgpd",
+    "ia",
+    "seguranca",
+    "governanca",
+    "pense_antes"
+   ],
+   "status": "vigente",
+   "resumo": "Perguntas herdadas das cartas de múltipla escolha do antigo jogo de tabuleiro."
+  }
+ ]
+}

@@ -8,7 +8,7 @@
 //  - Errou: perde 1 vida (3 no total). Junte os 6 selos para vencer.
 //  - Ajudas compradas com moedas: Consultar o DPO, +10 s, Pular, Segunda chance.
 // ---------------------------------------------------------------------------
-import { carregarBanco, CATEGORIAS, categoria } from './perguntas.js';
+import { carregarBanco, CATEGORIAS, categoria, usandoBancoLocal } from './perguntas.js';
 import { renderAvatarSVG, AVATAR_PADRAO } from './avatar.js';
 import { ico } from './icones.js';
 import { confete, flash, tremer, seloCentral } from './fx.js';
@@ -209,6 +209,7 @@ function telaInicio() {
           <li>Junte os <strong>6 selos</strong> para vencer. Use moedas para pedir ajuda.</li>
         </ul>
       </details>
+      ${usandoBancoLocal() ? `<div class="aviso-banco-local">${ico('alerta')} Modo teste: usando o banco de perguntas da área do admin (não publicado). <a href="index.html">Sair do modo teste</a></div>` : ''}
       <p class="inicio-nota">Protótipo: a categoria Políticas SEST SENAT usa perguntas de exemplo até recebermos as políticas oficiais.</p>
     </div>`;
   app.querySelector('#btn-jogar').onclick = novoJogo;
