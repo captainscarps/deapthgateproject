@@ -1,0 +1,304 @@
+/* ==============================================================================
+   css/melhorias.css • Fase 1 de polimento visual + Liga & Duelos
+   Carregado depois de style.css e telas.css (sobrescreve onde necessário).
+   ============================================================================== */
+
+:root {
+  --amber: #FFB703; /* usada no código mas não estava definida */
+  --liga-bronze: #CD8A4E;
+  --liga-prata: #C9D6E3;
+  --liga-ouro: #FFC93C;
+  --liga-diamante: #6FE3FF;
+  --liga-guardiao: #B98CFF;
+}
+
+/* Ícones SVG da interface */
+.ico { width: 1.05em; height: 1.05em; flex-shrink: 0; vertical-align: -0.15em; display: inline-block; }
+.btn .ico, button .ico { width: 1.15em; height: 1.15em; }
+
+/* ------------------------------------------------------------------------------
+   1. CENA: tabuleiro físico sobre a mesa de madeira
+   ------------------------------------------------------------------------------ */
+.cena-viewport,
+.trilha-wrapper {
+  background:
+    radial-gradient(ellipse 75% 65% at 50% 45%, rgba(255, 214, 150, 0.16) 0%, rgba(0, 0, 0, 0) 60%, rgba(0, 0, 0, 0.55) 100%),
+    repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.18) 0 2px, transparent 2px 180px),
+    repeating-linear-gradient(90deg, rgba(255, 220, 170, 0.05) 0 1px, transparent 1px 7px),
+    repeating-linear-gradient(0deg, rgba(60, 30, 10, 0.25) 0 1px, transparent 1px 23px),
+    linear-gradient(90deg, #6B3E22 0%, #7C4A2A 18%, #6A3C20 36%, #81502E 54%, #6E4024 72%, #7A4828 90%, #6B3E22 100%) !important;
+  box-shadow: inset 0 0 110px rgba(0, 0, 0, 0.7), 0 6px 0 var(--navy-darkest);
+}
+
+/* O tabuleiro: cartão impresso com moldura, espessura e bairros coloridos */
+.diorama-placa {
+  border-radius: 22px;
+  border: 0;
+  background-color: #CFE7DD;
+  background-image:
+    /* bairros (manchas impressas) */
+    radial-gradient(ellipse 22% 26% at 16% 76%, #B7DDC0 0 98%, transparent 100%),
+    radial-gradient(ellipse 18% 20% at 50% 48%, #F6E3B4 0 98%, transparent 100%),
+    radial-gradient(ellipse 22% 24% at 84% 24%, #C7DDF4 0 98%, transparent 100%),
+    radial-gradient(ellipse 20% 22% at 20% 20%, #E8D5F2 0 98%, transparent 100%),
+    radial-gradient(ellipse 18% 20% at 82% 80%, #F7D2C4 0 98%, transparent 100%),
+    /* textura de papel */
+    repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.12) 0 2px, transparent 2px 6px),
+    repeating-linear-gradient(-45deg, rgba(0, 60, 50, 0.04) 0 1px, transparent 1px 5px);
+  box-shadow:
+    inset 0 0 0 14px #0B2545,          /* moldura impressa */
+    inset 0 0 0 17px #FFC93C,          /* filete dourado */
+    inset 0 0 0 20px #0B2545,
+    inset 0 0 40px 20px rgba(11, 37, 69, 0.18),
+    0 10px 0 #0A1D36,                  /* espessura do cartão */
+    0 18px 0 #06142A,
+    0 30px 40px rgba(0, 0, 0, 0.75);
+}
+
+/* Cantoneiras douradas e selo do jogo impressos na moldura */
+.diorama-placa::before,
+.diorama-placa::after {
+  content: '';
+  position: absolute;
+  pointer-events: none;
+  z-index: 1;
+}
+.diorama-placa::before {
+  inset: 5px;
+  border-radius: 18px;
+  background:
+    radial-gradient(circle at 0 0, #FFC93C 0 16px, transparent 17px),
+    radial-gradient(circle at 100% 0, #FFC93C 0 16px, transparent 17px),
+    radial-gradient(circle at 0 100%, #FFC93C 0 16px, transparent 17px),
+    radial-gradient(circle at 100% 100%, #FFC93C 0 16px, transparent 17px);
+}
+.diorama-placa::after {
+  content: 'TRILHA INTELIGENTE · SEST SENAT';
+  left: 50%; bottom: 1px; transform: translateX(-50%);
+  font-family: var(--font-title); font-weight: 900; font-size: 11px; letter-spacing: 4px;
+  color: #FFC93C; white-space: nowrap;
+}
+
+/* Objetos de cenário com sombra mais curta (luz de mesa) */
+.cenario-prop { filter: drop-shadow(0 3px 2px rgba(20, 40, 50, 0.55)); }
+
+/* ------------------------------------------------------------------------------
+   2. CASAS maiores e mais legíveis
+   ------------------------------------------------------------------------------ */
+.casa-tile { min-height: 62px; }
+.casa-disco-base {
+  width: 60px; height: 60px;
+  background: #FFFDF6; border: 2px solid #0B2545;
+  box-shadow: 0 3px 0 #0B2545, 0 6px 6px rgba(11, 37, 69, 0.35);
+  transform: translateZ(4px);
+}
+.casa-disco-topo { width: 84%; height: 84%; border: 2px solid rgba(11, 37, 69, 0.55); box-shadow: inset 0 3px 0 rgba(255, 255, 255, 0.35), inset 0 -3px 0 rgba(0, 0, 0, 0.18); }
+.casa-num { color: #FFFFFF; text-shadow: 0 1px 0 #0B2545, 0 0 3px rgba(11, 37, 69, 0.9); }
+.casa-tile.casa-checkpoint .casa-disco-base { transform: translateZ(10px); box-shadow: 0 4px 0 #B08215, 0 8px 0 #8A630B, 0 12px 10px rgba(11, 37, 69, 0.45); }
+.casa-tile.casa-armadilha .casa-disco-base { transform: translateZ(3px); background: #FFE3E8; border-color: #8A1A34; }
+.casa-tile.visitada .casa-disco-base { opacity: 1; filter: saturate(0.55) brightness(0.95); }
+.casa-tile.ativa .casa-disco-base { border-color: #00B4D8 !important; box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.9), 0 0 18px rgba(0, 180, 216, 0.9), 0 3px 0 #0B2545 !important; }
+.casa-tile.casa-checkpoint .casa-disco-base { width: 66px; height: 66px; }
+.casa-icone { height: 28px; }
+.casa-icone svg { width: 26px; height: 26px; }
+.casa-num { font-size: 11px; color: #E2E8F0; }
+
+/* Armadilha com brilho vermelho, desafio com halo laranja: leitura sem legenda */
+.casa-tile.casa-armadilha .casa-disco-base { box-shadow: 0 3px 0 #590D22, 0 0 12px rgba(239, 71, 111, 0.6), 0 6px 6px rgba(11, 37, 69, 0.35); }
+.casa-tile.casa-desafio .casa-disco-base,
+.casa-tile.casa-pense_antes .casa-disco-base { border: 2px solid #FFE3C2; }
+
+
+/* ------------------------------------------------------------------------------
+   3. HUD lateral enxuto
+   ------------------------------------------------------------------------------ */
+.hud-jogador-bloco > div { flex-wrap: wrap; }
+.hud-jogador-bloco .badge { white-space: nowrap; overflow: visible; }
+.hud-nome { max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.hud-tokens-destaque.tokens-criticos { animation: pulso-critico 0.9s infinite alternate; border-color: var(--coral) !important; }
+@keyframes pulso-critico { from { box-shadow: 0 0 0 rgba(232, 72, 79, 0); } to { box-shadow: 0 0 18px rgba(232, 72, 79, 0.8); } }
+
+.hud-progresso-volta,
+.hud-combo {
+  background: rgba(5, 16, 31, 0.55);
+  border: 2px solid var(--navy-darkest);
+  border-radius: 10px;
+  padding: 10px 12px 12px;
+}
+.hud-prog-topo, .hud-combo-topo { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.hud-prog-rotulo, .hud-combo-rotulo { font-family: var(--font-title); font-weight: 800; text-transform: uppercase; font-size: 0.85rem; color: var(--text-muted); letter-spacing: 0.4px; display: inline-flex; align-items: center; gap: 5px; }
+.hud-prog-casa { font-family: var(--font-pixel); font-size: 0.8rem; color: var(--text-muted); }
+.hud-prog-casa strong { color: var(--cyan); font-size: 1.05rem; }
+.hud-prog-trilho { position: relative; height: 10px; border-radius: 6px; background: #0A1C30; border: 1px solid #1E447B; margin: 14px 10px 14px 4px; }
+.hud-prog-preenchido { position: absolute; inset: 0 auto 0 0; border-radius: 6px; background: linear-gradient(90deg, var(--cyan-dark), var(--cyan)); transition: width 0.5s ease; }
+.hud-prog-cp {
+  position: absolute; top: 50%; transform: translate(-50%, -50%);
+  width: 24px; height: 24px; border-radius: 50%;
+  background: #0A1C30; border: 2px solid var(--gold); color: var(--gold);
+  font-family: var(--font-pixel); font-size: 0.7rem; display: grid; place-items: center;
+}
+.hud-prog-cp.ok { background: var(--gold); color: var(--navy-darkest); }
+.hud-prog-cp .ico { width: 14px; height: 14px; }
+.hud-prog-proximo { font-size: 0.82rem; color: var(--text-muted); }
+.hud-prog-proximo strong { color: var(--text-white); }
+
+.hud-combo-valor { font-family: var(--font-pixel); font-size: 0.95rem; color: var(--text-dim); }
+.hud-combo-valor.ativo { color: var(--orange); text-shadow: 0 0 10px rgba(255, 122, 61, 0.7); }
+.hud-combo-marcas { display: flex; gap: 5px; margin: 8px 0 6px; }
+.combo-marca { flex: 1; height: 8px; border-radius: 3px; background: #0A1C30; border: 1px solid #1E447B; }
+.combo-marca.on { background: var(--cyan); border-color: var(--cyan); }
+.combo-marca.on.quente { background: var(--orange); border-color: var(--orange); box-shadow: 0 0 8px rgba(255, 122, 61, 0.7); }
+.hud-combo-dica { font-size: 0.76rem; color: var(--text-muted); }
+
+/* Botão rolar: sem quebra de linha, custo em pílula */
+#btn-rolar-dado { white-space: nowrap; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+.btn-rolar-custo { display: inline-flex; align-items: center; gap: 3px; background: rgba(5, 16, 31, 0.25); border-radius: 999px; padding: 2px 8px; font-size: 0.9rem; }
+.controles-camera-flutuantes button { display: inline-flex; align-items: center; gap: 6px; }
+
+.cp-modal-escudo { width: 64px; height: 64px; margin: 4px auto; }
+.cp-modal-escudo svg { width: 100%; height: 100%; }
+
+/* ------------------------------------------------------------------------------
+   4. CARTA: faixa da categoria + Dadinho
+   ------------------------------------------------------------------------------ */
+.carta-faixa-categoria {
+  display: flex; align-items: center; gap: 12px;
+  margin: -4px -4px 4px; padding: 10px 12px;
+  border-radius: 10px;
+  background: linear-gradient(90deg, color-mix(in srgb, var(--cor-cat) 28%, transparent), rgba(5, 16, 31, 0.2));
+  border: 2px solid color-mix(in srgb, var(--cor-cat) 70%, transparent);
+}
+.carta-faixa-icone { width: 46px; height: 46px; border-radius: 12px; background: #05101F; border: 2px solid var(--cor-cat); display: grid; place-items: center; flex-shrink: 0; }
+.carta-faixa-icone svg { width: 30px; height: 30px; }
+.carta-faixa-textos { flex: 1; min-width: 0; }
+.carta-faixa-nome { font-family: var(--font-title); font-weight: 900; font-size: 1.3rem; color: var(--cor-cat); text-transform: uppercase; letter-spacing: 0.5px; line-height: 1; }
+.carta-faixa-tema { font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; margin-top: 3px; }
+.carta-feedback-titulo { display: flex; align-items: center; gap: 6px; }
+.impacto-pill { display: inline-flex; align-items: center; gap: 4px; }
+.impacto-combo { background: rgba(255, 122, 61, 0.18); border: 1px solid var(--orange); color: #FFB38A; }
+
+.dadinho-fala { display: flex; align-items: flex-start; gap: 10px; margin-top: 12px; animation: dadinho-entra 0.35s ease-out both; animation-delay: 0.15s; }
+.dadinho-rosto { width: 40px; height: 40px; flex-shrink: 0; filter: drop-shadow(0 3px 0 #05101F); }
+.dadinho-acerto .dadinho-rosto, .dadinho-positivo .dadinho-rosto { animation: dadinho-pula 0.6s ease-out 0.3s 2; }
+.dadinho-balao { position: relative; background: #E2F1FF; color: #05101F; font-weight: 600; font-size: 0.92rem; border-radius: 10px; padding: 8px 12px; line-height: 1.35; }
+.dadinho-balao::before { content: ''; position: absolute; left: -6px; top: 12px; border: 6px solid transparent; border-left: 0; border-right-color: #E2F1FF; }
+@keyframes dadinho-entra { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+@keyframes dadinho-pula { 0%, 100% { transform: translateY(0); } 40% { transform: translateY(-8px); } }
+
+/* ------------------------------------------------------------------------------
+   5. EFEITOS (fx.js)
+   ------------------------------------------------------------------------------ */
+.fx-confete-canvas { position: fixed; inset: 0; pointer-events: none; z-index: 100000; }
+.fx-tremer { animation: fx-tremer 0.4s ease; }
+.fx-tremer-forte { animation: fx-tremer-forte 0.5s ease; }
+@keyframes fx-tremer { 0%, 100% { translate: 0 0; } 20% { translate: -6px 0; } 40% { translate: 5px 0; } 60% { translate: -4px 0; } 80% { translate: 3px 0; } }
+@keyframes fx-tremer-forte { 0%, 100% { translate: 0 0; } 15% { translate: -10px 2px; } 30% { translate: 9px -2px; } 45% { translate: -7px 1px; } 60% { translate: 6px 0; } 80% { translate: -3px 0; } }
+.fx-flash { position: fixed; inset: 0; pointer-events: none; z-index: 99990; animation: fx-flash 0.7s ease-out forwards; }
+.fx-flash-sucesso { box-shadow: inset 0 0 120px rgba(60, 203, 127, 0.75); }
+.fx-flash-perigo { box-shadow: inset 0 0 140px rgba(232, 72, 79, 0.85); }
+@keyframes fx-flash { from { opacity: 1; } to { opacity: 0; } }
+.fx-moeda {
+  position: fixed; left: 0; top: 0; width: 18px; height: 18px; z-index: 100001; pointer-events: none;
+  border-radius: 50%; background: radial-gradient(circle at 35% 30%, #FFF3C4, #FFC93C 45%, #C99616);
+  border: 2px solid #05101F; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+}
+.fx-moeda-perda { filter: grayscale(0.6) brightness(0.8); }
+.fx-pulsar { animation: fx-pulsar 0.45s ease-out; }
+@keyframes fx-pulsar { 0% { transform: scale(1); } 40% { transform: scale(1.08); box-shadow: 0 0 18px rgba(255, 201, 60, 0.8); } 100% { transform: scale(1); } }
+.fx-selo-central {
+  position: fixed; left: 50%; top: 22%; z-index: 100002; pointer-events: none;
+  font-family: var(--font-pixel); font-size: 1.6rem; color: #FFF; white-space: nowrap;
+  padding: 10px 22px; border-radius: 12px; border: 3px solid #05101F;
+  background: linear-gradient(135deg, #FF7A3D, #E8484F); box-shadow: 0 6px 0 #05101F, 0 0 30px rgba(255, 122, 61, 0.6);
+  animation: fx-selo 1.5s cubic-bezier(.2,1.4,.4,1) forwards;
+}
+@keyframes fx-selo { 0% { opacity: 0; transform: translate(-50%, 20px) scale(0.6); } 18% { opacity: 1; transform: translate(-50%, 0) scale(1.08); } 30% { transform: translate(-50%, 0) scale(1); } 80% { opacity: 1; } 100% { opacity: 0; transform: translate(-50%, -30px) scale(1); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .dadinho-fala, .dadinho-rosto, .fx-selo-central, .hud-tokens-destaque.tokens-criticos { animation: none !important; }
+}
+
+/* ------------------------------------------------------------------------------
+   6. RELATÓRIO DE APRENDIZAGEM (tela de resultado)
+   ------------------------------------------------------------------------------ */
+.relatorio-aprendizagem { display: flex; flex-direction: column; gap: 10px; }
+.relatorio-titulo { display: flex; align-items: center; gap: 8px; font-family: var(--font-title); font-weight: 800; font-size: 1.1rem; color: var(--cyan); text-transform: uppercase; }
+.relatorio-linha { display: grid; grid-template-columns: 1fr auto; gap: 4px 10px; align-items: center; }
+.relatorio-nome { font-weight: 700; font-size: 0.95rem; }
+.relatorio-taxa { font-family: var(--font-pixel); font-size: 0.85rem; color: var(--text-muted); }
+.relatorio-barra { grid-column: 1 / -1; height: 8px; border-radius: 4px; background: #0A1C30; overflow: hidden; }
+.relatorio-barra > span { display: block; height: 100%; border-radius: 4px; }
+.relatorio-destaques { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.relatorio-destaque { border-radius: 10px; padding: 10px; font-size: 0.88rem; line-height: 1.35; }
+.relatorio-destaque strong { display: block; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px; }
+.relatorio-destaque.forte { background: rgba(60, 203, 127, 0.12); border: 1px solid rgba(60, 203, 127, 0.5); }
+.relatorio-destaque.forte strong { color: var(--green); }
+.relatorio-destaque.reforcar { background: rgba(255, 183, 3, 0.10); border: 1px solid rgba(255, 183, 3, 0.5); }
+.relatorio-destaque.reforcar strong { color: var(--amber); }
+.relatorio-vazio { color: var(--text-muted); font-size: 0.9rem; }
+
+/* Entrada para a Liga na tela inicial / resultado */
+.btn-liga-entrada {
+  display: flex; align-items: center; gap: 12px; width: 100%;
+  padding: 14px 16px; border-radius: 12px; cursor: pointer; text-align: left;
+  background: linear-gradient(135deg, rgba(185, 140, 255, 0.22), rgba(0, 180, 216, 0.14));
+  border: 2px solid var(--liga-guardiao); color: var(--text-white);
+  box-shadow: 0 4px 0 var(--navy-darkest);
+  font-family: var(--font-main);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.btn-liga-entrada:hover { transform: translateY(-2px); box-shadow: 0 6px 0 var(--navy-darkest); }
+.btn-liga-entrada .ico { width: 34px; height: 34px; color: var(--liga-guardiao); }
+.btn-liga-entrada-titulo { font-weight: 900; font-size: 1.25rem; text-transform: uppercase; letter-spacing: 0.5px; display: flex; align-items: center; gap: 8px; }
+.btn-liga-entrada-sub { font-size: 0.9rem; color: #D7DEEA; }
+.badge-novo { font-size: 0.7rem; background: var(--liga-guardiao); color: #05101F; border-radius: 999px; padding: 2px 8px; font-weight: 900; }
+.badge-pendente { font-size: 0.75rem; background: var(--coral); color: #fff; border-radius: 999px; padding: 2px 8px; font-weight: 900; }
+
+/* Ajustes da tela inicial */
+.btn-liga-entrada-titulo, .btn-liga-entrada-sub { display: flex; }
+.btn-liga-entrada-sub { text-transform: none; font-weight: 500; font-family: var(--font-body); font-size: 0.92rem; letter-spacing: 0; margin-top: 2px; }
+.card-caminho-icone .ico { width: 34px; height: 34px; color: var(--cyan); }
+
+/* ------------------------------------------------------------------------------
+   7. PERSONALIZAÇÃO DO PERSONAGEM (miniaturas reais em cada opção)
+   ------------------------------------------------------------------------------ */
+.criador-avatar-dialog { max-width: 1000px; }
+.criador-avatar-body { grid-template-columns: 300px 1fr; align-items: start; }
+.criador-titulo-ico { width: 26px; height: 26px; color: var(--gold); display: inline-flex; }
+.criador-titulo-ico .ico { width: 100%; height: 100%; }
+.avatar-previa-wrapper svg { width: 100%; height: 100%; }
+
+.avatar-abas-nav { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; overflow: visible; }
+.avatar-aba-btn { justify-content: center; text-transform: uppercase; padding: 9px 8px; min-width: 0; }
+.avatar-aba-btn span { overflow: hidden; text-overflow: ellipsis; }
+.avatar-aba-painel { max-height: 430px; }
+
+.avatar-grade-mini { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 8px; }
+.avatar-grade-mini.grade-2 { grid-template-columns: repeat(2, minmax(0, 150px)); }
+.avatar-grade-mini.grade-3 { grid-template-columns: repeat(3, minmax(0, 150px)); }
+.avatar-opcao-mini {
+  display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer;
+  padding: 6px 4px 8px; border-radius: 12px;
+  background: linear-gradient(180deg, #123257, #0A1F38); border: 2px solid #05101F;
+  box-shadow: 0 3px 0 #05101F; color: var(--text-muted);
+  font-family: var(--font-main); text-transform: none; letter-spacing: 0;
+  transition: transform 0.12s ease, border-color 0.12s ease;
+}
+.avatar-opcao-mini:hover { transform: translateY(-2px); border-color: var(--cyan); color: var(--text-white); }
+.avatar-opcao-mini.selecionado { border-color: var(--gold); background: linear-gradient(180deg, #2A3E5C, #142843); color: var(--text-white); box-shadow: 0 3px 0 #05101F, 0 0 0 2px rgba(255, 201, 60, 0.35); }
+.avatar-opcao-previa { width: 72px; height: 72px; display: block; border-radius: 50%; overflow: hidden; background: radial-gradient(circle at 50% 40%, #1E4E80, #0B2440); }
+.mini-completo .avatar-opcao-previa { width: 78px; height: 86px; border-radius: 10px; }
+.avatar-opcao-previa svg { width: 100%; height: 100%; display: block; }
+.avatar-opcao-nome { font-weight: 700; font-size: 0.85rem; line-height: 1.1; text-align: center; }
+
+.avatar-swatch-cor { position: relative; }
+.avatar-previa-wrapper { width: 230px !important; height: 250px !important; }
+.avatar-podio-box { height: auto !important; min-height: 270px; display: flex; align-items: center; justify-content: center; }
+
+/* Peão maior (miniatura v2): caixa na proporção do desenho 120×130 */
+.peao-avatar-wrapper,
+.peao-avatar-wrapper .peao-corpo-wrapper { width: 72px; height: 78px; }
+.peao-avatar-wrapper .peao-corpo-wrapper { transform-origin: center 74px; }
+.peao-avatar-wrapper .peao-corpo-wrapper svg { width: 100%; height: 100%; display: block; filter: drop-shadow(0 3px 2px rgba(11, 37, 69, 0.5)); }
+.peao-sombra { width: 46px !important; height: 14px !important; }

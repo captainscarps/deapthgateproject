@@ -63,6 +63,15 @@ export function criarRng(semente) {
     },
 
     /**
+     * Escolhe um item do array de forma determinística
+     * (usado pela Central de Dados; antes não existia e travava a rodada)
+     */
+    escolher(array) {
+      if (!Array.isArray(array) || array.length === 0) return undefined;
+      return array[Math.floor(rawRng() * array.length)];
+    },
+
+    /**
      * Embaralha um array de forma determinística (Fisher-Yates) e retorna nova cópia
      */
     embaralhar(array) {

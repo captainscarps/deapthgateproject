@@ -2,6 +2,37 @@
 import { state } from '../state.js';
 import { criarRng } from '../rng.js';
 import { Audio } from '../audio.js';
+import { ICONES_SVG } from './tabuleiro.js';
+import { ico } from '../icones.js';
+import { flash, tremer, seloCentral } from '../fx.js';
+
+// Falas curtas do mascote Dadinho conforme o resultado
+const FALAS_DADINHO = {
+  acerto: ['Mandou bem! Isso é governança na prática.', 'Exato! Você pensou antes de agir.', 'Perfeito! Dado bem cuidado é dado protegido.'],
+  erro: ['Opa! Vale revisar essa — leia a explicação acima.', 'Quase! Esse é um erro comum, por isso é bom treinar.', 'Atenção! Na vida real esse deslize custa caro.'],
+  armadilha: ['Cuidado! Situações assim acontecem todo dia.', 'Eita! Esse risco é mais comum do que parece.'],
+  positivo: ['Boa! Esse é o comportamento que queremos ver.', 'Isso aí! Pequenas atitudes fazem diferença.'],
+  neutro: ['Fique de olho: o contexto muda as regras do jogo.']
+};
+
+function falaDadinho(tipo, semente = 0) {
+  const lista = FALAS_DADINHO[tipo] || FALAS_DADINHO.neutro;
+  return lista[Math.abs(semente) % lista.length];
+}
+
+function renderDadinho(tipo, texto) {
+  const olhos = tipo === 'erro' || tipo === 'armadilha'
+    ? '<circle cx="15" cy="17" r="2.6" fill="#05101F"/><circle cx="25" cy="17" r="2.6" fill="#05101F"/><path d="M15 26q5-4 10 0" stroke="#05101F" stroke-width="2" fill="none" stroke-linecap="round"/>'
+    : '<path d="M12.5 17q2.5-3 5 0M22.5 17q2.5-3 5 0" stroke="#05101F" stroke-width="2.2" fill="none" stroke-linecap="round"/><path d="M15 24q5 4.5 10 0" stroke="#05101F" stroke-width="2.2" fill="none" stroke-linecap="round"/>';
+  return `
+    <div class="dadinho-fala dadinho-${tipo}">
+      <svg viewBox="0 0 40 40" class="dadinho-rosto" aria-hidden="true">
+        <rect x="3" y="3" width="34" height="34" rx="9" fill="#00B4D8" stroke="#05101F" stroke-width="2.5"/>
+        ${olhos}
+      </svg>
+      <div class="dadinho-balao">${texto}</div>
+    </div>`;
+}
 
 const NOMES_CATEGORIAS = {
   inicio: "Partida",
@@ -63,24 +94,18 @@ export function abrirModalCarta(carta, { rng = null } = {}) {
       <div class="modal-dialog modal-dialog-carta" id="modal-dialog-carta">
         <div class="carta-flip-conteudo">
           
-          <!-- CABEÇALHO COM SELO DIEX -->
-          <div class="carta-header" style="display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid var(--navy-darkest); padding-bottom: 8px;">
-            <div class="carta-categoria-tag" style="color: ${corCat}; font-weight: 800; text-transform: uppercase;">
-              <span>●</span>
-              <span>${catNome}</span>
+          <!-- CABEÇALHO COM FAIXA DA CATEGORIA -->
+          <div class="carta-faixa-categoria" style="--cor-cat: ${corCat};">
+            <div class="carta-faixa-icone">${ICONES_SVG[carta.categoria] || ICONES_SVG.boa_pratica}</div>
+            <div class="carta-faixa-textos">
+              <div class="carta-faixa-nome">${catNome}</div>
+              <div class="carta-faixa-tema">${carta.tema ? carta.tema.replace(/_/g, ' ') : 'geral'}</div>
             </div>
-            <div class="selo-diex-planilha">
-              <span>📊</span>
-              <span>DIEX · IA Ética</span>
-            </div>
+            <div class="selo-diex-planilha">DIEX · IA Ética</div>
           </div>
 
           <!-- CORPO -->
           <div class="carta-body" style="padding-top: 14px;">
-            <div style="font-size: 0.82rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; margin-bottom: 6px;">
-              Tema: ${carta.tema ? carta.tema.toUpperCase() : 'GERAL'}
-            </div>
-
             <p class="carta-texto-situacao" id="carta-texto-situacao" style="font-family: var(--font-body); font-size: 1.05rem; line-height: 1.5; color: var(--text-white);">
               ${carta.texto}
             </p>
@@ -183,6 +208,15 @@ export function abrirModalCarta(carta, { rng = null } = {}) {
         deltaTokens: Number(carta.efeito.tokens || 0),
         deltaMover: Number(carta.efeito.mover || 0)
       };
+      const ehArmadilha = carta.categoria === 'armadilha' || carta.efeito.armadilha === true;
+      const tipoFala = ehArmadilha ? 'armadilha' : (resultadoFinal.deltaTokens >= 0 ? 'positivo' : 'neutro');
+      const fb = modalEl.querySelector('#container-feedback-carta');
+      if (fb) fb.insertAdjacentHTML('beforeend', renderDadinho(tipoFala, falaDadinho(tipoFala, carta.id.length + (st.rodada || 0))));
+      if (ehArmadilha) {
+        setTimeout(() => { tremer(dialog, 'forte'); flash('perigo'); tremer(document.querySelector('#cena-viewport')); }, 380);
+      } else if (resultadoFinal.deltaTokens > 0) {
+        setTimeout(() => flash('sucesso'), 380);
+      }
       // Registra no histórico (índice 0 para efeito direto)
       state.registrarEscolha(carta.id, 0);
       // Aplica efeito
@@ -234,10 +268,22 @@ export function abrirModalCarta(carta, { rng = null } = {}) {
         // 3. Aplica efeito ao state
         state.aplicarEfeito(opEscolhida);
 
+        // 3b. Sequência de acertos (combo) e relatório por tema
+        const combo = state.registrarResposta(carta, isCorreta);
+        resultadoFinal.deltaTokens += combo.bonus;
+        resultadoFinal.combo = combo;
+        if (isCorreta) {
+          flash('sucesso');
+          if (combo.rotulo) seloCentral(`${combo.rotulo} · ${combo.sequencia} seguidas`, 'combo');
+        } else {
+          flash('perigo');
+          tremer(dialog);
+        }
+
         // 4. Exibe painel de feedback explicativo e pílulas de impacto
         const feedbackContainer = modalEl.querySelector('#container-feedback-carta');
         if (feedbackContainer) {
-          feedbackContainer.innerHTML = renderFeedbackOpcao(opEscolhida, isCorreta);
+          feedbackContainer.innerHTML = renderFeedbackOpcao(opEscolhida, isCorreta, combo) + renderDadinho(isCorreta ? 'acerto' : 'erro', falaDadinho(isCorreta ? 'acerto' : 'erro', carta.id.length + idxClicado));
           feedbackContainer.style.display = 'block';
         }
 
@@ -264,15 +310,15 @@ export function abrirModalCarta(carta, { rng = null } = {}) {
   });
 }
 
-function renderFeedbackOpcao(opcao, isCorreta) {
+function renderFeedbackOpcao(opcao, isCorreta, combo = null) {
   const classeTipo = isCorreta ? 'sucesso' : 'alerta';
-  const iconeStatus = isCorreta ? '✅ Conduta Exemplar' : '⚠️ Atenção / Risco Identificado';
+  const iconeStatus = isCorreta ? `${ico('check')} Conduta exemplar` : `${ico('alerta')} Atenção: risco identificado`;
   const deltaTokens = Number(opcao.tokens || 0);
   const deltaMover = Number(opcao.mover || 0);
 
   return `
     <div class="carta-feedback-box ${classeTipo}">
-      <div style="font-weight: 700; color: ${isCorreta ? 'var(--green)' : 'var(--amber)'};">
+      <div class="carta-feedback-titulo" style="font-weight: 700; color: ${isCorreta ? 'var(--green)' : 'var(--amber)'};">
         ${iconeStatus}
       </div>
       <div>${opcao.feedback || ''}</div>
@@ -289,7 +335,12 @@ function renderFeedbackOpcao(opcao, isCorreta) {
         ` : ''}
         ${opcao.bonus_pense_antes ? `
           <span class="impacto-pill impacto-neutro">
-            💡 +1 Pense Antes
+            ${ico('lampada')} +1 Pense Antes
+          </span>
+        ` : ''}
+        ${combo && combo.bonus > 0 ? `
+          <span class="impacto-pill impacto-combo">
+            ${ico('fogo')} ${combo.sequencia} seguidas · +${combo.bonus} token${combo.bonus > 1 ? 's' : ''} bônus
           </span>
         ` : ''}
       </div>
@@ -305,8 +356,8 @@ function renderEfeitoDireto(efeito) {
 
   return `
     <div class="carta-feedback-box ${classeTipo}">
-      <div style="font-weight: 700;">
-        ${efeito.armadilha ? '⚠️ Armadilha de Governança' : (isPositivo ? '✅ Boa Prática Reconhecida' : '📢 Evento da Trilha')}
+      <div class="carta-feedback-titulo" style="font-weight: 700;">
+        ${efeito.armadilha ? `${ico('alerta')} Armadilha de governança` : (isPositivo ? `${ico('check')} Boa prática reconhecida` : `${ico('raio')} Evento da trilha`)}
       </div>
       <div>${efeito.feedback || ''}</div>
       <div class="impactos-container">
@@ -322,12 +373,12 @@ function renderEfeitoDireto(efeito) {
         ` : ''}
         ${efeito.pular_rodada ? `
           <span class="impacto-pill impacto-negativo">
-            ⏳ Perde a próxima rodada
+            ${ico('relogio')} Perde a próxima rodada
           </span>
         ` : ''}
         ${efeito.armadilha ? `
           <span class="impacto-pill impacto-negativo">
-            ⚠️ Armadilha registrada
+            ${ico('alerta')} Armadilha registrada
           </span>
         ` : ''}
       </div>

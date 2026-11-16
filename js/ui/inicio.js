@@ -1,5 +1,7 @@
 // js/ui/inicio.js - Tela de Início, Modo Convidado e Autenticação de Colaborador
 import { state } from '../state.js';
+import { ico } from '../icones.js';
+import { carregarBancoPerguntas, obterLiga, pendenciasLiga } from '../liga.js';
 import { semanaAtual, carregarCartas } from '../deck.js';
 import { Api } from '../api.js';
 import { abrirModalPrivacidade } from './privacidade.js';
@@ -51,7 +53,7 @@ export function render(currentState) {
           <span class="parafuso-canto bottom-right"></span>
 
           <div class="semana-tag">
-            <span>📅</span>
+            ${ico('relogio')}
             <span>${semFormatada}</span>
           </div>
           
@@ -88,20 +90,31 @@ export function render(currentState) {
           </div>
         </section>
 
+        <!-- LIGA & DUELOS -->
+        <section style="margin-top: 14px;">
+          <button type="button" id="btn-abrir-liga" class="btn-liga-entrada">
+            ${ico('espadas')}
+            <span style="flex: 1;">
+              <span class="btn-liga-entrada-titulo">Liga & Duelos <span class="badge-novo">NOVO</span> <span id="badge-liga-pendente"></span></span>
+              <span class="btn-liga-entrada-sub">Suba de liga desafiando colegas numa bateria de perguntas contra o tempo</span>
+            </span>
+          </button>
+        </section>
+
         <!-- AÇÕES GERAIS -->
-        <section class="inicio-acoes" style="margin-top: 14px;">
+        <section class="inicio-acoes" style="margin-top: 10px;">
           <button id="btn-ver-ranking" class="btn btn-secondary btn-block">
-            🏅 VER RANKING SEMANAL
+            ${ico('ranking')} Ver ranking semanal
           </button>
         </section>
 
         <!-- LINKS SECUNDÁRIOS -->
         <section class="inicio-links-secundarios" style="display: flex; justify-content: center; gap: 14px; margin-top: 12px;">
           <button id="btn-abrir-tutorial" class="btn btn-outline btn-sm">
-            💡 Como Jogar
+            ${ico('lampada')} Como jogar
           </button>
           <button id="btn-abrir-privacidade" class="btn btn-outline btn-sm">
-            🛡️ Privacidade &amp; LGPD
+            ${ico('escudo')} Privacidade &amp; LGPD
           </button>
         </section>
       </div>
@@ -123,7 +136,7 @@ export function render(currentState) {
               Quer praticar sem valer para a sua pontuação semanal?
             </p>
             <button id="btn-jogar-convidado-alt" class="btn btn-secondary btn-sm" style="margin: 0 auto;">
-              🎲 Jogar Trilha Aleatória como Convidado
+              ${ico('dado')} Jogar trilha aleatória como convidado
             </button>
           </section>
 
@@ -137,7 +150,7 @@ export function render(currentState) {
               <span class="parafuso-canto top-right"></span>
               <div>
                 <div class="card-caminho-topo">
-                  <span class="card-caminho-icone">🎲</span>
+                  <span class="card-caminho-icone">${ico('dado')}</span>
                   <div>
                     <h3 class="card-caminho-titulo" style="font-family: var(--font-title); font-size: 1.3rem;">Jogar como Convidado</h3>
                     <span class="badge badge-treino" style="font-size: 0.75rem;">Sem Cadastro • Não Pontua</span>
@@ -156,10 +169,10 @@ export function render(currentState) {
                     <div style="font-size: 0.82rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Seu Avatar Chibi 3D</div>
                     <div style="display: flex; gap: 6px; flex-wrap: wrap;">
                       <button id="btn-avatar-aleatorio-convidado" type="button" class="btn btn-secondary btn-sm" style="font-size: 0.78rem; padding: 4px 8px;">
-                        🎲 Aleatório
+                        ${ico('repetir')} Aleatório
                       </button>
                       <button id="btn-customizar-avatar-convidado" type="button" class="btn btn-outline btn-sm" style="font-size: 0.78rem; padding: 4px 8px;">
-                        🎨 Personalizar
+                        ${ico('usuarios')} Personalizar
                       </button>
                     </div>
                   </div>
@@ -174,7 +187,7 @@ export function render(currentState) {
               </div>
 
               <button id="btn-jogar-convidado" class="btn btn-primary btn-block" style="font-size: 1.15rem; padding: 14px; margin-top: 10px;">
-                🎲 Iniciar como Convidado
+                ${ico('dado')} Iniciar como convidado
               </button>
             </div>
 
@@ -184,7 +197,7 @@ export function render(currentState) {
               <span class="parafuso-canto top-right"></span>
               <div>
                 <div class="card-caminho-topo">
-                  <span class="card-caminho-icone">🏛️</span>
+                  <span class="card-caminho-icone">${ico('escudo')}</span>
                   <div>
                     <h3 class="card-caminho-titulo" style="font-family: var(--font-title); font-size: 1.3rem;">Colaborador SEST SENAT</h3>
                     <span class="badge badge-oficial" style="font-size: 0.75rem;">Desafio Semanal • Vale Ranking</span>
@@ -216,7 +229,7 @@ function renderCardAutenticado(currentState, valeRanking) {
         <div style="font-size: 0.82rem; color: var(--text-muted); text-transform: uppercase;">Colaborador Conectado</div>
         <div class="colaborador-nome" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${currentState.jogador}</div>
         <button id="btn-editar-avatar" class="btn btn-outline btn-sm" style="margin-top: 4px; padding: 3px 8px; font-size: 0.78rem;">
-          🎨 Personalizar Personagem
+          ${ico('usuarios')} Personalizar personagem
         </button>
       </div>
       <button id="btn-logout" class="btn btn-secondary btn-sm" title="Desconectar sessão">
@@ -226,7 +239,7 @@ function renderCardAutenticado(currentState, valeRanking) {
 
     <div class="colaborador-area-lock" style="margin-top: 10px;">
       <span class="badge badge-area">
-        🏛️ ${currentState.area}
+        ${ico('escudo')} ${currentState.area}
       </span>
       <span class="lock-icon" title="Área vinculada ao perfil institucional">🔒 Área Fixada</span>
     </div>
@@ -379,6 +392,17 @@ function reRender() {
 }
 
 function atribuirEventos(container) {
+  // LIGA & DUELOS
+  const btnLiga = container.querySelector('#btn-abrir-liga');
+  if (btnLiga) {
+    btnLiga.onclick = () => navigateRef('liga');
+    carregarBancoPerguntas().then(() => {
+      const pend = pendenciasLiga(obterLiga());
+      const badge = container.querySelector('#badge-liga-pendente');
+      if (badge && pend.total > 0) badge.innerHTML = `<span class="badge-pendente">${pend.total} pendente${pend.total > 1 ? 's' : ''}</span>`;
+    }).catch(() => {});
+  }
+
   // A. AÇÃO: JOGAR COMO CONVIDADO
   const handlerJogarConvidado = async (btn) => {
     btn.disabled = true;

@@ -1,7 +1,8 @@
 // js/state.js - Estado da partida, ações e pub/sub de mudanças
 // NUNCA ACESSA O DOM
 
-import { CONSTANTES, CONSTANTES_PONTUACAO, limitarPosicao, verificarCheckpoints, aplicarEfeito, isFimDePartida, calcularPontuacao, calcularCustoRolagem, calcularBonusCheckpoint } from './regras.js';
+import { CONSTANTES, CONSTANTES_PONTUACAO, limitarPosicao, verificarCheckpoints, aplicarEfeito, isFimDePartida, calcularPontuacao, calcularCustoRolagem, calcularBonusCheckpoint, calcularBonusSequencia, rotuloSequencia } from './regras.js';
+import { macroTema } from './temas.js';
 import { semanaAtual, gerarTabuleiro, DeckManager, gerarSementeConvidado, GRAFO_PADRAO, gerarTabuleiroGrafo } from './deck.js';
 import { criarRng } from './rng.js';
 import { AVATAR_PADRAO, validarAvatar } from './avatar.js';
@@ -35,6 +36,9 @@ class StateManager {
       pular_proxima_rodada: false,
       historico: [],
       partida_vale_ranking: true,
+      sequencia_acertos: 0,
+      maior_sequencia: 0,
+      respostas_tema: {},
       
       rodada: 0,
       dado_ultimo: null,
@@ -183,6 +187,9 @@ class StateManager {
       pular_proxima_rodada: false,
       historico: [],
       partida_vale_ranking: valeRanking,
+      sequencia_acertos: 0,
+      maior_sequencia: 0,
+      respostas_tema: {},
       rodada: 0,
       dado_ultimo: null,
       pontuacao_final: 0,
@@ -509,14 +516,75 @@ class StateManager {
    * @param {Object} efeito
    */
   aplicarEfeito(efeito) {
-    const novoEstado = aplicarEfeito(this.state, efeito);
+    // O movimento de cartas ("avança/volta N casas") segue o GRAFO do tabuleiro.
+    // Antes era somado direto ao número da casa, o que levava o peão dos atalhos
+    // (casas 61–65) para a casa 60 e concedia checkpoints indevidos.
+    const deltaMover = Number(efeito?.mover || 0);
+    const novoEstado = aplicarEfeito(this.state, { ...efeito, mover: 0 });
     this.state = novoEstado;
+    this.ultimoMovimentoCarta = null;
+    if (deltaMover !== 0 && this.state.grafoTabuleiro?.casas?.length) {
+      this.ultimoMovimentoCarta = this.moverPorCarta(deltaMover);
+    }
 
     if (isFimDePartida({ posicao: this.state.posicao, tokens: this.state.tokens, rodada: this.state.rodada })) {
       this.finalizarPartida();
     } else {
       this.emit('change', this.state);
     }
+  }
+
+  /**
+   * Move o peão N casas por efeito de carta, seguindo o grafo.
+   * Em bifurcações, segue a rota principal (primeiro "proximos"), sem abrir escolha.
+   * @param {number} n
+   * @returns {{ caminho: number[], bonusTokens: number, voltaCompletada: boolean }}
+   */
+  moverPorCarta(n) {
+    let res = this.mover(n);
+    const caminho = [...(res.caminhoPercorrido || [])];
+    let bonusTokens = res.bonusTokens || 0;
+    let voltaCompletada = !!res.voltaCompletada;
+    let guarda = 0;
+    while (res.parouEmBifurcacao && res.bifurcacaoPendente && guarda++ < 3) {
+      const origem = res.bifurcacaoPendente.noOrigem;
+      const nodo = this.state.grafoTabuleiro.casas.find(c => c.id === origem);
+      const principal = nodo?.proximos?.[0];
+      res = this.escolherCaminhoBifurcacao(origem, principal, 'Rota principal (efeito de carta)');
+      caminho.push(...(res.caminhoPercorrido || []).slice(1));
+      bonusTokens += res.bonusTokens || 0;
+      voltaCompletada = voltaCompletada || !!res.voltaCompletada;
+    }
+    return { caminho, bonusTokens, voltaCompletada };
+  }
+
+  /**
+   * Registra o resultado de uma resposta de múltipla escolha:
+   * atualiza a sequência de acertos (combo), aplica o bônus de tokens
+   * e acumula acertos por macro-tema para o relatório de aprendizagem.
+   * @param {Object} carta
+   * @param {boolean} correta
+   * @returns {{ sequencia: number, bonus: number, rotulo: string|null }}
+   */
+  registrarResposta(carta, correta) {
+    const tema = macroTema(carta?.tema);
+    const respostas = { ...(this.state.respostas_tema || {}) };
+    const atual = respostas[tema] || { acertos: 0, total: 0 };
+    respostas[tema] = { acertos: atual.acertos + (correta ? 1 : 0), total: atual.total + 1 };
+
+    const sequencia = correta ? (this.state.sequencia_acertos || 0) + 1 : 0;
+    const bonus = correta ? calcularBonusSequencia(sequencia) : 0;
+    this.state = {
+      ...this.state,
+      respostas_tema: respostas,
+      sequencia_acertos: sequencia,
+      maior_sequencia: Math.max(this.state.maior_sequencia || 0, sequencia)
+    };
+    if (bonus > 0) {
+      this.state = { ...this.state, tokens: (this.state.tokens || 0) + bonus };
+    }
+    this.emit('change', this.state);
+    return { sequencia, bonus, rotulo: correta ? rotuloSequencia(sequencia) : null };
   }
 
   /**

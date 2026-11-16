@@ -3,6 +3,7 @@
 
 import { AVATAR_OPCOES, AVATAR_PADRAO, validarAvatar, gerarAvatarAleatorio, renderAvatarSVG } from '../avatar.js';
 import { Audio } from '../audio.js';
+import { ico } from '../icones.js';
 
 let modalContainer = null;
 let avatarAtual = null;
@@ -61,7 +62,7 @@ function renderModal(titulo, rotuloBotaoSalvar) {
       <!-- CABEÇALHO DO MODAL -->
       <div class="modal-header criador-avatar-header">
         <div style="display: flex; align-items: center; gap: 8px;">
-          <span style="font-size: 1.5rem;">🎨</span>
+          <span class="criador-titulo-ico">${ico('usuarios')}</span>
           <h3 id="avatar-modal-titulo" style="font-family: var(--font-title); font-size: 1.4rem; color: var(--gold); letter-spacing: 0.5px; margin: 0;">
             ${titulo}
           </h3>
@@ -85,10 +86,10 @@ function renderModal(titulo, rotuloBotaoSalvar) {
           <!-- AÇÕES RÁPIDAS ABAIXO DA PRÉVIA -->
           <div class="criador-botoes-rapidos">
             <button type="button" class="btn btn-secondary btn-sm" id="btn-avatar-aleatorio" title="Gerar combinação aleatória e coerente">
-              🎲 Aleatório
+              ${ico('dado')} Aleatório
             </button>
             <button type="button" class="btn btn-secondary btn-sm" id="btn-avatar-desfazer" title="Desfazer última alteração" ${historico.length <= 1 ? 'disabled' : ''}>
-              ↩️ Desfazer
+              ${ico('voltar')} Desfazer
             </button>
           </div>
           <div class="avatar-selo-marca-info">
@@ -102,24 +103,10 @@ function renderModal(titulo, rotuloBotaoSalvar) {
           
           <!-- NAVEGAÇÃO POR ABAS -->
           <nav class="avatar-abas-nav" role="tablist" aria-label="Categorias do Criador de Personagem">
-            <button type="button" role="tab" class="avatar-aba-btn ${abaAtiva === 'corpo' ? 'ativa' : ''}" data-aba="corpo" aria-selected="${abaAtiva === 'corpo'}">
-              👤 Corpo
-            </button>
-            <button type="button" role="tab" class="avatar-aba-btn ${abaAtiva === 'rosto' ? 'ativa' : ''}" data-aba="rosto" aria-selected="${abaAtiva === 'rosto'}">
-              🙂 Rosto
-            </button>
-            <button type="button" role="tab" class="avatar-aba-btn ${abaAtiva === 'cabelo' ? 'ativa' : ''}" data-aba="cabelo" aria-selected="${abaAtiva === 'cabelo'}">
-              💇 Cabelo
-            </button>
-            <button type="button" role="tab" class="avatar-aba-btn ${abaAtiva === 'roupa' ? 'ativa' : ''}" data-aba="roupa" aria-selected="${abaAtiva === 'roupa'}">
-              👔 Roupa
-            </button>
-            <button type="button" role="tab" class="avatar-aba-btn ${abaAtiva === 'acessorios' ? 'ativa' : ''}" data-aba="acessorios" aria-selected="${abaAtiva === 'acessorios'}">
-              👓 Itens
-            </button>
-            <button type="button" role="tab" class="avatar-aba-btn ${abaAtiva === 'mobilidade' ? 'ativa' : ''}" data-aba="mobilidade" aria-selected="${abaAtiva === 'mobilidade'}">
-              ♿ Mobilidade
-            </button>
+            ${[['corpo', 'usuarios', 'Corpo'], ['rosto', 'lampada', 'Rosto'], ['cabelo', 'coroa', 'Cabelo'], ['roupa', 'escudo', 'Roupa'], ['acessorios', 'caixa', 'Acessórios'], ['mobilidade', 'alvo', 'Mobilidade']].map(([id, icone, nome]) => `
+              <button type="button" role="tab" class="avatar-aba-btn ${abaAtiva === id ? 'ativa' : ''}" data-aba="${id}" aria-selected="${abaAtiva === id}">
+                ${ico(icone)} <span>${nome}</span>
+              </button>`).join('')}
           </nav>
 
           <!-- CONTEÚDO DA ABA SELECIONADA -->
@@ -145,179 +132,70 @@ function renderModal(titulo, rotuloBotaoSalvar) {
   atribuirEventos(rotuloBotaoSalvar);
 }
 
+// Nomes amigáveis das opções
+const NOMES = {
+  corpo: { m: 'Masculino', f: 'Feminino' },
+  expressao: { sorriso: 'Sorriso', confiante: 'Confiante', concentrado: 'Concentrado', animado: 'Animado' },
+  barba: { nenhum: 'Sem barba', por_fazer: 'Por fazer', cavanhaque: 'Cavanhaque', bigode: 'Bigode', curta: 'Curta', cheia: 'Cheia' },
+  cabelo: { curto: 'Curto', raspado: 'Raspado', careca: 'Careca', liso_medio: 'Liso médio', longo: 'Longo', coque: 'Coque', rabo_cavalo: 'Rabo de cavalo', cacheado: 'Cacheado', crespo_black: 'Black power', trancas: 'Tranças', dreads: 'Dreads', franja: 'Franja' },
+  roupa: { terno: 'Terno', blazer: 'Blazer', camisa_social: 'Camisa social', colete: 'Colete', tailleur: 'Tailleur', polo_ss: 'Polo SEST SENAT', jaleco: 'Jaleco', macacao: 'Uniforme operacional' },
+  rosto: { nenhum: 'Nenhum', oculos_grau: 'Óculos de grau', oculos_escuros: 'Óculos escuros', monoculo: 'Monóculo', tapa_olho: 'Tapa-olho', oculos_leitura: 'Óculos de leitura' },
+  cabeca: { nenhum: 'Nenhum', bone_ss: 'Boné SS', chapeu_ss: 'Chapéu', capacete_seguranca: 'Capacete', fone_ouvido: 'Headset', aparelho_auditivo: 'Aparelho auditivo', lenco_turbante: 'Lenço / turbante' },
+  item: { nenhum: 'Mãos livres', mala_ss: 'Mala SS', notebook: 'Notebook', prancheta: 'Prancheta', caneca_cafe: 'Café', tablet_grafico: 'Tablet', cracha: 'Crachá' },
+  mobilidade: { nenhum: 'Em pé', cadeira_rodas: 'Cadeira de rodas', bengala: 'Bengala' }
+};
+
+// Card de opção com miniatura do PRÓPRIO avatar usando aquela escolha
+function cardOpcao(prop, valor, modo = 'busto') {
+  const selecionado = String(avatarAtual[prop]) === String(valor);
+  const previa = renderAvatarSVG({ ...avatarAtual, [prop]: valor }, { modo });
+  const nome = (NOMES[prop] && NOMES[prop][valor]) || String(valor).replace(/_/g, ' ');
+  return `
+    <button type="button" class="avatar-opcao-mini ${selecionado ? 'selecionado' : ''} mini-${modo}" data-prop="${prop}" data-valor="${valor}" aria-pressed="${selecionado}" title="${nome}">
+      <span class="avatar-opcao-previa">${previa}</span>
+      <span class="avatar-opcao-nome">${nome}</span>
+    </button>`;
+}
+
+function grupo(titulo, conteudo, classe = 'avatar-grade-mini') {
+  return `
+    <div class="avatar-secao-grupo">
+      <label class="avatar-grupo-rotulo">${titulo}</label>
+      <div class="${classe}">${conteudo}</div>
+    </div>`;
+}
+
+function swatches(prop, lista, borda) {
+  return lista.map(c => {
+    const id = c.id;
+    const sel = String(avatarAtual[prop]) === String(id);
+    return `<button type="button" class="avatar-swatch-cor ${sel ? 'selecionado' : ''}" data-prop="${prop}" data-valor="${id}"
+      style="background-color: ${c.hex}; ${borda ? `box-shadow: inset 0 -6px 0 ${c[borda]};` : ''}" title="${c.nome}" aria-label="${c.nome}" aria-pressed="${sel}">
+      ${sel ? '<span class="swatch-check">✓</span>' : ''}</button>`;
+  }).join('');
+}
+
 function renderConteudoAba(aba) {
+  const O = AVATAR_OPCOES;
   switch (aba) {
     case 'corpo':
-      return `
-        <!-- SELEÇÃO DE CORPO -->
-        <div class="avatar-secao-grupo">
-          <label class="avatar-grupo-rotulo">Tipo de Corpo</label>
-          <div class="avatar-botoes-corpo-grid">
-            ${AVATAR_OPCOES.corpo.map(c => `
-              <button type="button" class="btn-opcao-card ${avatarAtual.corpo === c ? 'selecionado' : ''}" data-prop="corpo" data-valor="${c}" aria-label="Corpo ${c === 'm' ? 'Masculino' : 'Feminino'}">
-                <span style="font-size: 1.4rem;">${c === 'm' ? '👨' : '👩'}</span>
-                <span>${c === 'm' ? 'Masculino' : 'Feminino'}</span>
-              </button>
-            `).join('')}
-          </div>
-        </div>
-
-        <!-- SELEÇÃO DE TOM DE PELE (8 TONS) -->
-        <div class="avatar-secao-grupo">
-          <label class="avatar-grupo-rotulo">Tom de Pele (8 Tons)</label>
-          <div class="avatar-paleta-pele-grid">
-            ${AVATAR_OPCOES.pele.map(p => `
-              <button type="button" class="avatar-swatch-pele ${avatarAtual.pele === p.id ? 'selecionado' : ''}" data-prop="pele" data-valor="${p.id}" style="background-color: ${p.hex};" title="${p.nome}" aria-label="${p.nome}">
-                ${avatarAtual.pele === p.id ? '<span class="swatch-check">✓</span>' : ''}
-              </button>
-            `).join('')}
-          </div>
-        </div>
-      `;
-
+      return grupo('Tipo de corpo', O.corpo.map(c => cardOpcao('corpo', c, 'completo')).join(''), 'avatar-grade-mini grade-2') +
+        grupo('Tom de pele', swatches('pele', O.pele), 'avatar-paleta-pele-grid');
     case 'rosto':
-      return `
-        <!-- EXPRESSÕES FACIAIS (4) -->
-        <div class="avatar-secao-grupo">
-          <label class="avatar-grupo-rotulo">Expressão Facial</label>
-          <div class="avatar-grade-opcoes">
-            ${AVATAR_OPCOES.expressao.map(exp => `
-              <button type="button" class="btn-opcao-card ${avatarAtual.expressao === exp ? 'selecionado' : ''}" data-prop="expressao" data-valor="${exp}" aria-label="Expressão ${exp}">
-                <span style="font-size: 1.3rem;">${exp === 'sorriso' ? '😊' : exp === 'confiante' ? '😎' : exp === 'concentrado' ? '🧐' : '😄'}</span>
-                <span style="text-transform: capitalize;">${exp}</span>
-              </button>
-            `).join('')}
-          </div>
-        </div>
-
-        <!-- BARBA / BIGODE -->
-        <div class="avatar-secao-grupo">
-          <label class="avatar-grupo-rotulo">Barba & Bigode</label>
-          <div class="avatar-grade-opcoes">
-            ${AVATAR_OPCOES.barba.map(b => `
-              <button type="button" class="btn-opcao-card ${avatarAtual.barba === b ? 'selecionado' : ''}" data-prop="barba" data-valor="${b}" aria-label="Barba: ${b.replace('_', ' ')}">
-                <span style="font-size: 1.2rem;">${b === 'nenhum' ? '🚫' : '🧔'}</span>
-                <span>${b === 'nenhum' ? 'Sem barba' : b.replace('_', ' ')}</span>
-              </button>
-            `).join('')}
-          </div>
-        </div>
-      `;
-
+      return grupo('Expressão', O.expressao.map(e => cardOpcao('expressao', e)).join('')) +
+        grupo('Barba e bigode', O.barba.map(b => cardOpcao('barba', b)).join(''));
     case 'cabelo':
-      return `
-        <!-- COR DO CABELO (10 CORES) -->
-        <div class="avatar-secao-grupo">
-          <label class="avatar-grupo-rotulo">Cor do Cabelo (10 Cores)</label>
-          <div class="avatar-paleta-cores-grid">
-            ${AVATAR_OPCOES.cor_cabelo.map(cc => `
-              <button type="button" class="avatar-swatch-cor ${avatarAtual.cor_cabelo === cc.id ? 'selecionado' : ''}" data-prop="cor_cabelo" data-valor="${cc.id}" style="background-color: ${cc.hex}; border-color: ${cc.brilho};" title="${cc.nome}" aria-label="Cor de cabelo: ${cc.nome}">
-                ${avatarAtual.cor_cabelo === cc.id ? '<span class="swatch-check">✓</span>' : ''}
-              </button>
-            `).join('')}
-          </div>
-        </div>
-
-        <!-- ESTILOS DE CABELO (12 OPÇÕES) -->
-        <div class="avatar-secao-grupo">
-          <label class="avatar-grupo-rotulo">Estilo de Cabelo (12 Estilos)</label>
-          <div class="avatar-grade-opcoes">
-            ${AVATAR_OPCOES.cabelo.map(cab => `
-              <button type="button" class="btn-opcao-card ${avatarAtual.cabelo === cab ? 'selecionado' : ''}" data-prop="cabelo" data-valor="${cab}" aria-label="Cabelo: ${cab.replace('_', ' ')}">
-                <span style="font-size: 1.2rem;">${cab === 'careca' ? '🧑‍🦲' : '💇'}</span>
-                <span>${cab.replace('_', ' ')}</span>
-              </button>
-            `).join('')}
-          </div>
-        </div>
-      `;
-
+      return grupo('Cor do cabelo', swatches('cor_cabelo', O.cor_cabelo), 'avatar-paleta-cores-grid') +
+        grupo('Estilo', O.cabelo.map(c => cardOpcao('cabelo', c)).join(''));
     case 'roupa':
-      return `
-        <!-- COR DA ROUPA CORPORATIVA (6 CORES) -->
-        <div class="avatar-secao-grupo">
-          <label class="avatar-grupo-rotulo">Cor da Roupa Corporativa</label>
-          <div class="avatar-paleta-cores-grid">
-            ${AVATAR_OPCOES.cor_roupa.map(cr => `
-              <button type="button" class="avatar-swatch-cor ${avatarAtual.cor_roupa === cr.id ? 'selecionado' : ''}" data-prop="cor_roupa" data-valor="${cr.id}" style="background-color: ${cr.hex}; border-color: ${cr.secundaria};" title="${cr.nome}" aria-label="Cor de roupa: ${cr.nome}">
-                ${avatarAtual.cor_roupa === cr.id ? '<span class="swatch-check">✓</span>' : ''}
-              </button>
-            `).join('')}
-          </div>
-        </div>
-
-        <!-- MODELOS DE ROUPA CORPORATIVA (8 MODELOS) -->
-        <div class="avatar-secao-grupo">
-          <label class="avatar-grupo-rotulo">Traje Corporativo (8 Modelos)</label>
-          <div class="avatar-grade-opcoes">
-            ${AVATAR_OPCOES.roupa.map(r => `
-              <button type="button" class="btn-opcao-card ${avatarAtual.roupa === r ? 'selecionado' : ''}" data-prop="roupa" data-valor="${r}" aria-label="Traje: ${r.replace('_', ' ')}">
-                <span style="font-size: 1.2rem;">${r === 'jaleco' ? '🥼' : r === 'macacao' ? '🦺' : r === 'polo_ss' ? '👕' : '👔'}</span>
-                <span>${r === 'polo_ss' ? 'Polo SEST SENAT' : r.replace('_', ' ')}</span>
-              </button>
-            `).join('')}
-          </div>
-        </div>
-      `;
-
+      return grupo('Cor da roupa', swatches('cor_roupa', O.cor_roupa, 'secundaria'), 'avatar-paleta-cores-grid') +
+        grupo('Traje', O.roupa.map(r => cardOpcao('roupa', r, 'completo')).join(''));
     case 'acessorios':
-      return `
-        <!-- ACESSÓRIO DE ROSTO -->
-        <div class="avatar-secao-grupo">
-          <label class="avatar-grupo-rotulo">Acessório de Rosto</label>
-          <div class="avatar-grade-opcoes">
-            ${AVATAR_OPCOES.rosto.map(ro => `
-              <button type="button" class="btn-opcao-card ${avatarAtual.rosto === ro ? 'selecionado' : ''}" data-prop="rosto" data-valor="${ro}" aria-label="Rosto: ${ro.replace('_', ' ')}">
-                <span style="font-size: 1.2rem;">${ro === 'nenhum' ? '🚫' : ro === 'oculos_escuros' ? '🕶️' : '👓'}</span>
-                <span>${ro === 'nenhum' ? 'Nenhum' : ro.replace('_', ' ')}</span>
-              </button>
-            `).join('')}
-          </div>
-        </div>
-
-        <!-- ACESSÓRIO DE CABEÇA -->
-        <div class="avatar-secao-grupo">
-          <label class="avatar-grupo-rotulo">Acessório de Cabeça</label>
-          <div class="avatar-grade-opcoes">
-            ${AVATAR_OPCOES.cabeca.map(cb => `
-              <button type="button" class="btn-opcao-card ${avatarAtual.cabeca === cb ? 'selecionado' : ''}" data-prop="cabeca" data-valor="${cb}" aria-label="Cabeça: ${cb.replace('_', ' ')}">
-                <span style="font-size: 1.2rem;">${cb === 'nenhum' ? '🚫' : cb === 'capacete_seguranca' ? '⛑️' : cb === 'fone_ouvido' ? '🎧' : '🧢'}</span>
-                <span>${cb === 'nenhum' ? 'Nenhum' : cb === 'bone_ss' ? 'Boné SS' : cb.replace('_', ' ')}</span>
-              </button>
-            `).join('')}
-          </div>
-        </div>
-
-        <!-- ITEM NA MÃO / COSTAS -->
-        <div class="avatar-secao-grupo">
-          <label class="avatar-grupo-rotulo">Item na Mão / Costas</label>
-          <div class="avatar-grade-opcoes">
-            ${AVATAR_OPCOES.item.map(it => `
-              <button type="button" class="btn-opcao-card ${avatarAtual.item === it ? 'selecionado' : ''}" data-prop="item" data-valor="${it}" aria-label="Item: ${it.replace('_', ' ')}">
-                <span style="font-size: 1.2rem;">${it === 'nenhum' ? '🚫' : it === 'mala_ss' ? '🧳' : it === 'notebook' ? '💻' : it === 'prancheta' ? '📋' : it === 'caneca_cafe' ? '☕' : '📱'}</span>
-                <span>${it === 'nenhum' ? 'Mãos livres' : it === 'mala_ss' ? 'Mala SS' : it.replace('_', ' ')}</span>
-              </button>
-            `).join('')}
-          </div>
-        </div>
-      `;
-
+      return grupo('Rosto', O.rosto.map(r => cardOpcao('rosto', r)).join('')) +
+        grupo('Cabeça', O.cabeca.map(c => cardOpcao('cabeca', c)).join('')) +
+        grupo('Na mão', O.item.map(i => cardOpcao('item', i, 'completo')).join(''));
     case 'mobilidade':
-      return `
-        <!-- MOBILIDADE INCLUSIVA -->
-        <div class="avatar-secao-grupo">
-          <label class="avatar-grupo-rotulo">Acessibilidade e Mobilidade (Opcional)</label>
-          <div class="avatar-grade-opcoes" style="grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));">
-            ${AVATAR_OPCOES.mobilidade.map(mob => `
-              <button type="button" class="btn-opcao-card ${avatarAtual.mobilidade === mob ? 'selecionado' : ''}" data-prop="mobilidade" data-valor="${mob}" aria-label="Mobilidade: ${mob.replace('_', ' ')}">
-                <span style="font-size: 1.5rem;">${mob === 'nenhum' ? '🚶' : mob === 'cadeira_rodas' ? '♿' : '🦯'}</span>
-                <span>${mob === 'nenhum' ? 'Em pé' : mob === 'cadeira_rodas' ? 'Cadeira de Rodas' : 'Bengala'}</span>
-              </button>
-            `).join('')}
-          </div>
-        </div>
-      `;
-
+      return grupo('Acessibilidade e mobilidade (opcional)', O.mobilidade.map(m => cardOpcao('mobilidade', m, 'completo')).join(''), 'avatar-grade-mini grade-3');
     default:
       return '';
   }
@@ -437,7 +315,7 @@ function atribuirEventos(rotuloBotaoSalvar) {
 
 function vincularSeletoresAba(painel) {
   // Botões de opções (cards)
-  const botoesOpcao = painel.querySelectorAll('.btn-opcao-card');
+  const botoesOpcao = painel.querySelectorAll('.btn-opcao-card, .avatar-opcao-mini');
   botoesOpcao.forEach(btn => {
     btn.onclick = () => {
       const prop = btn.dataset.prop;
