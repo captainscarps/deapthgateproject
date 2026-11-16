@@ -1,67 +1,1334 @@
 {
-  "versao": 1,
-  "observacao": "Banco de perguntas compartilhado (Roleta da Governança e futuras cartas da Trilha). Perguntas com status 'exemplo' devem ser substituídas pelas políticas oficiais do SEST SENAT e validadas pelo Encarregado (DPO).",
-  "perguntas": [
-    { "id": "lgpd_001", "categoria": "lgpd", "nivel": 1, "pergunta": "Qual destas informações é um dado pessoal SENSÍVEL pela LGPD?", "alternativas": ["Atestado médico do colaborador", "E-mail corporativo", "Cargo ocupado", "Ramal do setor"], "correta": 0, "explicacao": "Dados de saúde estão entre os dados sensíveis (art. 5º, II), junto com origem racial, religião, biometria, entre outros." },
-    { "id": "lgpd_002", "categoria": "lgpd", "nivel": 1, "pergunta": "Quem é o 'titular' dos dados pessoais?", "alternativas": ["A empresa que coleta os dados", "A pessoa natural a quem os dados se referem", "A área de TI", "A ANPD"], "correta": 1, "explicacao": "Titular é a pessoa natural a quem se referem os dados pessoais tratados." },
-    { "id": "lgpd_003", "categoria": "lgpd", "nivel": 1, "pergunta": "Qual é o papel do Encarregado (DPO)?", "alternativas": ["Programar os sistemas da instituição", "Aprovar todas as compras de software", "Ser o canal entre a instituição, os titulares e a ANPD", "Fazer o backup dos servidores"], "correta": 2, "explicacao": "O Encarregado atua como canal de comunicação entre o controlador, os titulares dos dados e a Autoridade Nacional." },
-    { "id": "lgpd_004", "categoria": "lgpd", "nivel": 1, "pergunta": "Qual órgão fiscaliza o cumprimento da LGPD no Brasil?", "alternativas": ["ANPD", "ANATEL", "PROCON", "Banco Central"], "correta": 0, "explicacao": "A Autoridade Nacional de Proteção de Dados (ANPD) regula e fiscaliza a LGPD." },
-    { "id": "lgpd_005", "categoria": "lgpd", "nivel": 2, "pergunta": "O princípio da NECESSIDADE diz que devemos…", "alternativas": ["Coletar o máximo de dados possível", "Guardar os dados para sempre", "Coletar apenas o mínimo necessário para a finalidade", "Pedir dados só por telefone"], "correta": 2, "explicacao": "Necessidade (minimização): limitar o tratamento ao mínimo necessário para atingir a finalidade." },
-    { "id": "lgpd_006", "categoria": "lgpd", "nivel": 2, "pergunta": "Um dado anonimizado de forma irreversível…", "alternativas": ["Continua sendo dado pessoal sensível", "Deixa de ser considerado dado pessoal pela LGPD", "Só pode ser usado com consentimento", "Precisa ser apagado em 24 horas"], "correta": 1, "explicacao": "Dado anonimizado não é dado pessoal, salvo se o processo puder ser revertido com esforços razoáveis (art. 12)." },
-    { "id": "lgpd_007", "categoria": "lgpd", "nivel": 2, "pergunta": "Sobre as bases legais da LGPD, é correto afirmar:", "alternativas": ["O consentimento é a única base legal", "O consentimento é uma das bases legais, mas não a única", "Órgãos públicos não precisam de base legal", "Base legal só vale para dados sensíveis"], "correta": 1, "explicacao": "Há várias bases legais, como cumprimento de obrigação legal, execução de contrato e legítimo interesse, além do consentimento." },
-    { "id": "lgpd_008", "categoria": "lgpd", "nivel": 1, "pergunta": "Um aluno pede para saber quais dados dele a instituição guarda. E agora?", "alternativas": ["Negar, pois é informação interna", "Atender: é um direito de acesso do titular", "Pedir que ele procure a ANPD", "Responder só se ele pagar uma taxa"], "correta": 1, "explicacao": "O titular tem direito de confirmar a existência de tratamento e acessar seus dados (art. 18)." },
-    { "id": "lgpd_009", "categoria": "lgpd", "nivel": 3, "pergunta": "Em incidente com risco ou dano relevante aos titulares, qual o prazo para comunicar a ANPD?", "alternativas": ["30 dias corridos", "3 dias úteis", "Só ao fim da investigação", "Não é obrigatório comunicar"], "correta": 1, "explicacao": "A Resolução CD/ANPD nº 15/2024 fixa 3 dias úteis a partir do conhecimento do incidente." },
-    { "id": "lgpd_010", "categoria": "lgpd", "nivel": 3, "pergunta": "O tratamento de dados de CRIANÇAS deve sempre considerar…", "alternativas": ["O melhor interesse da criança", "Apenas o interesse da instituição", "A opinião da própria criança", "Nada além das regras de adultos"], "correta": 0, "explicacao": "O art. 14 exige que o tratamento de dados de crianças e adolescentes seja feito em seu melhor interesse." },
-
-    { "id": "ia_001", "categoria": "ia", "nivel": 1, "pergunta": "O que é uma 'alucinação' de uma IA generativa?", "alternativas": ["Quando a IA trava e reinicia", "Uma resposta falsa ou inventada apresentada com segurança", "Um vírus de computador", "Quando a IA demora para responder"], "correta": 1, "explicacao": "Modelos de linguagem podem gerar informações inexistentes com aparência convincente. Sempre confira." },
-    { "id": "ia_002", "categoria": "ia", "nivel": 1, "pergunta": "Você quer resumir uma planilha com nomes e CPFs de alunos. O que fazer?", "alternativas": ["Colar tudo num chatbot público", "Usar só ferramenta homologada e remover os dados pessoais antes", "Mandar para um colega resumir", "Publicar na intranet para todos ajudarem"], "correta": 1, "explicacao": "Dados pessoais não devem ir para IAs públicas. Use ferramentas homologadas e anonimize sempre que possível." },
-    { "id": "ia_003", "categoria": "ia", "nivel": 2, "pergunta": "O que é viés algorítmico?", "alternativas": ["Um erro de digitação no código", "Resultados injustos causados por dados ou regras desequilibrados", "Uma IA mais rápida que as outras", "Um tipo de licença de software"], "correta": 1, "explicacao": "Se os dados de treino refletem desigualdades, o modelo pode reproduzi-las e amplificá-las." },
-    { "id": "ia_004", "categoria": "ia", "nivel": 1, "pergunta": "Um texto gerado por IA vai virar documento oficial. O que é indispensável?", "alternativas": ["Revisão por uma pessoa responsável", "Trocar a fonte para parecer humano", "Nada, a IA não erra", "Enviar sem assinatura"], "correta": 0, "explicacao": "A responsabilidade continua sendo humana: revise fatos, tom e conformidade antes de oficializar." },
-    { "id": "ia_005", "categoria": "ia", "nivel": 2, "pergunta": "A IA citou um artigo de lei que você não conhecia. O próximo passo é…", "alternativas": ["Copiar a citação no parecer", "Confirmar o artigo na fonte oficial", "Pedir para a IA jurar que está certo", "Usar outra IA para confirmar"], "correta": 1, "explicacao": "Confirme sempre em fonte primária (Planalto, Diário Oficial). Outra IA não é fonte." },
-    { "id": "ia_006", "categoria": "ia", "nivel": 2, "pergunta": "'Shadow AI' é…", "alternativas": ["IA usada só à noite", "Uso de ferramentas de IA sem autorização da instituição", "Uma IA de segurança", "Um recurso de modo escuro"], "correta": 1, "explicacao": "Ferramentas não avaliadas pela TI podem vazar dados e gerar riscos de conformidade." },
-    { "id": "ia_007", "categoria": "ia", "nivel": 1, "pergunta": "Por que vale pensar antes de usar IA para tarefas simples?", "alternativas": ["Porque IA é sempre proibida", "Porque cada uso consome energia e recursos computacionais", "Porque a IA cansa", "Não vale, use para tudo"], "correta": 1, "explicacao": "Inferência de IA tem custo financeiro e ambiental. Se uma fórmula resolve, use a fórmula." },
-    { "id": "ia_008", "categoria": "ia", "nivel": 2, "pergunta": "Ao escrever um prompt, a boa prática é…", "alternativas": ["Incluir todos os dados disponíveis por precaução", "Enviar só o necessário, sem dados pessoais", "Usar a senha do sistema no texto", "Copiar e-mails inteiros de alunos"], "correta": 1, "explicacao": "Minimização também vale para prompts: menos dados, menos risco." },
-    { "id": "ia_009", "categoria": "ia", "nivel": 2, "pergunta": "Conteúdo produzido com apoio de IA deve…", "alternativas": ["Ser escondido do público", "Ser identificado quando relevante (transparência)", "Ser sempre assinado pela IA", "Ser apagado após 1 dia"], "correta": 1, "explicacao": "Transparência sobre o uso de IA fortalece a confiança e é recomendada em diretrizes de uso responsável." },
-    { "id": "ia_010", "categoria": "ia", "nivel": 3, "pergunta": "Um modelo prevê quem vai evadir dos cursos. Antes de usar para decisões, deve-se…", "alternativas": ["Usar direto, a matemática é neutra", "Avaliar vieses, explicar critérios e manter revisão humana", "Esconder o modelo dos gestores", "Usar apenas com alunos novos"], "correta": 1, "explicacao": "Decisões automatizadas que afetam pessoas exigem avaliação de impacto, explicabilidade e supervisão humana." },
-
-    { "id": "seg_001", "categoria": "seguranca", "nivel": 1, "pergunta": "Qual é o sinal mais típico de um e-mail de phishing?", "alternativas": ["Assinatura completa do remetente", "Urgência e um link estranho pedindo login", "Texto em português", "Envio em horário comercial"], "correta": 1, "explicacao": "Pressa, ameaça e links que imitam sites oficiais são marcas clássicas de golpe." },
-    { "id": "seg_002", "categoria": "seguranca", "nivel": 1, "pergunta": "Qual é a senha mais segura?", "alternativas": ["123456", "sestsenat2026", "Uma frase longa e única, usada só nesse serviço", "A data do seu aniversário"], "correta": 2, "explicacao": "Comprimento e exclusividade importam mais que símbolos. Nunca reutilize senhas." },
-    { "id": "seg_003", "categoria": "seguranca", "nivel": 1, "pergunta": "O que é autenticação em dois fatores (MFA)?", "alternativas": ["Usar duas senhas iguais", "Confirmar o acesso com algo além da senha, como um código no celular", "Ter dois computadores", "Trocar a senha duas vezes por ano"], "correta": 1, "explicacao": "Mesmo que a senha vaze, o segundo fator impede o acesso indevido." },
-    { "id": "seg_004", "categoria": "seguranca", "nivel": 1, "pergunta": "Você precisa trabalhar no Wi-Fi aberto de um aeroporto. O que fazer?", "alternativas": ["Conectar normalmente", "Usar a VPN corporativa ou o 4G do celular", "Desligar o antivírus para ficar mais rápido", "Compartilhar a rede com colegas"], "correta": 1, "explicacao": "Redes abertas podem ser interceptadas. A VPN cria um túnel protegido." },
-    { "id": "seg_005", "categoria": "seguranca", "nivel": 1, "pergunta": "Você achou um pendrive no estacionamento. O que fazer?", "alternativas": ["Conectar para descobrir o dono", "Entregar à TI sem conectar", "Formatar e usar", "Deixar na mesa do café"], "correta": 1, "explicacao": "Pendrives 'perdidos' são uma isca conhecida para instalar programas maliciosos." },
-    { "id": "seg_006", "categoria": "seguranca", "nivel": 1, "pergunta": "Alguém liga dizendo ser da TI e pede sua senha. Você…", "alternativas": ["Informa, afinal é a TI", "Recusa e reporta pelo canal oficial", "Passa só metade da senha", "Pede para ligar mais tarde"], "correta": 1, "explicacao": "A TI nunca precisa da sua senha. Isso é engenharia social." },
-    { "id": "seg_007", "categoria": "seguranca", "nivel": 1, "pergunta": "Vai sair da mesa por 5 minutos. O que fazer com o computador?", "alternativas": ["Deixar aberto, é rapidinho", "Bloquear a tela", "Desligar o monitor", "Pedir para o colega vigiar"], "correta": 1, "explicacao": "Bloquear a tela (Windows + L) evita acessos indevidos em segundos." },
-    { "id": "seg_008", "categoria": "seguranca", "nivel": 2, "pergunta": "O que é ransomware?", "alternativas": ["Um antivírus gratuito", "Um programa que sequestra arquivos e pede resgate", "Um tipo de backup", "Uma rede sem fio"], "correta": 1, "explicacao": "O ransomware criptografa os dados e exige pagamento. Backups íntegros são a principal defesa." },
-    { "id": "seg_009", "categoria": "seguranca", "nivel": 2, "pergunta": "A regra de backup 3-2-1 significa…", "alternativas": ["3 cópias, em 2 mídias diferentes, 1 fora do local", "3 senhas, 2 usuários, 1 servidor", "Backup a cada 3 dias, 2 vezes, por 1 hora", "3 pendrives, 2 HDs, 1 e-mail"], "correta": 0, "explicacao": "Diversificar mídias e manter uma cópia externa protege contra falhas, roubo e ransomware." },
-    { "id": "seg_010", "categoria": "seguranca", "nivel": 1, "pergunta": "Você clicou num link suspeito por engano. O que fazer?", "alternativas": ["Não contar a ninguém", "Avisar imediatamente o canal de TI/segurança", "Apagar o e-mail e seguir", "Reiniciar e esquecer"], "correta": 1, "explicacao": "Avisar rápido permite conter o incidente antes que se espalhe. Não há punição por reportar." },
-
-    { "id": "gov_001", "categoria": "governanca", "nivel": 1, "pergunta": "Para que serve um dicionário de dados?", "alternativas": ["Traduzir relatórios para inglês", "Documentar significado, formato e origem de cada campo", "Guardar senhas", "Corrigir a ortografia dos sistemas"], "correta": 1, "explicacao": "Sem dicionário, cada área interpreta um campo de um jeito, e os números não batem." },
-    { "id": "gov_002", "categoria": "governanca", "nivel": 1, "pergunta": "Metadados são…", "alternativas": ["Dados muito grandes", "Dados sobre os dados (origem, data, responsável…)", "Dados apagados", "Dados de redes sociais"], "correta": 1, "explicacao": "Metadados descrevem o contexto do dado e permitem encontrá-lo e confiar nele." },
-    { "id": "gov_003", "categoria": "governanca", "nivel": 1, "pergunta": "Existe um sistema oficial de matrículas, mas seu setor quer uma planilha paralela. O ideal é…", "alternativas": ["Criar a planilha e não contar", "Usar o sistema oficial como fonte única", "Criar duas planilhas para garantir", "Pedir que cada um tenha a sua"], "correta": 1, "explicacao": "Planilhas paralelas geram versões diferentes da verdade e retrabalho." },
-    { "id": "gov_004", "categoria": "governanca", "nivel": 2, "pergunta": "Quem é o 'dono do dado' (data owner)?", "alternativas": ["Quem digitou o dado", "A área responsável por definir regras, qualidade e acesso daquele dado", "Sempre a TI", "O fornecedor do sistema"], "correta": 1, "explicacao": "O dono do dado é da área de negócio; a TI cuida da infraestrutura." },
-    { "id": "gov_005", "categoria": "governanca", "nivel": 2, "pergunta": "A dimensão de qualidade 'completude' avalia se…", "alternativas": ["O dado está no idioma certo", "Os campos obrigatórios estão preenchidos", "O servidor está ligado", "O relatório está bonito"], "correta": 1, "explicacao": "Outras dimensões incluem exatidão, consistência, atualidade e unicidade." },
-    { "id": "gov_006", "categoria": "governanca", "nivel": 2, "pergunta": "Um indicador oscilou 40% de um mês para o outro. Antes de divulgar…", "alternativas": ["Divulgue logo, é notícia", "Verifique a origem e a qualidade dos dados", "Ajuste o número para parecer normal", "Apague o mês estranho"], "correta": 1, "explicacao": "Mudanças bruscas costumam indicar erro de carga ou mudança de regra. Investigue antes." },
-    { "id": "gov_007", "categoria": "governanca", "nivel": 2, "pergunta": "O princípio do 'menor privilégio' diz que cada pessoa deve ter…", "alternativas": ["Acesso a tudo, por agilidade", "Apenas os acessos necessários para sua função", "A senha do gestor", "Acesso de administrador"], "correta": 1, "explicacao": "Menos acessos significa menos risco em caso de erro ou credencial vazada." },
-    { "id": "gov_008", "categoria": "governanca", "nivel": 2, "pergunta": "Um catálogo de dados serve para…", "alternativas": ["Vender dados", "Encontrar quais conjuntos de dados existem, o que significam e quem responde por eles", "Imprimir relatórios", "Fazer backup"], "correta": 1, "explicacao": "O catálogo evita que as áreas recriem bases que já existem." },
-    { "id": "gov_009", "categoria": "governanca", "nivel": 2, "pergunta": "Quando um dado atinge o fim do prazo de retenção, ele deve…", "alternativas": ["Ser guardado para sempre", "Ser descartado ou anonimizado conforme a política", "Ser enviado por e-mail", "Ser impresso"], "correta": 1, "explicacao": "Guardar além do necessário aumenta o risco sem trazer benefício." },
-    { "id": "gov_010", "categoria": "governanca", "nivel": 3, "pergunta": "O 'data steward' (curador de dados) é quem…", "alternativas": ["Compra os servidores", "Zela no dia a dia pela qualidade, definição e uso correto dos dados", "Apaga dados antigos sozinho", "Programa os relatórios de BI"], "correta": 1, "explicacao": "O steward apoia o dono do dado, cuidando das definições e da qualidade na rotina." },
-
-    { "id": "pol_001", "categoria": "politicas", "nivel": 1, "status": "exemplo", "pergunta": "Um relatório interno com dados de alunos deve ser tratado como…", "alternativas": ["Público, pode ir para as redes", "Restrito: acesso só a quem precisa", "Livre para qualquer colaborador", "Rascunho sem regras"], "correta": 1, "explicacao": "Informações com dados pessoais devem seguir a classificação restrita/confidencial da política de informação." },
-    { "id": "pol_002", "categoria": "politicas", "nivel": 1, "status": "exemplo", "pergunta": "Antes de contratar uma ferramenta de IA externa, sua área deve…", "alternativas": ["Contratar e avisar depois", "Consultar a TI e o Encarregado para avaliar riscos", "Usar a versão gratuita sem avisar", "Pedir só ao fornecedor"], "correta": 1, "explicacao": "Avaliação prévia evita vazamento de dados e contratos sem cláusulas de proteção." },
-    { "id": "pol_003", "categoria": "politicas", "nivel": 1, "status": "exemplo", "pergunta": "Posso encaminhar documentos de trabalho para meu e-mail pessoal?", "alternativas": ["Sim, para trabalhar em casa", "Não: use os canais e repositórios oficiais", "Sim, se apagar depois", "Só às sextas-feiras"], "correta": 1, "explicacao": "E-mails pessoais ficam fora do controle e da proteção da instituição." },
-    { "id": "pol_004", "categoria": "politicas", "nivel": 2, "status": "exemplo", "pergunta": "Um colega mudou de função. O que deve acontecer com os acessos antigos dele?", "alternativas": ["Ficam para sempre", "Devem ser revistos e removidos", "Passam para o substituto", "Ficam só os de leitura"], "correta": 1, "explicacao": "Revisão de acessos na mudança de função ou desligamento é um controle básico." },
-    { "id": "pol_005", "categoria": "politicas", "nivel": 1, "status": "exemplo", "pergunta": "Onde guardar arquivos de trabalho?", "alternativas": ["No pendrive pessoal", "No repositório oficial (rede ou nuvem homologada)", "Na área de trabalho do notebook", "No WhatsApp"], "correta": 1, "explicacao": "Repositórios oficiais têm backup, controle de acesso e trilha de auditoria." },
-    { "id": "pol_006", "categoria": "politicas", "nivel": 1, "status": "exemplo", "pergunta": "Ficou na dúvida se pode usar um dado num projeto. A quem recorrer?", "alternativas": ["Usar e ver no que dá", "Ao dono do dado e ao Encarregado (DPO)", "A um grupo de mensagens", "Ao fornecedor do sistema"], "correta": 1, "explicacao": "Quem responde pelo dado orienta sobre finalidade, base legal e restrições." },
-    { "id": "pol_007", "categoria": "politicas", "nivel": 2, "status": "exemplo", "pergunta": "Postar foto de alunos numa aula nas redes sociais da unidade exige…", "alternativas": ["Nada, foi em ambiente público", "Autorização de uso de imagem", "Apenas marcar a unidade", "Só tirar de longe"], "correta": 1, "explicacao": "Imagem é dado pessoal. Para menores, a autorização deve vir dos responsáveis." },
-    { "id": "pol_008", "categoria": "politicas", "nivel": 1, "status": "exemplo", "pergunta": "Um incidente parece pequeno. Ainda assim você deve…", "alternativas": ["Ignorar", "Reportar pelo canal oficial", "Resolver sozinho e não contar", "Esperar acontecer de novo"], "correta": 1, "explicacao": "Pequenos sinais costumam ser o começo de incidentes maiores. Reportar é sempre a conduta certa." },
-
-    { "id": "pa_r001", "categoria": "pense_antes", "nivel": 1, "pergunta": "O relatório mensal é só somar colunas de uma planilha. A melhor saída é…", "alternativas": ["Pedir para uma IA fazer", "Usar uma fórmula ou tabela dinâmica", "Contratar um sistema novo", "Fazer na calculadora do celular"], "correta": 1, "explicacao": "Precisa mesmo de IA? Se uma regra simples resolve, ela é mais barata, rápida e auditável." },
-    { "id": "pa_r002", "categoria": "pense_antes", "nivel": 1, "pergunta": "Sua área quer criar um sistema de inscrições. Primeiro passo:", "alternativas": ["Começar a programar", "Verificar se já existe uma solução oficial", "Pedir orçamento a 3 fornecedores", "Criar um formulário pessoal"], "correta": 1, "explicacao": "Já existe algo pronto? Reaproveitar evita custo, retrabalho e silos." },
-    { "id": "pa_r003", "categoria": "pense_antes", "nivel": 1, "pergunta": "Você teve uma ideia de painel de indicadores. Antes de começar…", "alternativas": ["Faça em segredo para surpreender", "Pergunte se outra área já faz algo parecido", "Peça acesso a todos os bancos", "Copie de outro órgão"], "correta": 1, "explicacao": "Alguma área já faz algo parecido? Alinhar com TI e BI evita painéis duplicados." },
-    { "id": "pa_r004", "categoria": "pense_antes", "nivel": 1, "pergunta": "Vai usar uma IA homologada para analisar uma planilha. Antes de enviar…", "alternativas": ["Envie completa para não perder contexto", "Remova colunas com dados pessoais desnecessários", "Mude o nome do arquivo", "Comprima em ZIP"], "correta": 1, "explicacao": "Que dados vou usar? Mesmo em ferramenta homologada, envie só o necessário." },
-    { "id": "pa_r005", "categoria": "pense_antes", "nivel": 1, "pergunta": "Um colega pede seu login emprestado 'só hoje'. Você…", "alternativas": ["Empresta, ele é de confiança", "Não compartilha e orienta a pedir acesso próprio", "Passa a senha por mensagem", "Loga para ele e sai de perto"], "correta": 1, "explicacao": "Login é pessoal: tudo que for feito com ele fica registrado no seu nome." },
-    { "id": "pa_r006", "categoria": "pense_antes", "nivel": 2, "pergunta": "A IA gerou uma resposta perfeita, mas sem fontes, para enviar ao diretor. Você…", "alternativas": ["Envia, está bem escrito", "Confere os fatos e as fontes antes", "Envia avisando que foi IA", "Pede para a IA ser mais confiante"], "correta": 1, "explicacao": "Texto convincente não é texto verdadeiro. Verifique antes de assinar embaixo." },
-    { "id": "pa_r007", "categoria": "pense_antes", "nivel": 2, "pergunta": "Quer analisar em casa uma planilha com dados de saúde de colaboradores. O certo é…", "alternativas": ["Levar no pendrive", "Usar apenas o ambiente institucional, com acesso autorizado", "Mandar para o e-mail pessoal", "Imprimir e levar"], "correta": 1, "explicacao": "Dados sensíveis só devem circular em ambientes controlados pela instituição." },
-    { "id": "pa_r008", "categoria": "pense_antes", "nivel": 2, "pergunta": "Pensaram em divulgar no mural um ranking com nomes e notas dos alunos. Melhor…", "alternativas": ["Divulgar, motiva a turma", "Divulgar só dados agregados ou anonimizados", "Divulgar só os piores", "Divulgar com foto"], "correta": 1, "explicacao": "Notas individuais expostas podem constranger e violar a privacidade. Agregue os dados." }
-  ]
+ "versao": 1,
+ "observacao": "Banco de perguntas compartilhado da Roleta da Governança. Perguntas com status 'exemplo' devem ser substituídas pelas políticas oficiais do SEST SENAT e validadas pelo Encarregado (DPO).",
+ "perguntas": [
+  {
+   "id": "lgpd_001",
+   "categoria": "lgpd",
+   "nivel": 1,
+   "pergunta": "Qual destas informações é um dado pessoal SENSÍVEL pela LGPD?",
+   "alternativas": [
+    "Atestado médico do colaborador",
+    "E-mail corporativo",
+    "Cargo ocupado",
+    "Ramal do setor"
+   ],
+   "correta": 0,
+   "explicacao": "Dados de saúde estão entre os dados sensíveis (art. 5º, II), junto com origem racial, religião, biometria, entre outros."
+  },
+  {
+   "id": "lgpd_002",
+   "categoria": "lgpd",
+   "nivel": 1,
+   "pergunta": "Quem é o 'titular' dos dados pessoais?",
+   "alternativas": [
+    "A empresa que coleta os dados",
+    "A pessoa natural a quem os dados se referem",
+    "A área de TI",
+    "A ANPD"
+   ],
+   "correta": 1,
+   "explicacao": "Titular é a pessoa natural a quem se referem os dados pessoais tratados."
+  },
+  {
+   "id": "lgpd_003",
+   "categoria": "lgpd",
+   "nivel": 1,
+   "pergunta": "Qual é o papel do Encarregado (DPO)?",
+   "alternativas": [
+    "Programar os sistemas da instituição",
+    "Aprovar todas as compras de software",
+    "Ser o canal entre a instituição, os titulares e a ANPD",
+    "Fazer o backup dos servidores"
+   ],
+   "correta": 2,
+   "explicacao": "O Encarregado atua como canal de comunicação entre o controlador, os titulares dos dados e a Autoridade Nacional."
+  },
+  {
+   "id": "lgpd_004",
+   "categoria": "lgpd",
+   "nivel": 1,
+   "pergunta": "Qual órgão fiscaliza o cumprimento da LGPD no Brasil?",
+   "alternativas": [
+    "ANPD",
+    "ANATEL",
+    "PROCON",
+    "Banco Central"
+   ],
+   "correta": 0,
+   "explicacao": "A Autoridade Nacional de Proteção de Dados (ANPD) regula e fiscaliza a LGPD."
+  },
+  {
+   "id": "lgpd_005",
+   "categoria": "lgpd",
+   "nivel": 2,
+   "pergunta": "O princípio da NECESSIDADE diz que devemos…",
+   "alternativas": [
+    "Coletar o máximo de dados possível",
+    "Guardar os dados para sempre",
+    "Coletar apenas o mínimo necessário para a finalidade",
+    "Pedir dados só por telefone"
+   ],
+   "correta": 2,
+   "explicacao": "Necessidade (minimização): limitar o tratamento ao mínimo necessário para atingir a finalidade."
+  },
+  {
+   "id": "lgpd_006",
+   "categoria": "lgpd",
+   "nivel": 2,
+   "pergunta": "Um dado anonimizado de forma irreversível…",
+   "alternativas": [
+    "Continua sendo dado pessoal sensível",
+    "Deixa de ser considerado dado pessoal pela LGPD",
+    "Só pode ser usado com consentimento",
+    "Precisa ser apagado em 24 horas"
+   ],
+   "correta": 1,
+   "explicacao": "Dado anonimizado não é dado pessoal, salvo se o processo puder ser revertido com esforços razoáveis (art. 12)."
+  },
+  {
+   "id": "lgpd_007",
+   "categoria": "lgpd",
+   "nivel": 2,
+   "pergunta": "Sobre as bases legais da LGPD, é correto afirmar:",
+   "alternativas": [
+    "O consentimento é a única base legal",
+    "O consentimento é uma das bases legais, mas não a única",
+    "Órgãos públicos não precisam de base legal",
+    "Base legal só vale para dados sensíveis"
+   ],
+   "correta": 1,
+   "explicacao": "Há várias bases legais, como cumprimento de obrigação legal, execução de contrato e legítimo interesse, além do consentimento."
+  },
+  {
+   "id": "lgpd_008",
+   "categoria": "lgpd",
+   "nivel": 1,
+   "pergunta": "Um aluno pede para saber quais dados dele a instituição guarda. E agora?",
+   "alternativas": [
+    "Negar, pois é informação interna",
+    "Atender: é um direito de acesso do titular",
+    "Pedir que ele procure a ANPD",
+    "Responder só se ele pagar uma taxa"
+   ],
+   "correta": 1,
+   "explicacao": "O titular tem direito de confirmar a existência de tratamento e acessar seus dados (art. 18)."
+  },
+  {
+   "id": "lgpd_009",
+   "categoria": "lgpd",
+   "nivel": 3,
+   "pergunta": "Em incidente com risco ou dano relevante aos titulares, qual o prazo para comunicar a ANPD?",
+   "alternativas": [
+    "30 dias corridos",
+    "3 dias úteis",
+    "Só ao fim da investigação",
+    "Não é obrigatório comunicar"
+   ],
+   "correta": 1,
+   "explicacao": "A Resolução CD/ANPD nº 15/2024 fixa 3 dias úteis a partir do conhecimento do incidente."
+  },
+  {
+   "id": "lgpd_010",
+   "categoria": "lgpd",
+   "nivel": 3,
+   "pergunta": "O tratamento de dados de CRIANÇAS deve sempre considerar…",
+   "alternativas": [
+    "O melhor interesse da criança",
+    "Apenas o interesse da instituição",
+    "A opinião da própria criança",
+    "Nada além das regras de adultos"
+   ],
+   "correta": 0,
+   "explicacao": "O art. 14 exige que o tratamento de dados de crianças e adolescentes seja feito em seu melhor interesse."
+  },
+  {
+   "id": "ia_001",
+   "categoria": "ia",
+   "nivel": 1,
+   "pergunta": "O que é uma 'alucinação' de uma IA generativa?",
+   "alternativas": [
+    "Quando a IA trava e reinicia",
+    "Uma resposta falsa ou inventada apresentada com segurança",
+    "Um vírus de computador",
+    "Quando a IA demora para responder"
+   ],
+   "correta": 1,
+   "explicacao": "Modelos de linguagem podem gerar informações inexistentes com aparência convincente. Sempre confira."
+  },
+  {
+   "id": "ia_002",
+   "categoria": "ia",
+   "nivel": 1,
+   "pergunta": "Você quer resumir uma planilha com nomes e CPFs de alunos. O que fazer?",
+   "alternativas": [
+    "Colar tudo num chatbot público",
+    "Usar só ferramenta homologada e remover os dados pessoais antes",
+    "Mandar para um colega resumir",
+    "Publicar na intranet para todos ajudarem"
+   ],
+   "correta": 1,
+   "explicacao": "Dados pessoais não devem ir para IAs públicas. Use ferramentas homologadas e anonimize sempre que possível."
+  },
+  {
+   "id": "ia_003",
+   "categoria": "ia",
+   "nivel": 2,
+   "pergunta": "O que é viés algorítmico?",
+   "alternativas": [
+    "Um erro de digitação no código",
+    "Resultados injustos causados por dados ou regras desequilibrados",
+    "Uma IA mais rápida que as outras",
+    "Um tipo de licença de software"
+   ],
+   "correta": 1,
+   "explicacao": "Se os dados de treino refletem desigualdades, o modelo pode reproduzi-las e amplificá-las."
+  },
+  {
+   "id": "ia_004",
+   "categoria": "ia",
+   "nivel": 1,
+   "pergunta": "Um texto gerado por IA vai virar documento oficial. O que é indispensável?",
+   "alternativas": [
+    "Revisão por uma pessoa responsável",
+    "Trocar a fonte para parecer humano",
+    "Nada, a IA não erra",
+    "Enviar sem assinatura"
+   ],
+   "correta": 0,
+   "explicacao": "A responsabilidade continua sendo humana: revise fatos, tom e conformidade antes de oficializar."
+  },
+  {
+   "id": "ia_005",
+   "categoria": "ia",
+   "nivel": 2,
+   "pergunta": "A IA citou um artigo de lei que você não conhecia. O próximo passo é…",
+   "alternativas": [
+    "Copiar a citação no parecer",
+    "Confirmar o artigo na fonte oficial",
+    "Pedir para a IA jurar que está certo",
+    "Usar outra IA para confirmar"
+   ],
+   "correta": 1,
+   "explicacao": "Confirme sempre em fonte primária (Planalto, Diário Oficial). Outra IA não é fonte."
+  },
+  {
+   "id": "ia_006",
+   "categoria": "ia",
+   "nivel": 2,
+   "pergunta": "'Shadow AI' é…",
+   "alternativas": [
+    "IA usada só à noite",
+    "Uso de ferramentas de IA sem autorização da instituição",
+    "Uma IA de segurança",
+    "Um recurso de modo escuro"
+   ],
+   "correta": 1,
+   "explicacao": "Ferramentas não avaliadas pela TI podem vazar dados e gerar riscos de conformidade."
+  },
+  {
+   "id": "ia_007",
+   "categoria": "ia",
+   "nivel": 1,
+   "pergunta": "Por que vale pensar antes de usar IA para tarefas simples?",
+   "alternativas": [
+    "Porque IA é sempre proibida",
+    "Porque cada uso consome energia e recursos computacionais",
+    "Porque a IA cansa",
+    "Não vale, use para tudo"
+   ],
+   "correta": 1,
+   "explicacao": "Inferência de IA tem custo financeiro e ambiental. Se uma fórmula resolve, use a fórmula."
+  },
+  {
+   "id": "ia_008",
+   "categoria": "ia",
+   "nivel": 2,
+   "pergunta": "Ao escrever um prompt, a boa prática é…",
+   "alternativas": [
+    "Incluir todos os dados disponíveis por precaução",
+    "Enviar só o necessário, sem dados pessoais",
+    "Usar a senha do sistema no texto",
+    "Copiar e-mails inteiros de alunos"
+   ],
+   "correta": 1,
+   "explicacao": "Minimização também vale para prompts: menos dados, menos risco."
+  },
+  {
+   "id": "ia_009",
+   "categoria": "ia",
+   "nivel": 2,
+   "pergunta": "Conteúdo produzido com apoio de IA deve…",
+   "alternativas": [
+    "Ser escondido do público",
+    "Ser identificado quando relevante (transparência)",
+    "Ser sempre assinado pela IA",
+    "Ser apagado após 1 dia"
+   ],
+   "correta": 1,
+   "explicacao": "Transparência sobre o uso de IA fortalece a confiança e é recomendada em diretrizes de uso responsável."
+  },
+  {
+   "id": "ia_010",
+   "categoria": "ia",
+   "nivel": 3,
+   "pergunta": "Um modelo prevê quem vai evadir dos cursos. Antes de usar para decisões, deve-se…",
+   "alternativas": [
+    "Usar direto, a matemática é neutra",
+    "Avaliar vieses, explicar critérios e manter revisão humana",
+    "Esconder o modelo dos gestores",
+    "Usar apenas com alunos novos"
+   ],
+   "correta": 1,
+   "explicacao": "Decisões automatizadas que afetam pessoas exigem avaliação de impacto, explicabilidade e supervisão humana."
+  },
+  {
+   "id": "seg_001",
+   "categoria": "seguranca",
+   "nivel": 1,
+   "pergunta": "Qual é o sinal mais típico de um e-mail de phishing?",
+   "alternativas": [
+    "Assinatura completa do remetente",
+    "Urgência e um link estranho pedindo login",
+    "Texto em português",
+    "Envio em horário comercial"
+   ],
+   "correta": 1,
+   "explicacao": "Pressa, ameaça e links que imitam sites oficiais são marcas clássicas de golpe."
+  },
+  {
+   "id": "seg_002",
+   "categoria": "seguranca",
+   "nivel": 1,
+   "pergunta": "Qual é a senha mais segura?",
+   "alternativas": [
+    "123456",
+    "sestsenat2026",
+    "Uma frase longa e única, usada só nesse serviço",
+    "A data do seu aniversário"
+   ],
+   "correta": 2,
+   "explicacao": "Comprimento e exclusividade importam mais que símbolos. Nunca reutilize senhas."
+  },
+  {
+   "id": "seg_003",
+   "categoria": "seguranca",
+   "nivel": 1,
+   "pergunta": "O que é autenticação em dois fatores (MFA)?",
+   "alternativas": [
+    "Usar duas senhas iguais",
+    "Confirmar o acesso com algo além da senha, como um código no celular",
+    "Ter dois computadores",
+    "Trocar a senha duas vezes por ano"
+   ],
+   "correta": 1,
+   "explicacao": "Mesmo que a senha vaze, o segundo fator impede o acesso indevido."
+  },
+  {
+   "id": "seg_004",
+   "categoria": "seguranca",
+   "nivel": 1,
+   "pergunta": "Você precisa trabalhar no Wi-Fi aberto de um aeroporto. O que fazer?",
+   "alternativas": [
+    "Conectar normalmente",
+    "Usar a VPN corporativa ou o 4G do celular",
+    "Desligar o antivírus para ficar mais rápido",
+    "Compartilhar a rede com colegas"
+   ],
+   "correta": 1,
+   "explicacao": "Redes abertas podem ser interceptadas. A VPN cria um túnel protegido."
+  },
+  {
+   "id": "seg_005",
+   "categoria": "seguranca",
+   "nivel": 1,
+   "pergunta": "Você achou um pendrive no estacionamento. O que fazer?",
+   "alternativas": [
+    "Conectar para descobrir o dono",
+    "Entregar à TI sem conectar",
+    "Formatar e usar",
+    "Deixar na mesa do café"
+   ],
+   "correta": 1,
+   "explicacao": "Pendrives 'perdidos' são uma isca conhecida para instalar programas maliciosos."
+  },
+  {
+   "id": "seg_006",
+   "categoria": "seguranca",
+   "nivel": 1,
+   "pergunta": "Alguém liga dizendo ser da TI e pede sua senha. Você…",
+   "alternativas": [
+    "Informa, afinal é a TI",
+    "Recusa e reporta pelo canal oficial",
+    "Passa só metade da senha",
+    "Pede para ligar mais tarde"
+   ],
+   "correta": 1,
+   "explicacao": "A TI nunca precisa da sua senha. Isso é engenharia social."
+  },
+  {
+   "id": "seg_007",
+   "categoria": "seguranca",
+   "nivel": 1,
+   "pergunta": "Vai sair da mesa por 5 minutos. O que fazer com o computador?",
+   "alternativas": [
+    "Deixar aberto, é rapidinho",
+    "Bloquear a tela",
+    "Desligar o monitor",
+    "Pedir para o colega vigiar"
+   ],
+   "correta": 1,
+   "explicacao": "Bloquear a tela (Windows + L) evita acessos indevidos em segundos."
+  },
+  {
+   "id": "seg_008",
+   "categoria": "seguranca",
+   "nivel": 2,
+   "pergunta": "O que é ransomware?",
+   "alternativas": [
+    "Um antivírus gratuito",
+    "Um programa que sequestra arquivos e pede resgate",
+    "Um tipo de backup",
+    "Uma rede sem fio"
+   ],
+   "correta": 1,
+   "explicacao": "O ransomware criptografa os dados e exige pagamento. Backups íntegros são a principal defesa."
+  },
+  {
+   "id": "seg_009",
+   "categoria": "seguranca",
+   "nivel": 2,
+   "pergunta": "A regra de backup 3-2-1 significa…",
+   "alternativas": [
+    "3 cópias, em 2 mídias diferentes, 1 fora do local",
+    "3 senhas, 2 usuários, 1 servidor",
+    "Backup a cada 3 dias, 2 vezes, por 1 hora",
+    "3 pendrives, 2 HDs, 1 e-mail"
+   ],
+   "correta": 0,
+   "explicacao": "Diversificar mídias e manter uma cópia externa protege contra falhas, roubo e ransomware."
+  },
+  {
+   "id": "seg_010",
+   "categoria": "seguranca",
+   "nivel": 1,
+   "pergunta": "Você clicou num link suspeito por engano. O que fazer?",
+   "alternativas": [
+    "Não contar a ninguém",
+    "Avisar imediatamente o canal de TI/segurança",
+    "Apagar o e-mail e seguir",
+    "Reiniciar e esquecer"
+   ],
+   "correta": 1,
+   "explicacao": "Avisar rápido permite conter o incidente antes que se espalhe. Não há punição por reportar."
+  },
+  {
+   "id": "gov_001",
+   "categoria": "governanca",
+   "nivel": 1,
+   "pergunta": "Para que serve um dicionário de dados?",
+   "alternativas": [
+    "Traduzir relatórios para inglês",
+    "Documentar significado, formato e origem de cada campo",
+    "Guardar senhas",
+    "Corrigir a ortografia dos sistemas"
+   ],
+   "correta": 1,
+   "explicacao": "Sem dicionário, cada área interpreta um campo de um jeito, e os números não batem."
+  },
+  {
+   "id": "gov_002",
+   "categoria": "governanca",
+   "nivel": 1,
+   "pergunta": "Metadados são…",
+   "alternativas": [
+    "Dados muito grandes",
+    "Dados sobre os dados (origem, data, responsável…)",
+    "Dados apagados",
+    "Dados de redes sociais"
+   ],
+   "correta": 1,
+   "explicacao": "Metadados descrevem o contexto do dado e permitem encontrá-lo e confiar nele."
+  },
+  {
+   "id": "gov_003",
+   "categoria": "governanca",
+   "nivel": 1,
+   "pergunta": "Existe um sistema oficial de matrículas, mas seu setor quer uma planilha paralela. O ideal é…",
+   "alternativas": [
+    "Criar a planilha e não contar",
+    "Usar o sistema oficial como fonte única",
+    "Criar duas planilhas para garantir",
+    "Pedir que cada um tenha a sua"
+   ],
+   "correta": 1,
+   "explicacao": "Planilhas paralelas geram versões diferentes da verdade e retrabalho."
+  },
+  {
+   "id": "gov_004",
+   "categoria": "governanca",
+   "nivel": 2,
+   "pergunta": "Quem é o 'dono do dado' (data owner)?",
+   "alternativas": [
+    "Quem digitou o dado",
+    "A área responsável por definir regras, qualidade e acesso daquele dado",
+    "Sempre a TI",
+    "O fornecedor do sistema"
+   ],
+   "correta": 1,
+   "explicacao": "O dono do dado é da área de negócio; a TI cuida da infraestrutura."
+  },
+  {
+   "id": "gov_005",
+   "categoria": "governanca",
+   "nivel": 2,
+   "pergunta": "A dimensão de qualidade 'completude' avalia se…",
+   "alternativas": [
+    "O dado está no idioma certo",
+    "Os campos obrigatórios estão preenchidos",
+    "O servidor está ligado",
+    "O relatório está bonito"
+   ],
+   "correta": 1,
+   "explicacao": "Outras dimensões incluem exatidão, consistência, atualidade e unicidade."
+  },
+  {
+   "id": "gov_006",
+   "categoria": "governanca",
+   "nivel": 2,
+   "pergunta": "Um indicador oscilou 40% de um mês para o outro. Antes de divulgar…",
+   "alternativas": [
+    "Divulgue logo, é notícia",
+    "Verifique a origem e a qualidade dos dados",
+    "Ajuste o número para parecer normal",
+    "Apague o mês estranho"
+   ],
+   "correta": 1,
+   "explicacao": "Mudanças bruscas costumam indicar erro de carga ou mudança de regra. Investigue antes."
+  },
+  {
+   "id": "gov_007",
+   "categoria": "governanca",
+   "nivel": 2,
+   "pergunta": "O princípio do 'menor privilégio' diz que cada pessoa deve ter…",
+   "alternativas": [
+    "Acesso a tudo, por agilidade",
+    "Apenas os acessos necessários para sua função",
+    "A senha do gestor",
+    "Acesso de administrador"
+   ],
+   "correta": 1,
+   "explicacao": "Menos acessos significa menos risco em caso de erro ou credencial vazada."
+  },
+  {
+   "id": "gov_008",
+   "categoria": "governanca",
+   "nivel": 2,
+   "pergunta": "Um catálogo de dados serve para…",
+   "alternativas": [
+    "Vender dados",
+    "Encontrar quais conjuntos de dados existem, o que significam e quem responde por eles",
+    "Imprimir relatórios",
+    "Fazer backup"
+   ],
+   "correta": 1,
+   "explicacao": "O catálogo evita que as áreas recriem bases que já existem."
+  },
+  {
+   "id": "gov_009",
+   "categoria": "governanca",
+   "nivel": 2,
+   "pergunta": "Quando um dado atinge o fim do prazo de retenção, ele deve…",
+   "alternativas": [
+    "Ser guardado para sempre",
+    "Ser descartado ou anonimizado conforme a política",
+    "Ser enviado por e-mail",
+    "Ser impresso"
+   ],
+   "correta": 1,
+   "explicacao": "Guardar além do necessário aumenta o risco sem trazer benefício."
+  },
+  {
+   "id": "gov_010",
+   "categoria": "governanca",
+   "nivel": 3,
+   "pergunta": "O 'data steward' (curador de dados) é quem…",
+   "alternativas": [
+    "Compra os servidores",
+    "Zela no dia a dia pela qualidade, definição e uso correto dos dados",
+    "Apaga dados antigos sozinho",
+    "Programa os relatórios de BI"
+   ],
+   "correta": 1,
+   "explicacao": "O steward apoia o dono do dado, cuidando das definições e da qualidade na rotina."
+  },
+  {
+   "id": "pol_001",
+   "categoria": "politicas",
+   "nivel": 1,
+   "status": "exemplo",
+   "pergunta": "Um relatório interno com dados de alunos deve ser tratado como…",
+   "alternativas": [
+    "Público, pode ir para as redes",
+    "Restrito: acesso só a quem precisa",
+    "Livre para qualquer colaborador",
+    "Rascunho sem regras"
+   ],
+   "correta": 1,
+   "explicacao": "Informações com dados pessoais devem seguir a classificação restrita/confidencial da política de informação."
+  },
+  {
+   "id": "pol_002",
+   "categoria": "politicas",
+   "nivel": 1,
+   "status": "exemplo",
+   "pergunta": "Antes de contratar uma ferramenta de IA externa, sua área deve…",
+   "alternativas": [
+    "Contratar e avisar depois",
+    "Consultar a TI e o Encarregado para avaliar riscos",
+    "Usar a versão gratuita sem avisar",
+    "Pedir só ao fornecedor"
+   ],
+   "correta": 1,
+   "explicacao": "Avaliação prévia evita vazamento de dados e contratos sem cláusulas de proteção."
+  },
+  {
+   "id": "pol_003",
+   "categoria": "politicas",
+   "nivel": 1,
+   "status": "exemplo",
+   "pergunta": "Posso encaminhar documentos de trabalho para meu e-mail pessoal?",
+   "alternativas": [
+    "Sim, para trabalhar em casa",
+    "Não: use os canais e repositórios oficiais",
+    "Sim, se apagar depois",
+    "Só às sextas-feiras"
+   ],
+   "correta": 1,
+   "explicacao": "E-mails pessoais ficam fora do controle e da proteção da instituição."
+  },
+  {
+   "id": "pol_004",
+   "categoria": "politicas",
+   "nivel": 2,
+   "status": "exemplo",
+   "pergunta": "Um colega mudou de função. O que deve acontecer com os acessos antigos dele?",
+   "alternativas": [
+    "Ficam para sempre",
+    "Devem ser revistos e removidos",
+    "Passam para o substituto",
+    "Ficam só os de leitura"
+   ],
+   "correta": 1,
+   "explicacao": "Revisão de acessos na mudança de função ou desligamento é um controle básico."
+  },
+  {
+   "id": "pol_005",
+   "categoria": "politicas",
+   "nivel": 1,
+   "status": "exemplo",
+   "pergunta": "Onde guardar arquivos de trabalho?",
+   "alternativas": [
+    "No pendrive pessoal",
+    "No repositório oficial (rede ou nuvem homologada)",
+    "Na área de trabalho do notebook",
+    "No WhatsApp"
+   ],
+   "correta": 1,
+   "explicacao": "Repositórios oficiais têm backup, controle de acesso e trilha de auditoria."
+  },
+  {
+   "id": "pol_006",
+   "categoria": "politicas",
+   "nivel": 1,
+   "status": "exemplo",
+   "pergunta": "Ficou na dúvida se pode usar um dado num projeto. A quem recorrer?",
+   "alternativas": [
+    "Usar e ver no que dá",
+    "Ao dono do dado e ao Encarregado (DPO)",
+    "A um grupo de mensagens",
+    "Ao fornecedor do sistema"
+   ],
+   "correta": 1,
+   "explicacao": "Quem responde pelo dado orienta sobre finalidade, base legal e restrições."
+  },
+  {
+   "id": "pol_007",
+   "categoria": "politicas",
+   "nivel": 2,
+   "status": "exemplo",
+   "pergunta": "Postar foto de alunos numa aula nas redes sociais da unidade exige…",
+   "alternativas": [
+    "Nada, foi em ambiente público",
+    "Autorização de uso de imagem",
+    "Apenas marcar a unidade",
+    "Só tirar de longe"
+   ],
+   "correta": 1,
+   "explicacao": "Imagem é dado pessoal. Para menores, a autorização deve vir dos responsáveis."
+  },
+  {
+   "id": "pol_008",
+   "categoria": "politicas",
+   "nivel": 1,
+   "status": "exemplo",
+   "pergunta": "Um incidente parece pequeno. Ainda assim você deve…",
+   "alternativas": [
+    "Ignorar",
+    "Reportar pelo canal oficial",
+    "Resolver sozinho e não contar",
+    "Esperar acontecer de novo"
+   ],
+   "correta": 1,
+   "explicacao": "Pequenos sinais costumam ser o começo de incidentes maiores. Reportar é sempre a conduta certa."
+  },
+  {
+   "id": "pa_r001",
+   "categoria": "pense_antes",
+   "nivel": 1,
+   "pergunta": "O relatório mensal é só somar colunas de uma planilha. A melhor saída é…",
+   "alternativas": [
+    "Pedir para uma IA fazer",
+    "Usar uma fórmula ou tabela dinâmica",
+    "Contratar um sistema novo",
+    "Fazer na calculadora do celular"
+   ],
+   "correta": 1,
+   "explicacao": "Precisa mesmo de IA? Se uma regra simples resolve, ela é mais barata, rápida e auditável."
+  },
+  {
+   "id": "pa_r002",
+   "categoria": "pense_antes",
+   "nivel": 1,
+   "pergunta": "Sua área quer criar um sistema de inscrições. Primeiro passo:",
+   "alternativas": [
+    "Começar a programar",
+    "Verificar se já existe uma solução oficial",
+    "Pedir orçamento a 3 fornecedores",
+    "Criar um formulário pessoal"
+   ],
+   "correta": 1,
+   "explicacao": "Já existe algo pronto? Reaproveitar evita custo, retrabalho e silos."
+  },
+  {
+   "id": "pa_r003",
+   "categoria": "pense_antes",
+   "nivel": 1,
+   "pergunta": "Você teve uma ideia de painel de indicadores. Antes de começar…",
+   "alternativas": [
+    "Faça em segredo para surpreender",
+    "Pergunte se outra área já faz algo parecido",
+    "Peça acesso a todos os bancos",
+    "Copie de outro órgão"
+   ],
+   "correta": 1,
+   "explicacao": "Alguma área já faz algo parecido? Alinhar com TI e BI evita painéis duplicados."
+  },
+  {
+   "id": "pa_r004",
+   "categoria": "pense_antes",
+   "nivel": 1,
+   "pergunta": "Vai usar uma IA homologada para analisar uma planilha. Antes de enviar…",
+   "alternativas": [
+    "Envie completa para não perder contexto",
+    "Remova colunas com dados pessoais desnecessários",
+    "Mude o nome do arquivo",
+    "Comprima em ZIP"
+   ],
+   "correta": 1,
+   "explicacao": "Que dados vou usar? Mesmo em ferramenta homologada, envie só o necessário."
+  },
+  {
+   "id": "pa_r005",
+   "categoria": "pense_antes",
+   "nivel": 1,
+   "pergunta": "Um colega pede seu login emprestado 'só hoje'. Você…",
+   "alternativas": [
+    "Empresta, ele é de confiança",
+    "Não compartilha e orienta a pedir acesso próprio",
+    "Passa a senha por mensagem",
+    "Loga para ele e sai de perto"
+   ],
+   "correta": 1,
+   "explicacao": "Login é pessoal: tudo que for feito com ele fica registrado no seu nome."
+  },
+  {
+   "id": "pa_r006",
+   "categoria": "pense_antes",
+   "nivel": 2,
+   "pergunta": "A IA gerou uma resposta perfeita, mas sem fontes, para enviar ao diretor. Você…",
+   "alternativas": [
+    "Envia, está bem escrito",
+    "Confere os fatos e as fontes antes",
+    "Envia avisando que foi IA",
+    "Pede para a IA ser mais confiante"
+   ],
+   "correta": 1,
+   "explicacao": "Texto convincente não é texto verdadeiro. Verifique antes de assinar embaixo."
+  },
+  {
+   "id": "pa_r007",
+   "categoria": "pense_antes",
+   "nivel": 2,
+   "pergunta": "Quer analisar em casa uma planilha com dados de saúde de colaboradores. O certo é…",
+   "alternativas": [
+    "Levar no pendrive",
+    "Usar apenas o ambiente institucional, com acesso autorizado",
+    "Mandar para o e-mail pessoal",
+    "Imprimir e levar"
+   ],
+   "correta": 1,
+   "explicacao": "Dados sensíveis só devem circular em ambientes controlados pela instituição."
+  },
+  {
+   "id": "pa_r008",
+   "categoria": "pense_antes",
+   "nivel": 2,
+   "pergunta": "Pensaram em divulgar no mural um ranking com nomes e notas dos alunos. Melhor…",
+   "alternativas": [
+    "Divulgar, motiva a turma",
+    "Divulgar só dados agregados ou anonimizados",
+    "Divulgar só os piores",
+    "Divulgar com foto"
+   ],
+   "correta": 1,
+   "explicacao": "Notas individuais expostas podem constranger e violar a privacidade. Agregue os dados."
+  },
+  {
+   "id": "carta_pa_001",
+   "categoria": "pense_antes",
+   "nivel": 1,
+   "pergunta": "Sua unidade quer contratar uma ferramenta de IA para transcrever gravações de treinamentos de motoristas. A gerência de TI corporativa já possui licenças de uma solução similar.",
+   "alternativas": [
+    "Consultar a TI para verificar se a ferramenta corporativa homologada atende à demanda.",
+    "Iniciar a cotação de um novo software específico para a unidade para ter mais autonomia."
+   ],
+   "correta": 0,
+   "explicacao": "Excelente decisão! O reuso de contratos e ferramentas vigentes economiza orçamento e garante suporte técnico.",
+   "origem": "cartas da Trilha (2-3 alternativas)"
+  },
+  {
+   "id": "carta_pa_002",
+   "categoria": "pense_antes",
+   "nivel": 1,
+   "pergunta": "Um instrutor quer criar um modelo preditivo complexo de Machine Learning para prever desistências em uma turma de apenas 15 alunos.",
+   "alternativas": [
+    "Conversar diretamente com os alunos e acompanhar o histórico de presença em planilha simples.",
+    "Contratar consultoria externa para treinar redes neurais com os dados dessa turma."
+   ],
+   "correta": 0,
+   "explicacao": "Muito sensato! Para bases pequenas, a escuta direta e métodos simples são mais eficazes e custam menos.",
+   "origem": "cartas da Trilha (2-3 alternativas)"
+  },
+  {
+   "id": "carta_pa_003",
+   "categoria": "pense_antes",
+   "nivel": 1,
+   "pergunta": "A equipe de atendimento da clínica odontológica quer desenvolver um painel próprio para acompanhar o fluxo de consultas de trabalhadores do transporte.",
+   "alternativas": [
+    "Procurar a equipe de BI institucional para verificar se já existe relatório ou painel consolidado.",
+    "Criar controles manuais e isolados em planilhas compartilhadas na internet."
+   ],
+   "correta": 0,
+   "explicacao": "Perfeito! Evita retrabalho e divergência de números com os dados oficiais da diretoria.",
+   "origem": "cartas da Trilha (2-3 alternativas)"
+  },
+  {
+   "id": "carta_pa_004",
+   "categoria": "pense_antes",
+   "nivel": 2,
+   "pergunta": "Um colaborador gasta horas testando dezenas de prompts diferentes para formatar um texto simples de duas páginas para uma circular interna.",
+   "alternativas": [
+    "Usar os modelos e padrões de documentos já estabelecidos pela comunicação institucional.",
+    "Continuar ajustando prompts complexos até a IA gerar exatamente a formatação desejada."
+   ],
+   "correta": 0,
+   "explicacao": "Ótima escolha! Modelos padronizados poupam tempo e mantêm a identidade da entidade sem consumir tokens à toa.",
+   "origem": "cartas da Trilha (2-3 alternativas)"
+  },
+  {
+   "id": "carta_pa_005",
+   "categoria": "pense_antes",
+   "nivel": 2,
+   "pergunta": "Você precisa classificar 20 notas fiscais de manutenção predial para o fechamento mensal e sugerem treinar uma IA para isso.",
+   "alternativas": [
+    "Aplicar filtros e regras de soma no próprio sistema de gestão financeira já homologado.",
+    "Criar um projeto de automação com LLM para fazer a leitura semântica dos 20 documentos."
+   ],
+   "correta": 0,
+   "explicacao": "Decisão pragmática! Processos determinísticos e de baixo volume devem ser resolvidos com as ferramentas do dia a dia.",
+   "origem": "cartas da Trilha (2-3 alternativas)"
+  },
+  {
+   "id": "carta_pa_006",
+   "categoria": "pense_antes",
+   "nivel": 3,
+   "pergunta": "A área de RH quer criar um chatbot de dúvidas sobre benefícios dos empregados, mas a área de atendimento já usa um bot para o público externo.",
+   "alternativas": [
+    "Alinhar com o time de atendimento o reaproveitamento da mesma plataforma e estrutura de IA.",
+    "Comprar uma segunda plataforma independente para não precisar alinhar cronogramas."
+   ],
+   "correta": 0,
+   "explicacao": "Excelente visão corporativa! Compartilhar a mesma infraestrutura reduz custos de implementação e manutenção.",
+   "origem": "cartas da Trilha (2-3 alternativas)"
+  },
+  {
+   "id": "carta_pa_007",
+   "categoria": "pense_antes",
+   "nivel": 3,
+   "pergunta": "Para redigir uma resposta formal a uma solicitação de órgão fiscalizador, sugerem enviar todo o processo para uma IA gerar a minuta.",
+   "alternativas": [
+    "Consultar pareceres jurídicos anteriores e as orientações da assessoria de compliance.",
+    "Colar o processo integral em uma IA generativa comercial para obter uma resposta rápida."
+   ],
+   "correta": 0,
+   "explicacao": "Posicionamento prudente! Respostas regulatórias exigem embasamento institucional oficial e responsabilidade jurídica.",
+   "origem": "cartas da Trilha (2-3 alternativas)"
+  },
+  {
+   "id": "carta_des_001",
+   "categoria": "lgpd",
+   "nivel": 1,
+   "pergunta": "Segundo a LGPD, qual das seguintes informações é classificada estritamente como 'Dado Pessoal Sensível'?",
+   "alternativas": [
+    "Histórico de prontuário e atestados médicos do colaborador.",
+    "Número comercial do telefone do posto de trabalho.",
+    "Cargo ocupado e tempo de serviço na entidade."
+   ],
+   "correta": 0,
+   "explicacao": "Correto! Dados de saúde, biometria e convicções religiosas demandam salvaguardas rigorosas na legislação.",
+   "origem": "cartas da Trilha (2-3 alternativas)"
+  },
+  {
+   "id": "carta_des_002",
+   "categoria": "ia",
+   "nivel": 1,
+   "pergunta": "Qual a conduta correta ao receber um resumo gerado por IA sobre normas técnicas de transporte de cargas?",
+   "alternativas": [
+    "Validar as citações e artigos diretamente nas resoluções vigentes dos órgãos reguladores.",
+    "Publicar imediatamente para as unidades caso o texto esteja gramaticalmente perfeito.",
+    "Pedir para outra IA conferir o texto da primeira sem consultar a lei original."
+   ],
+   "correta": 0,
+   "explicacao": "Resposta perfeita! IAs generativas costumam criar artigos de leis inexistentes com aparência convincente.",
+   "origem": "cartas da Trilha (2-3 alternativas)"
+  },
+  {
+   "id": "carta_des_003",
+   "categoria": "governanca",
+   "nivel": 1,
+   "pergunta": "O que caracteriza a figura do 'Dono do Dado' (Data Owner) dentro da governança institucional?",
+   "alternativas": [
+    "A área de negócio responsável por definir regras, uso e autorizações daquela base de dados.",
+    "O técnico de suporte que instala o banco de dados no servidor.",
+    "Qualquer funcionário que criar uma cópia da tabela em seu computador."
+   ],
+   "correta": 0,
+   "explicacao": "Exato! Quem detém o domínio das regras de negócio é quem define a finalidade e acessos legítimos.",
+   "origem": "cartas da Trilha (2-3 alternativas)"
+  },
+  {
+   "id": "carta_des_004",
+   "categoria": "governanca",
+   "nivel": 2,
+   "pergunta": "Por que a existência de um 'Dicionário de Dados' corporativo é essencial para a governança?",
+   "alternativas": [
+    "Padroniza conceitos e fórmulas para que toda a instituição meça os mesmos indicadores.",
+    "Serve unicamente para corrigir a pontuação ortográfica dos textos de relatórios."
+   ],
+   "correta": 0,
+   "explicacao": "Muito bem! O catálogo de conceitos evita divergências em apresentações para conselhos e auditorias.",
+   "origem": "cartas da Trilha (2-3 alternativas)"
+  },
+  {
+   "id": "carta_des_005",
+   "categoria": "ia",
+   "nivel": 2,
+   "pergunta": "O que é fundamental verificar antes de contratar ou utilizar qualquer ferramenta de IA em processos institucionais?",
+   "alternativas": [
+    "Se a ferramenta foi homologada pela TI e se garante que os dados enviados não serão usados para treino público.",
+    "Se ela possui uma interface visual colorida e foi recomendada por influenciadores em redes sociais."
+   ],
+   "correta": 0,
+   "explicacao": "Certíssimo! Cláusulas de privacidade e retenção de dados são pré-requisitos para uso institucional ético.",
+   "origem": "cartas da Trilha (2-3 alternativas)"
+  },
+  {
+   "id": "carta_des_006",
+   "categoria": "lgpd",
+   "nivel": 3,
+   "pergunta": "Ao notar que uma lista de cadastros de motoristas foi enviada para o e-mail pessoal de terceiros por engano, qual a ação prioritária?",
+   "alternativas": [
+    "Comunicar imediatamente o Encarregado pelo Tratamento de Dados (DPO) e a equipe de segurança da informação.",
+    "Apagar a mensagem da sua caixa de saída e não relatar para evitar advertências da chefia."
+   ],
+   "correta": 0,
+   "explicacao": "Atitude exemplar! Incidentes de segurança exigem contenção célere e plano de ação oficial coordenado.",
+   "origem": "cartas da Trilha (2-3 alternativas)"
+  },
+  {
+   "id": "carta_des_007",
+   "categoria": "governanca",
+   "nivel": 3,
+   "pergunta": "Um analista percebeu que um indicador de 'Taxa de Conclusão de Treinamento' oscilou 40% em um mês. O que fazer antes de divulgar?",
+   "alternativas": [
+    "Investigar a linhagem dos dados, possíveis alterações nos filtros ou falhas de preenchimento na origem.",
+    "Divulgar imediatamente destacando que a produtividade teve um salto inédito."
+   ],
+   "correta": 0,
+   "explicacao": "Correto! Anomalias estatísticas repentinas geralmente indicam inconsistências na extração ou regras de cálculo.",
+   "origem": "cartas da Trilha (2-3 alternativas)"
+  },
+  {
+   "id": "carta_pa_008",
+   "categoria": "pense_antes",
+   "nivel": 1,
+   "pergunta": "Um setor quer criar uma nova planilha na internet para acompanhar frequência em cursos, mas o SEST SENAT já possui o sistema TOTVS/RM homologado.",
+   "alternativas": [
+    "Utilizar o sistema oficial homologado pela instituição.",
+    "Criar a planilha paralela sem informar a TI."
+   ],
+   "correta": 0,
+   "explicacao": "Correto! Evita duplicidade de dados e retrabalho.",
+   "origem": "cartas da Trilha (2-3 alternativas)"
+  },
+  {
+   "id": "carta_pa_009",
+   "categoria": "pense_antes",
+   "nivel": 1,
+   "pergunta": "Para agendar salas de aula presenciais, cogitou-se desenvolver um agente autônomo com IA avançada.",
+   "alternativas": [
+    "Adotar o calendário integrado já disponível no Outlook corporativo.",
+    "Contratar o desenvolvimento de um modelo customizado de IA."
+   ],
+   "correta": 0,
+   "explicacao": "Excelente! Agendamento simples não justifica custo de IA.",
+   "origem": "cartas da Trilha (2-3 alternativas)"
+  },
+  {
+   "id": "carta_pa_010",
+   "categoria": "pense_antes",
+   "nivel": 1,
+   "pergunta": "Antes de compartilhar dados cadastrais de alunos com um fornecedor de software, qual o primeiro passo?",
+   "alternativas": [
+    "Consultar o Encarregado pelo Tratamento de Dados (DPO) e verificar o contrato.",
+    "Enviar os dados por e-mail se o fornecedor prometer sigilo verbal."
+   ],
+   "correta": 0,
+   "explicacao": "Muito bem! O compartilhamento com terceiros exige cláusula de privacidade.",
+   "origem": "cartas da Trilha (2-3 alternativas)"
+  },
+  {
+   "id": "carta_pa_011",
+   "categoria": "pense_antes",
+   "nivel": 1,
+   "pergunta": "A equipe pedagógica deseja gerar certificados automáticos. A TI já possui um módulo institucional de certificação ativo.",
+   "alternativas": [
+    "Integrar a demanda ao módulo de certificação já existente.",
+    "Contratar uma plataforma terceira avulsa por assinatura mensal."
+   ],
+   "correta": 0,
+   "explicacao": "Ótima escolha! Reutilizar reduz custos e padroniza a marca institucional.",
+   "origem": "cartas da Trilha (2-3 alternativas)"
+  },
+  {
+   "id": "carta_pa_012",
+   "categoria": "pense_antes",
+   "nivel": 2,
+   "pergunta": "Uma unidade quer realizar pesquisa de satisfação perguntando religião e opinião política dos alunos de cursos de transporte.",
+   "alternativas": [
+    "Eliminar essas perguntas, coletando estritamente os dados necessários para o curso.",
+    "Manter as perguntas com a justificativa de conhecer melhor o público."
+   ],
+   "correta": 0,
+   "explicacao": "Perfeito! Princípio da necessidade e minimização de dados sensíveis.",
+   "origem": "cartas da Trilha (2-3 alternativas)"
+  },
+  {
+   "id": "carta_pa_013",
+   "categoria": "pense_antes",
+   "nivel": 2,
+   "pergunta": "Pretende-se usar IA para filtrar currículos de candidatos a instrutores de direção. O que deve ser verificado primeiro?",
+   "alternativas": [
+    "Avaliar critérios de viés histórico e manter supervisão humana no processo seletivo.",
+    "Permitir que a IA aprove ou reprove candidatos de forma 100% autônoma."
+   ],
+   "correta": 0,
+   "explicacao": "Fundamental! IA em seleção deve ter supervisão humana para evitar discriminação.",
+   "origem": "cartas da Trilha (2-3 alternativas)"
+  },
+  {
+   "id": "carta_pa_014",
+   "categoria": "pense_antes",
+   "nivel": 2,
+   "pergunta": "Um colaborador quer treinar um modelo de transcrição local usando áudios gravados de consultas odontológicas.",
+   "alternativas": [
+    "Suspender a iniciativa até validação do DPO e do Comitê de Governança de IA.",
+    "Subir os áudios diretamente em ferramentas de transcrição gratuitas."
+   ],
+   "correta": 0,
+   "explicacao": "Decisão prudente. Dados de saúde têm proteção legal especial.",
+   "origem": "cartas da Trilha (2-3 alternativas)"
+  },
+  {
+   "id": "carta_pa_015",
+   "categoria": "pense_antes",
+   "nivel": 2,
+   "pergunta": "Ao alimentar um dashboard de telemetria de trânsito, descobriu-se que 30% dos registros estão sem data e local.",
+   "alternativas": [
+    "Sanear e validar a qualidade dos dados na fonte antes de publicar relatórios.",
+    "Gerar o painel assim mesmo, ignorando as falhas de preenchimento."
+   ],
+   "correta": 0,
+   "explicacao": "Correto! Dados corrompidos levam a decisões gerenciais erradas.",
+   "origem": "cartas da Trilha (2-3 alternativas)"
+  },
+  {
+   "id": "carta_pa_016",
+   "categoria": "pense_antes",
+   "nivel": 2,
+   "pergunta": "Duas unidades vizinhas planejam contratar empresas diferentes para desenvolver a mesma funcionalidade de triagem rápida.",
+   "alternativas": [
+    "Articular com a TI corporativa uma contratação única e escalável para ambas as unidades.",
+    "Manter contratos separados para cada unidade ter seu fornecedor favorito."
+   ],
+   "correta": 0,
+   "explicacao": "Economia de escala e padronização corporativa exemplar!",
+   "origem": "cartas da Trilha (2-3 alternativas)"
+  },
+  {
+   "id": "carta_pa_017",
+   "categoria": "pense_antes",
+   "nivel": 3,
+   "pergunta": "Um algoritmo generativo foi proposto para criar ementas pedagógicas para novos cursos de direção autônoma.",
+   "alternativas": [
+    "Exigir validação técnica por especialistas pedagógicos antes de qualquer publicação.",
+    "Publicar ementas geradas pela IA diretamente no catálogo de cursos sem revisão."
+   ],
+   "correta": 0,
+   "explicacao": "Fundamental! IAs generativas sofrem de alucinação e necessitam de curadoria humana.",
+   "origem": "cartas da Trilha (2-3 alternativas)"
+  },
+  {
+   "id": "carta_pa_018",
+   "categoria": "pense_antes",
+   "nivel": 3,
+   "pergunta": "Foi identificado que um modelo preditivo terceirizado possui taxa de erro 3x maior para motoristas com mais de 50 anos.",
+   "alternativas": [
+    "Suspender o modelo para reavaliação de viés etário e calibração da base de treino.",
+    "Ignorar a disparidade alegando que modelos matemáticos são neutros."
+   ],
+   "correta": 0,
+   "explicacao": "Ética e responsabilidade! IAs não podem perpetuar viés ou discriminação.",
+   "origem": "cartas da Trilha (2-3 alternativas)"
+  },
+  {
+   "id": "carta_pa_019",
+   "categoria": "pense_antes",
+   "nivel": 3,
+   "pergunta": "Um projeto prevê analisar padrões vocais de motoristas no simulador para predizer estresse psicológico crônico.",
+   "alternativas": [
+    "Submeter ao Comitê de Ética e Privacidade para Relatório de Impacto à Proteção de Dados (RIPD).",
+    "Iniciar a coleta imediata sem registro ou avaliação prévia de riscos."
+   ],
+   "correta": 0,
+   "explicacao": "Perfeito! Tratamento de dados biométricos/emocionais exige RIPD prévio.",
+   "origem": "cartas da Trilha (2-3 alternativas)"
+  },
+  {
+   "id": "carta_pa_020",
+   "categoria": "pense_antes",
+   "nivel": 3,
+   "pergunta": "A instituição quer estabelecer diretrizes obrigatórias de compra de softwares que contenham recursos de IA.",
+   "alternativas": [
+    "Exigir cláusulas de transparência algorítmica, direito de auditoria e conformidade LGPD no edital.",
+    "Comprar apenas pelo critério de menor preço, sem requisitos específicos de governança."
+   ],
+   "correta": 0,
+   "explicacao": "Excelente maturidade de governança em aquisições públicas e institucionais!",
+   "origem": "cartas da Trilha (2-3 alternativas)"
+  },
+  {
+   "id": "carta_des_008",
+   "categoria": "lgpd",
+   "nivel": 1,
+   "pergunta": "O que caracteriza um Dado Pessoal segundo a Lei Geral de Proteção de Dados (LGPD)?",
+   "alternativas": [
+    "Qualquer informação relacionada a pessoa natural identificada ou identificável.",
+    "Somente documentos oficiais como CPF e RG registrados em cartório.",
+    "Apenas dados de colaboradores de empresas públicas."
+   ],
+   "correta": 0,
+   "explicacao": "Correto! Definição exata do art. 5º da LGPD.",
+   "origem": "cartas da Trilha (2-3 alternativas)"
+  },
+  {
+   "id": "carta_des_009",
+   "categoria": "governanca",
+   "nivel": 1,
+   "pergunta": "Alguém liga afirmando ser da TI e pede sua senha para uma manutenção emergencial. O que fazer?",
+   "alternativas": [
+    "Recusar o compartilhamento e reportar imediatamente pelo canal oficial de TI.",
+    "Fornecer a senha se a pessoa souber seu nome e cargo.",
+    "Criar uma senha temporária simples e passar para a pessoa."
+   ],
+   "correta": 0,
+   "explicacao": "Exatamente! A equipe oficial de TI nunca solicita sua senha pessoal.",
+   "origem": "cartas da Trilha (2-3 alternativas)"
+  },
+  {
+   "id": "carta_des_010",
+   "categoria": "ia",
+   "nivel": 1,
+   "pergunta": "O que significa 'alucinação' no contexto de Modelos de Linguagem Grande (LLMs)?",
+   "alternativas": [
+    "Geração de respostas falsas ou inventadas com aparência de certeza.",
+    "O computador esquentar demais durante o processamento.",
+    "A perda permanente da conexão com a internet."
+   ],
+   "correta": 0,
+   "explicacao": "Perfeito! A IA pode soar convincente mesmo estando completamente errada.",
+   "origem": "cartas da Trilha (2-3 alternativas)"
+  },
+  {
+   "id": "carta_des_011",
+   "categoria": "lgpd",
+   "nivel": 1,
+   "pergunta": "Qual o papel do Encarregado de Dados (DPO) na estrutura de governança do SEST SENAT?",
+   "alternativas": [
+    "Atuar como canal de comunicação entre a instituição, titulares e a ANPD.",
+    "Executar pessoalmente os backups diários dos servidores de rede.",
+    "Aprovar orçamentos financeiros de campanhas de publicidade."
+   ],
+   "correta": 0,
+   "explicacao": "Correto! É a ponte oficial de governança e conformidade com a LGPD.",
+   "origem": "cartas da Trilha (2-3 alternativas)"
+  },
+  {
+   "id": "carta_des_012",
+   "categoria": "lgpd",
+   "nivel": 2,
+   "pergunta": "O princípio da 'Minimização de Dados' previsto no artigo 6º da LGPD determina que:",
+   "alternativas": [
+    "O tratamento deve se limitar aos dados estritamente necessários para a finalidade.",
+    "Os dados devem ser apagados todos os dias ao final do expediente.",
+    "Nenhuma empresa pode coletar mais de dez informações por cliente."
+   ],
+   "correta": 0,
+   "explicacao": "Correto! Coletar apenas o indispensável protege titular e instituição.",
+   "origem": "cartas da Trilha (2-3 alternativas)"
+  },
+  {
+   "id": "carta_des_013",
+   "categoria": "ia",
+   "nivel": 2,
+   "pergunta": "Por que o conceito de 'Human-in-the-loop' (humano no circuito) é vital em decisões automatizadas de saúde?",
+   "alternativas": [
+    "Para que profissionais qualificados revisem e validem diagnósticos ou triagens sugeridas por IA.",
+    "Apenas para ligar e desligar os servidores físicos da clínica.",
+    "Para diminuir a velocidade dos atendimentos aos pacientes."
+   ],
+   "correta": 0,
+   "explicacao": "Exato! A responsabilidade clínica final é indelegável do ser humano.",
+   "origem": "cartas da Trilha (2-3 alternativas)"
+  },
+  {
+   "id": "carta_des_014",
+   "categoria": "seguranca",
+   "nivel": 2,
+   "pergunta": "Qual a diferença entre dados Anonimizados e dados Pseudonimizados na LGPD?",
+   "alternativas": [
+    "Anonimizados não identificam a pessoa por meios razoáveis; pseudonimizados permitem reversão com chave controlada.",
+    "Pseudonimizados são públicos e anonimizados são restritos ao governo.",
+    "Não há nenhuma diferença, são termos sinônimos na legislação."
+   ],
+   "correta": 0,
+   "explicacao": "Excelente domínio técnico! Anonimizados saem do escopo da LGPD se irreversíveis.",
+   "origem": "cartas da Trilha (2-3 alternativas)"
+  },
+  {
+   "id": "carta_des_015",
+   "categoria": "governanca",
+   "nivel": 2,
+   "pergunta": "Qual o impacto do problema 'Data Drift' (deriva de dados) em modelos de IA em produção no transporte?",
+   "alternativas": [
+    "Mudanças nos hábitos de tráfego e vias fazem o modelo treinado com dados antigos perder precisão.",
+    "Os dados se multiplicam espontaneamente até esgotar o disco rígido.",
+    "O modelo passa a operar em velocidade excessiva nos computadores."
+   ],
+   "correta": 0,
+   "explicacao": "Correto! O mundo real muda e o modelo precisa de retreinamento contínuo.",
+   "origem": "cartas da Trilha (2-3 alternativas)"
+  },
+  {
+   "id": "carta_des_016",
+   "categoria": "governanca",
+   "nivel": 2,
+   "pergunta": "Em caso de incidente de segurança relevante com dados pessoais de alunos, qual o prazo de comunicação à ANPD?",
+   "alternativas": [
+    "Em prazo razoável, conforme definido pela autoridade (geralmente até 3 dias úteis).",
+    "Apenas após 12 meses da conclusão de todas as investigações.",
+    "Não é necessário comunicar caso os dados já tenham vazado."
+   ],
+   "correta": 0,
+   "explicacao": "Muito bem! A ANPD estabelece prazos ágeis para comunicação oficial.",
+   "origem": "cartas da Trilha (2-3 alternativas)"
+  },
+  {
+   "id": "carta_des_017",
+   "categoria": "governanca",
+   "nivel": 3,
+   "pergunta": "O que constitui a 'Explicabilidade' (XAI - Explainable AI) em sistemas de governança institucional?",
+   "alternativas": [
+    "A capacidade de esclarecer em termos compreensíveis a lógica e os fatores que levaram à decisão da IA.",
+    "A transcrição linha por linha do código binário em linguagem de máquina.",
+    "O manual de instalação fornecido pela fabricante do hardware."
+   ],
+   "correta": 0,
+   "explicacao": "Perfeito! O titular tem o direito de entender como decisões foram tomadas.",
+   "origem": "cartas da Trilha (2-3 alternativas)"
+  },
+  {
+   "id": "carta_des_018",
+   "categoria": "seguranca",
+   "nivel": 3,
+   "pergunta": "O ataque de 'Injeção de Prompt' (Prompt Injection) contra uma IA corporativa busca:",
+   "alternativas": [
+    "Manipular as instruções originais da IA para extrair dados protegidos ou burlar regras de segurança.",
+    "Injetar vírus que danificam fisicamente as placas de vídeo do servidor.",
+    "Aumentar a memória RAM do computador de forma ilegal."
+   ],
+   "correta": 0,
+   "explicacao": "Exato! É uma das maiores vulnerabilidades de segurança em aplicações com LLMs.",
+   "origem": "cartas da Trilha (2-3 alternativas)"
+  },
+  {
+   "id": "carta_des_019",
+   "categoria": "lgpd",
+   "nivel": 3,
+   "pergunta": "O Relatório de Impacto à Proteção de Dados Pessoais (RIPD) é expressamente exigido quando:",
+   "alternativas": [
+    "O tratamento envolver alto risco aos direitos fundamentais, dados sensíveis ou decisões automatizadas em larga escala.",
+    "A empresa comprar um novo lote de cadeiras para as salas de aula.",
+    "Um colaborador mudar de ramal telefônico na mesma unidade."
+   ],
+   "correta": 0,
+   "explicacao": "Brilhante! O RIPD detalha salvaguardas e riscos de operações complexas.",
+   "origem": "cartas da Trilha (2-3 alternativas)"
+  },
+  {
+   "id": "carta_des_020",
+   "categoria": "governanca",
+   "nivel": 3,
+   "pergunta": "Segundo o artigo 20 da LGPD, o titular dos dados tem direito a solicitar a revisão de:",
+   "alternativas": [
+    "Decisões tomadas unicamente com base em tratamento automatizado que afetem seus interesses.",
+    "Qualquer prova de concurso público aplicada há mais de dez anos.",
+    "Todas as compras feitas pela instituição em anos fiscais anteriores."
+   ],
+   "correta": 0,
+   "explicacao": "Excelente! O titular pode solicitar intervenção e revisão humana de decisões automatizadas.",
+   "origem": "cartas da Trilha (2-3 alternativas)"
+  }
+ ]
 }

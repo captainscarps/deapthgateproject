@@ -3,980 +3,106 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Trilha Inteligente • Suíte Integrada de Testes</title>
-  <link rel="icon" type="image/svg+xml" href="./favicon.svg">
+  <title>Testes • Roleta da Governança</title>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, monospace;
-      background: #071426;
-      color: #E2E8F0;
-      padding: 24px;
-      line-height: 1.5;
-    }
-    .container {
-      max-width: 900px;
-      margin: 0 auto;
-      background: #0B1F3A;
-      border: 1px solid rgba(0, 180, 216, 0.3);
-      border-radius: 12px;
-      padding: 24px;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.5);
-    }
-    h1 {
-      color: #00B4D8;
-      font-size: 1.6rem;
-      margin-bottom: 6px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-    p.sub {
-      color: #94A3B8;
-      font-size: 0.95rem;
-      margin-bottom: 20px;
-    }
-    .secao-titulo {
-      color: #FFD166;
-      font-size: 1.1rem;
-      margin: 24px 0 12px;
-      padding-bottom: 6px;
-      border-bottom: 1px solid rgba(255, 209, 102, 0.2);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .placar {
-      display: flex;
-      gap: 16px;
-      margin-bottom: 20px;
-      padding: 12px 16px;
-      background: #132E54;
-      border-radius: 8px;
-      font-weight: bold;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-    }
-    .placar .pass-total { color: #06D6A0; }
-    .placar .fail-total { color: #EF476F; }
-    .test-list {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-    .test-item {
-      display: flex;
-      align-items: flex-start;
-      gap: 12px;
-      padding: 12px 14px;
-      border-radius: 6px;
-      background: #102644;
-      border-left: 4px solid #94A3B8;
-    }
-    .test-item.pass {
-      border-left-color: #06D6A0;
-    }
-    .test-item.fail {
-      border-left-color: #EF476F;
-      background: rgba(239, 71, 111, 0.1);
-    }
-    .badge {
-      font-size: 0.8rem;
-      font-weight: 700;
-      padding: 2px 8px;
-      border-radius: 4px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      flex-shrink: 0;
-    }
-    .badge.pass { background: #06D6A0; color: #071426; }
-    .badge.fail { background: #EF476F; color: #FFFFFF; }
-    .badge.info { background: #00B4D8; color: #071426; }
-    .detalhe {
-      font-size: 0.85rem;
-      color: #94A3B8;
-      margin-top: 4px;
-      word-break: break-word;
-    }
-    .painel-servidor {
-      background: #132E54;
-      border: 1px solid rgba(0, 180, 216, 0.4);
-      border-radius: 8px;
-      padding: 16px;
-      margin-top: 20px;
-    }
-    .btn-acao {
-      background: #00B4D8;
-      color: #071426;
-      border: none;
-      padding: 8px 16px;
-      border-radius: 6px;
-      font-weight: bold;
-      cursor: pointer;
-      transition: background 0.2s;
-    }
-    .btn-acao:hover {
-      background: #90E0EF;
-    }
-    .btn-acao:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
-    table.tabela-comparacao {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 14px;
-      font-size: 0.85rem;
-    }
-    table.tabela-comparacao th, table.tabela-comparacao td {
-      border: 1px solid #1A3A60;
-      padding: 6px 10px;
-      text-align: left;
-    }
-    table.tabela-comparacao th {
-      background: #0B1F3A;
-      color: #00B4D8;
-    }
-    table.tabela-comparacao tr.match {
-      background: rgba(6, 214, 160, 0.05);
-    }
-    table.tabela-comparacao tr.diverge {
-      background: rgba(239, 71, 111, 0.15);
-      color: #EF476F;
-    }
+    body { font-family: system-ui, sans-serif; background: #071426; color: #E2E8F0; padding: 20px; max-width: 900px; margin: 0 auto; }
+    h1 { color: #FFC93C; }
+    .placar { font-size: 1.2rem; font-weight: 800; padding: 12px; border-radius: 10px; background: #0B2545; margin: 12px 0; }
+    .pass { color: #3CCB7F; } .fail { color: #FF4D6D; }
+    li { margin: 6px 0; } small { color: #94A3B8; }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Trilha Inteligente • Suíte Integrada de Testes</h1>
-    <p class="sub">Lógica Pura (Etapa 2), Validação de 500 Semanas e Auditoria de Pontuação Única</p>
-
-    <div class="placar" id="placar">
-      <span>Executando testes automatizados...</span>
-    </div>
-
-    <div class="secao-titulo">
-      <span>1. Lógica Fundamental &amp; Estresse de 500 Semanas</span>
-    </div>
-    <div class="test-list" id="lista-testes-logica"></div>
-
-    <div class="secao-titulo">
-      <span>2. Casos de Pontuação Única (data/casos_pontuacao.json)</span>
-      <span style="font-size: 0.8rem; color: #94A3B8;" id="status-casos-json">Carregando...</span>
-    </div>
-    <div class="test-list" id="lista-testes-casos"></div>
-
-    <div class="secao-titulo">
-      <span>3. Sistema de Avatar Chibi 3D &amp; Validações</span>
-      <span style="font-size: 0.8rem; color: #94A3B8;" id="status-avatar-json">Carregando...</span>
-    </div>
-    <div class="test-list" id="lista-testes-avatar"></div>
-
-    <div class="secao-titulo">
-      <span>4. Alinhamento de Trilha e Grafo (Fonte Única centroCasa)</span>
-      <span style="font-size: 0.8rem; color: #94A3B8;" id="status-trilha-json">Carregando...</span>
-    </div>
-    <div class="test-list" id="lista-testes-trilha"></div>
-
-    <div class="painel-servidor">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 10px;">
-        <div>
-          <h3 style="color: #00B4D8; font-size: 1.05rem;">Auditoria Remota na Edge Function (dry_run: true)</h3>
-          <p style="font-size: 0.85rem; color: #94A3B8;">Valida os mesmos 10 casos contra a Edge Function <code>registrar-partida</code> sem persistência no banco.</p>
-        </div>
-        <button type="button" class="btn-acao" id="btn-testar-servidor">Testar Servidor (Dry Run)</button>
-      </div>
-      <div id="status-teste-servidor" style="font-size: 0.85rem; color: #CBD5E1; margin-top: 8px;"></div>
-      <div id="resultado-tabela-servidor"></div>
-    </div>
-  </div>
-
+  <h1>Testes automáticos • Roleta da Governança</h1>
+  <p>Valida o banco de perguntas (data/perguntas.json) e o desenho de todas as opções de personagem.</p>
+  <div class="placar" id="placar">Rodando...</div>
+  <ul id="lista"></ul>
   <script type="module">
-    import { cyrb53, mulberry32, criarRng } from './js/rng.js';
-    import { CONSTANTES, CONSTANTES_PONTUACAO, limitarPosicao, verificarCheckpoints, aplicarEfeito, calcularPontuacao, calcularCustoRolagem, calcularBonusCheckpoint, isFimDePartida, auditarHistorico } from './js/regras.js';
-    import { semanaAtual, validarCarta, gerarTabuleiro, DeckManager, CATEGORIAS_VALIDAS, gerarSementeConvidado, GRAFO_PADRAO, centroCasa } from './js/deck.js';
-    import { state } from './js/state.js';
-    import { api } from './js/api.js';
-    import { verificarEnquadramento, ICONES_SVG } from './js/ui/tabuleiro.js';
-    import { AVATAR_OPCOES, AVATAR_PADRAO, validarAvatar, gerarAvatarAleatorio, renderAvatarSVG, renderPeaoAvatarHTML } from './js/avatar.js';
+    import { carregarBanco, CATEGORIAS } from './js/perguntas.js';
+    import { AVATAR_OPCOES, AVATAR_PADRAO, renderAvatarSVG, validarAvatar, gerarAvatarAleatorio } from './js/avatar.js';
+    import { mascote } from './js/mascotes.js';
 
-    const testesLogica = [];
-    const testesCasos = [];
-    const testesAvatar = [];
-    const testesTrilha = [];
-    let casosData = [];
-    let cartasFallbackMap = {};
-
-    function registrar(lista, nome, sucesso, detalhe = '') {
-      lista.push({ nome, sucesso, detalhe });
-      console.log(`${sucesso ? '✅ [PASS]' : '❌ [FAIL]'} ${nome} ${detalhe ? '-> ' + detalhe : ''}`);
+    const lista = document.getElementById('lista');
+    let ok = 0, falhas = 0;
+    function registrar(nome, passou, detalhe = '') {
+      passou ? ok++ : falhas++;
+      const li = document.createElement('li');
+      li.className = passou ? 'pass' : 'fail';
+      li.innerHTML = `${passou ? '✅' : '❌'} ${nome} <small>${detalhe}</small>`;
+      lista.appendChild(li);
     }
 
-    // ==========================================
-    // SUÍTE 1: LÓGICA PURA & ESTRESSE 500 SEMANAS
-    // ==========================================
-    async function rodarSuiteLogica() {
-      try {
-        // 1. MESMA SEMANA = MESMO TABULEIRO E MESMOS DADOS
-      const tabA1 = gerarTabuleiro("2026-W46");
-      const tabA2 = gerarTabuleiro("2026-W46");
-      const mesmoTab = JSON.stringify(tabA1) === JSON.stringify(tabA2);
-
-      const rngA1 = criarRng("2026-W46_dado");
-      const rngA2 = criarRng("2026-W46_dado");
-      const dadosA1 = [rngA1.inteiro(1, 6), rngA1.inteiro(1, 6), rngA1.inteiro(1, 6), rngA1.inteiro(1, 6)];
-      const dadosA2 = [rngA2.inteiro(1, 6), rngA2.inteiro(1, 6), rngA2.inteiro(1, 6), rngA2.inteiro(1, 6)];
-      const mesmosDados = JSON.stringify(dadosA1) === JSON.stringify(dadosA2);
-
-      registrar(testesLogica,
-        "1. Mesma semana = mesmo tabuleiro e mesmos dados",
-        mesmoTab && mesmosDados,
-        `Tabuleiros idênticos: ${mesmoTab}. Dados idênticos: ${mesmosDados}`
-      );
-
-      // 2. SEMANAS DIFERENTES = DIFERENTES
-      const tabB1 = gerarTabuleiro("2026-W46");
-      const tabB2 = gerarTabuleiro("2026-W47");
-      const tabsDiferentes = JSON.stringify(tabB1) !== JSON.stringify(tabB2);
-
-      const rngB1 = criarRng("2026-W46_dado");
-      const rngB2 = criarRng("2026-W47_dado");
-      const dadosB1 = Array.from({ length: 8 }, () => rngB1.inteiro(1, 6));
-      const dadosB2 = Array.from({ length: 8 }, () => rngB2.inteiro(1, 6));
-      const dadosDiferentes = JSON.stringify(dadosB1) !== JSON.stringify(dadosB2);
-
-      registrar(testesLogica,
-        "2. Semanas diferentes = diferentes",
-        tabsDiferentes && dadosDiferentes,
-        `Tabuleiros divergem: ${tabsDiferentes}. Dados divergem: ${dadosDiferentes}`
-      );
-
-      // 3. MÁX. 5 POR CATEGORIA EM 500 SEMANAS DIFERENTES
-      let falhasMax5 = 0;
-      let semanaComFalhaMax5 = null;
-      for (let s = 1; s <= 500; s++) {
-        const ano = 2020 + Math.floor(s / 52);
-        const sem = String((s % 52) + 1).padStart(2, '0');
-        const semIso = `${ano}-W${sem}`;
-        const tab = gerarTabuleiro(semIso);
-        const contagens = {};
-        CATEGORIAS_VALIDAS.forEach(c => contagens[c] = 0);
-        for (let i = 1; i <= 30; i++) {
-          if (i === 10 || i === 20 || i === 30) continue;
-          contagens[tab[i]] = (contagens[tab[i]] || 0) + 1;
-        }
-        if (!Object.entries(contagens).every(([_, qtd]) => qtd <= 5)) {
-          falhasMax5++;
-          semanaComFalhaMax5 = semIso;
-          break;
-        }
-      }
-      registrar(testesLogica,
-        "3. Máx. 5 por categoria no tabuleiro (em 500 semanas diferentes)",
-        falhasMax5 === 0,
-        falhasMax5 === 0
-          ? "500 semanas consecutivas avaliadas (2020 a 2029): 100% de respeito ao teto de 5 casas/categoria."
-          : `Violação detectada na semana ${semanaComFalhaMax5}`
-      );
-
-      // 4. SEM ARMADILHAS SEGUIDAS EM 500 SEMANAS DIFERENTES
-      let falhasArmadilha = 0;
-      let detalheFalhaArmadilha = "";
-      for (let s = 1; s <= 500; s++) {
-        const ano = 2020 + Math.floor(s / 52);
-        const sem = String((s % 52) + 1).padStart(2, '0');
-        const semIso = `${ano}-W${sem}`;
-        const tab = gerarTabuleiro(semIso);
-        for (let i = 1; i < 30; i++) {
-          if (tab[i] === "armadilha") {
-            let prox = i + 1;
-            if (prox === 10 || prox === 20 || prox === 30) prox++;
-            if (prox < 30 && tab[prox] === "armadilha") {
-              falhasArmadilha++;
-              detalheFalhaArmadilha = `Armadilhas seguidas em ${i} e ${prox} na semana ${semIso}`;
-              break;
-            }
-          }
-        }
-        if (falhasArmadilha > 0) break;
-      }
-      registrar(testesLogica,
-        "4. Sem armadilhas seguidas na trilha (em 500 semanas diferentes)",
-        falhasArmadilha === 0,
-        falhasArmadilha === 0
-          ? "500 semanas consecutivas avaliadas (2020 a 2029): zero armadilhas consecutivas detectadas."
-          : detalheFalhaArmadilha
-      );
-
-      // 5. PONTUAÇÃO COM CASOS DE EXEMPLO AUDITADOS (NOVA FÓRMULA OFICIAL EM LOOP)
-      const p1 = calcularPontuacao({ casas_avancadas: 60, voltas: 1, acertos_desafio: 3, bonus_pense_antes: 2, boas_praticas: 4, armadilhas: 1 });
-      const p2 = calcularPontuacao({ casas_avancadas: 25, voltas: 0, acertos_desafio: 1, bonus_pense_antes: 0, boas_praticas: 1, armadilhas: 2 });
-      const p3 = calcularPontuacao({ casas_avancadas: 0, voltas: 0, acertos_desafio: 0, bonus_pense_antes: 0, boas_praticas: 0, armadilhas: 5 });
-      const pontuacaoOk = (p1 === 680) && (p2 === 145) && (p3 === 0);
-      registrar(testesLogica,
-        "5. Pontuação com casos de exemplo auditados",
-        pontuacaoOk,
-        `Caso A: ${p1} (esperado 680) | Caso B: ${p2} (esperado 145) | Caso C: ${p3} (esperado 0)`
-      );
-
-      // 6. NÃO PASSA DE 0 AO VOLTAR CASAS
-      const limNegativo = limitarPosicao(-8);
-      const est1 = { posicao: 2, tokens: 20, checkpoints_passados: [] };
-      const resEfeitoRecuo = aplicarEfeito(est1, { mover: -10 });
-      const naoPassaZero = (limNegativo === 0) && (resEfeitoRecuo.posicao === 0);
-      registrar(testesLogica,
-        "6. Não passa de 0 ao voltar casas",
-        naoPassaZero,
-        `limitarPosicao(-8) = ${limNegativo}, recuo de 2 com mover=-10 = ${resEfeitoRecuo.posicao}`
-      );
-
-      // 7. CHECKPOINT NÃO REPETE BÔNUS AO RECUAR E AVANÇAR
-      const estInicial = { posicao: 18, tokens: 20, checkpoints_passados: [] };
-      const resPasso1 = aplicarEfeito(estInicial, { mover: 4 });
-      const resPasso2 = aplicarEfeito(resPasso1, { mover: -3 });
-      const resPasso3 = aplicarEfeito(resPasso2, { mover: 5 });
-      const semRepetirCp = (resPasso1.tokens === 23) && (resPasso2.tokens === 23) && (resPasso3.tokens === 23);
-      registrar(testesLogica,
-        "7. Checkpoint não repete bônus ao recuar e avançar",
-        semRepetirCp,
-        `Inicial: 20 -> Passo 1 (+4 atingindo CP 20): ${resPasso1.tokens} -> Passo 2 (-3): ${resPasso2.tokens} -> Passo 3 (+5 sem repetir CP 20): ${resPasso3.tokens}`
-      );
-
-      // 8. REEMBARALHO AUTOMÁTICO QUANDO ESGOTA
-      const deckMini = [
-        { id: "arm_01", categoria: "armadilha", tema: "T1", texto: "X1", efeito: { tokens: -3 } },
-        { id: "arm_02", categoria: "armadilha", tema: "T2", texto: "X2", efeito: { tokens: -4 } }
-      ];
-      const manager = new DeckManager(deckMini, "teste_seed");
-      const c1 = manager.comprarCarta("armadilha");
-      const c2 = manager.comprarCarta("armadilha");
-      const c3 = manager.comprarCarta("armadilha");
-      const reembaralhoOk = (c1 !== null) && (c2 !== null) && (c3 !== null) && (["arm_01", "arm_02"].includes(c3.id));
-      registrar(testesLogica,
-        "8. Reembaralho automático quando categoria esgota",
-        reembaralhoOk,
-        `Compra 1: ${c1?.id}, Compra 2: ${c2?.id}, Compra 3: ${c3?.id}`
-      );
-
-      // 9. MODO CONVIDADO: DUAS PARTIDAS GERAM TABULEIROS DIFERENTES (NUNCA SEMANAIS)
-      const semConv1 = gerarSementeConvidado();
-      const semConv2 = gerarSementeConvidado();
-      const tabConv1 = gerarTabuleiro(semConv1);
-      const tabConv2 = gerarTabuleiro(semConv2);
-      const tabSemanal = gerarTabuleiro(semanaAtual());
-
-      const sementesDiferentes = semConv1 !== semConv2;
-      const tabsConvDiferentes = JSON.stringify(tabConv1) !== JSON.stringify(tabConv2);
-      const diferenteDoSemanal = JSON.stringify(tabConv1) !== JSON.stringify(tabSemanal);
-
-      registrar(testesLogica,
-        "9. Modo Convidado: duas partidas geram tabuleiros diferentes",
-        sementesDiferentes && tabsConvDiferentes && diferenteDoSemanal,
-        `Semente 1 (${semConv1}) vs Semente 2 (${semConv2}): tabuleiros divergem (${tabsConvDiferentes}), não usa semente semanal (${diferenteDoSemanal})`
-      );
-
-      // 10. MODO CONVIDADO: PARTIDA NUNCA PONTUA NO RANKING OFICIAL NEM GRAVA NELE
-      state.iniciarPartidaConvidado({ area_id: 2 });
-      const stConvidado = state.get();
-      const flagRankingFalse = (stConvidado.partida_vale_ranking === false);
-      const modoConvidadoTrue = (stConvidado.modo_convidado === true);
-      const semanaNula = (stConvidado.semana_partida === null);
-
-      const resEnvioConvidado = await api.registrarPartidaConvidado({
-        area_id: 2,
-        pontos: 450,
-        tokens: 25,
-        historico: [{ carta_id: 'bp_001', opcao_index: 0 }]
-      });
-      const envioIsolado = (resEnvioConvidado.status === 'enviado_anonimo');
-
-      registrar(testesLogica,
-        "10. Modo Convidado: partida isolada de ranking oficial",
-        flagRankingFalse && modoConvidadoTrue && semanaNula && envioIsolado,
-        `partida_vale_ranking: ${stConvidado.partida_vale_ranking}, modo_convidado: ${stConvidado.modo_convidado}, semana_partida: ${stConvidado.semana_partida}, status: ${resEnvioConvidado.status}`
-      );
-
-      // 11. NAVEGAÇÃO NO GRAFO: MOVER N CASAS ANTES DE BIFURCAÇÃO, HUB E PORTAL
-      state.iniciarPartida({ modo_convidado: true });
-      // Posiciona na casa 10 e move 3 (deve parar na bifurcação casa 12 com 1 passo restante)
-      state.set({ posicao: 10 });
-      const resBif1 = state.mover(3);
-      const parouBif1Ok = (resBif1.novaPosicao === 12) && (resBif1.parouEmBifurcacao === true) && (resBif1.bifurcacaoPendente?.passosRestantes === 1);
-      
-      // Resolve bifurcação escolhendo o Atalho (nó 61)
-      const resEsc1 = state.escolherCaminhoBifurcacao(12, 61, 'Atalho IA');
-      const escolheuAtalhoOk = (resEsc1.novaPosicao === 61);
-
-      // Posiciona na casa 31 e move 3 (deve passar pelo Hub casa 33 e parar na casa 34)
-      state.set({ posicao: 31, checkpoints_passados: [] });
-      const resHub = state.mover(3);
-      const hubOk = (resHub.hubAtivado === true) && (resHub.novaPosicao === 34);
-
-      // Posiciona na casa 58 e move 5 (deve cruzar o Portal casa 60, completar volta e continuar no loop até a casa 3)
-      state.set({ posicao: 58 });
-      const resPortal = state.mover(5);
-      const portalOk = (resPortal.novaPosicao === 3) && (resPortal.voltaCompletada === true) && (state.get().voltas_completas === 1) && (resPortal.fimDePartida === false);
-
-      registrar(testesLogica,
-        "11. Grafo: mover N casas antes de bifurcação, hub e portal",
-        parouBif1Ok && escolheuAtalhoOk && hubOk && portalOk,
-        `Bifurcação 12: ${parouBif1Ok}, Atalho 61: ${escolheuAtalhoOk}, Hub 33: ${hubOk}, Portal 60 em loop: ${portalOk}`
-      );
-
-      // 12. NAVEGAÇÃO NO GRAFO: RECUAR CASAS (MOVIMENTO NEGATIVO)
-      state.iniciarPartida({ modo_convidado: true });
-      state.set({ posicao: 5 });
-      const resVoltar = state.mover(-2);
-      const voltarOk = (resVoltar.novaPosicao === 3);
-
-      state.set({ posicao: 1 });
-      const resVoltarZero = state.mover(-4);
-      const travaZeroOk = (resVoltarZero.novaPosicao === 0);
-
-      registrar(testesLogica,
-        "12. Grafo: recuar casas com movimento negativo",
-        voltarOk && travaZeroOk,
-        `5 recuando 2 -> ${resVoltar.novaPosicao} (esp: 3). 1 recuando 4 -> ${resVoltarZero.novaPosicao} (esp: 0)`
-      );
-
-      // 13. PARTIDA SIMULADA DE 200 ROLAGENS NO GRAFO SEM ERRO
-      state.iniciarPartida({ modo_convidado: true });
-      let rolagensSemErro = 0;
-      let erroSimulacao = null;
-      for (let r = 0; r < 200; r++) {
-        try {
-          const dado = ((r % 6) + 1);
-          let m = state.mover(dado);
-          if (m.parouEmBifurcacao && m.bifurcacaoPendente) {
-            const opcoes = m.bifurcacaoPendente.bifurcacao?.opcoes || [];
-            const prox = opcoes.length > 0 ? opcoes[r % opcoes.length].proximo : null;
-            m = state.escolherCaminhoBifurcacao(m.bifurcacaoPendente.noOrigem, prox, 'Escolha Teste');
-          }
-          rolagensSemErro++;
-          if (m.fimDePartida || state.get().tokens <= 0 || state.get().partida_finalizada) {
-            state.iniciarPartida({ modo_convidado: true });
-          }
-        } catch (errLoop) {
-          erroSimulacao = errLoop.message;
-          break;
-        }
-      }
-
-      registrar(testesLogica,
-        "13. Partida simulada de 200 rolagens no grafo sem erro",
-        rolagensSemErro === 200 && !erroSimulacao,
-        `Rolagens com sucesso: ${rolagensSemErro}/200. Erro: ${erroSimulacao || 'Nenhum'}`
-      );
-
-      // 14. VERIFICAÇÃO AUTOMÁTICA DE ENQUADRAMENTO DA CÂMERA
-      const funcEnquadramentoOk = typeof verificarEnquadramento === 'function' && typeof window.verificarEnquadramento === 'function';
-      registrar(testesLogica,
-        "14. Função verificarEnquadramento() disponível e exportada",
-        funcEnquadramentoOk,
-        `verificarEnquadramento tipo: ${typeof verificarEnquadramento}, window.verificarEnquadramento: ${typeof window.verificarEnquadramento}`
-      );
-
-      // 15. CUSTO DE ROLAGEM PROGRESSIVO POR VOLTA (1, 2, 3+ TOKENS)
-      const custoV0 = calcularCustoRolagem(0);
-      const custoV1 = calcularCustoRolagem(1);
-      const custoV2 = calcularCustoRolagem(2);
-      const custoV5 = calcularCustoRolagem(5);
-      const custosOk = (custoV0 === 1) && (custoV1 === 2) && (custoV2 === 3) && (custoV5 === 3);
-      registrar(testesLogica,
-        "15. Custo de rolagem progressivo por volta (1, 2, 3+ tokens)",
-        custosOk,
-        `Volta 0: ${custoV0}🪙, Volta 1: ${custoV1}🪙, Volta 2: ${custoV2}🪙, Volta 5: ${custoV5}🪙`
-      );
-
-      // 16. BÔNUS DE CHECKPOINTS REDUZIDOS PELA METADE A CADA VOLTA
-      const cp1_v0 = calcularBonusCheckpoint(20, 0);
-      const cp1_v1 = calcularBonusCheckpoint(20, 1);
-      const cp2_v0 = calcularBonusCheckpoint(40, 0);
-      const cp2_v1 = calcularBonusCheckpoint(40, 1);
-      const cp3_v0 = calcularBonusCheckpoint(60, 0);
-      const cp3_v1 = calcularBonusCheckpoint(60, 1);
-      const bonusOk = (cp1_v0 === 3) && (cp1_v1 === 2) && (cp2_v0 === 5) && (cp2_v1 === 3) && (cp3_v0 === 10) && (cp3_v1 === 5);
-      registrar(testesLogica,
-        "16. Bônus de checkpoints reduzidos pela metade a cada volta",
-        bonusOk,
-        `CP20: ${cp1_v0} -> ${cp1_v1} | CP40: ${cp2_v0} -> ${cp2_v1} | Portal 60: ${cp3_v0} -> ${cp3_v1}`
-      );
-
-      // 17. FIM DE PARTIDA SOMENTE COM 0 TOKENS OU ENCERRAMENTO VOLUNTÁRIO
-      const naoTerminaPortal = isFimDePartida({ tokens: 10, encerrouVoluntariamente: false, rodada: 10 });
-      const terminaZeroTokens = isFimDePartida({ tokens: 0, encerrouVoluntariamente: false, rodada: 10 });
-      const terminaVoluntario = isFimDePartida({ tokens: 10, encerrouVoluntariamente: true, rodada: 10 });
-      const fimOk = (!naoTerminaPortal) && terminaZeroTokens && terminaVoluntario;
-      registrar(testesLogica,
-        "17. Fim de partida somente com 0 tokens ou encerramento voluntário",
-        fimOk,
-        `Com tokens: ${!naoTerminaPortal}, Zero tokens: ${terminaZeroTokens}, Voluntário: ${terminaVoluntario}`
-      );
-
-      } catch (e) {
-        registrar(testesLogica, "Exceção na suíte de lógica pura", false, e.stack || e.message);
-      }
-    }
-
-    // ==========================================
-    // SUÍTE 2: CASOS DE PONTUAÇÃO ÚNICA
-    // ==========================================
-    async function rodarSuiteCasosPontuacao() {
-      try {
-        const respCartas = await fetch('./data/cartas_fallback.json');
-        const cartasArray = await respCartas.json();
-        cartasFallbackMap = {};
-        cartasArray.forEach(c => cartasFallbackMap[c.id] = c);
-
-        const respCasos = await fetch('./data/casos_pontuacao.json');
-        casosData = await respCasos.json();
-
-        document.getElementById('status-casos-json').textContent = `${casosData.length} casos carregados`;
-
-        casosData.forEach((caso, index) => {
-          const resultado = auditarHistorico(caso.historico, cartasFallbackMap);
-          const esperado = caso.resultado_esperado;
-
-          let passou = false;
-          let detalhe = "";
-
-          if (esperado.status === 200) {
-            passou = (
-              resultado.status === 200 &&
-              resultado.tokens === esperado.tokens &&
-              resultado.acertos === esperado.acertos &&
-              resultado.bonus_pense_antes === esperado.bonus_pense_antes &&
-              resultado.armadilhas === esperado.armadilhas &&
-              resultado.pontos === esperado.pontos
-            );
-            detalhe = `Pontos: ${resultado.pontos} (esp: ${esperado.pontos}), Tokens: ${resultado.tokens} (esp: ${esperado.tokens}), Acertos: ${resultado.acertos}, PA: ${resultado.bonus_pense_antes}, Armadilhas: ${resultado.armadilhas}`;
-          } else {
-            passou = (resultado.status === esperado.status && resultado.valido === false);
-            detalhe = `Rejeição esperada status ${esperado.status} obtida: "${resultado.erro}"`;
-          }
-
-          registrar(testesCasos, `${caso.nome}`, passou, `${caso.descricao} | ${detalhe}`);
-        });
-
-      } catch (err) {
-        registrar(testesCasos, "Carregamento de data/casos_pontuacao.json", false, err.message);
-      }
-    }
-
-    // ==========================================
-    // SUÍTE 3: AVATAR CHIBI 3D & VALIDAÇÕES
-    // ==========================================
-    async function rodarSuiteAvatar() {
-      const statusAvatar = document.getElementById('status-avatar-json');
-      try {
-        // 1. 500 Avatares Aleatórios Validados e Conformes
-        let avataresValidos500 = 0;
-        let erro500 = null;
-        let maxLen = 0;
-        for (let i = 0; i < 500; i++) {
-          try {
-            const rand = gerarAvatarAleatorio();
-            const res = validarAvatar(rand);
-            if (!res.valido || !res.normalizado || res.normalizado.v !== 1) {
-              throw new Error(`Avatar inválido: ${res.erro || 'normalização falhou'}`);
-            }
-            const strLen = JSON.stringify(res.normalizado).length;
-            if (strLen > 1000) throw new Error(`Payload excede 1000 chars: ${strLen}`);
-            if (strLen > maxLen) maxLen = strLen;
-            avataresValidos500++;
-          } catch (err) {
-            erro500 = err.message;
-            break;
-          }
-        }
-
-        registrar(testesAvatar,
-          "1. Validação de Estresse: 500 avatares gerados aleatoriamente são 100% válidos",
-          avataresValidos500 === 500 && !erro500,
-          `500/500 válidos. Payload máximo: ${maxLen} caracteres (limite: 1000). Erro: ${erro500 || 'Nenhum'}`
-        );
-
-        // 2. Rejeição e Higienização de Payloads Inválidos
-        let rejectionsPassed = 0;
-        
-        // (a) Payload com versão incorreta
-        const invA = validarAvatar({ v: 2, corpo: 'm' });
-        if (!invA.valido) rejectionsPassed++;
-
-        // (b) Payload com strings gigantes (>1000)
-        const payloadGigante = { ...AVATAR_PADRAO, roupa: 'a'.repeat(2000) };
-        const invB = validarAvatar(payloadGigante);
-        if (!invB.valido) rejectionsPassed++;
-
-        // (c) Enum inexistente
-        const invEnum = validarAvatar({ ...AVATAR_PADRAO, corpo: 'alien_invalido', cabelo: 'cabelo_fake' });
-        if (!invEnum.valido) rejectionsPassed++;
-
-        // (d) Payload nulo / não objeto
-        const invNull = validarAvatar(null);
-        if (!invNull.valido) rejectionsPassed++;
-
-        registrar(testesAvatar,
-          "2. Rejeição e Sanitização Segura de Payloads Inválidos (Schema v1, Enums e Limite 1000 chars)",
-          rejectionsPassed === 4,
-          `4/4 casos de payloads malformados/inválidos devidamente rejeitados com erro explicativo.`
-        );
-
-        // 3. Cobertura de SVG para Todas as Opções do Catálogo
-        let totalOpcoesTestadas = 0;
-        let errosSvg = [];
-        const categorias = Object.keys(AVATAR_OPCOES).filter(k => k !== 'versao' && Array.isArray(AVATAR_OPCOES[k]));
-
-        for (const cat of categorias) {
-          const itens = AVATAR_OPCOES[cat];
-          for (const item of itens) {
-            const itemKey = cat;
-            const itemId = item.id;
-            const cfg = { ...AVATAR_PADRAO, [itemKey]: itemId };
-
-            // Testa modo completo
-            const svgCompleto = renderAvatarSVG(cfg, { modo: 'completo', reacao: 'neutro' });
-            if (!svgCompleto || !svgCompleto.includes('<svg') || !svgCompleto.includes('viewBox')) {
-              errosSvg.push(`${cat}:${itemId}:completo`);
-            }
-
-            // Testa modo busto
-            const svgBusto = renderAvatarSVG(cfg, { modo: 'busto', reacao: 'neutro' });
-            if (!svgBusto || !svgBusto.includes('<svg')) {
-              errosSvg.push(`${cat}:${itemId}:busto`);
-            }
-
-            // Testa modo peão
-            const svgPeao = renderAvatarSVG(cfg, { modo: 'peao', reacao: 'neutro' });
-            if (!svgPeao || !svgPeao.includes('<svg')) {
-              errosSvg.push(`${cat}:${itemId}:peao`);
-            }
-
-            totalOpcoesTestadas++;
-          }
-        }
-
-        registrar(testesAvatar,
-          "3. Cobertura Completa de Renderização SVG para Todas as Opções do Catálogo",
-          errosSvg.length === 0,
-          `Total de ${totalOpcoesTestadas} opções testadas em 3 modos (completo, busto, peão). Erros: ${errosSvg.length}`
-        );
-
-        // 4. Teste de Reações Animadas (neutro, pulando, comemorando, assustado)
-        const reacoes = ['neutro', 'pulando', 'comemorando', 'assustado'];
-        let reacoesOk = 0;
-        for (const r of reacoes) {
-          const svgR = renderAvatarSVG(AVATAR_PADRAO, { modo: 'completo', reacao: r });
-          if (svgR && svgR.includes(`reacao-${r}`)) reacoesOk++;
-        }
-
-        registrar(testesAvatar,
-          "4. Suporte a Reações Visuais do Avatar (neutro, pulando, comemorando, assustado)",
-          reacoesOk === 4,
-          `4/4 reações verificadas gerando classes e atributos dinâmicos no SVG.`
-        );
-
-        // 5. Renderização do Peão 3D e Miniatura de Tabuleiro
-        const peaoHtml = renderPeaoAvatarHTML(AVATAR_PADRAO, 'neutro');
-        const peaoOk = peaoHtml.includes('peao-container') && peaoHtml.includes('peao-avatar-wrapper') && peaoHtml.includes('<svg');
-        
-        registrar(testesAvatar,
-          "5. Renderização Estrutural do Peão 3D para o Tabuleiro (Diorama)",
-          peaoOk,
-          `Peão renderizado com sucesso com camadas de base cilíndrica, sombra e avatar chibi.`
-        );
-
-        if (statusAvatar) statusAvatar.textContent = `Concluído (${testesAvatar.filter(t => t.sucesso).length}/${testesAvatar.length})`;
-      } catch (e) {
-        if (statusAvatar) statusAvatar.textContent = "Erro!";
-        registrar(testesAvatar, "Exceção na suíte de avatar", false, e.stack || e.message);
-      }
-    }
-
-    // ==========================================
-    // SUÍTE 4: ALINHAMENTO DE TRILHA E GRAFO
-    // ==========================================
-    async function rodarSuiteAlinhamentoTrilha() {
-      const statusTrilha = document.getElementById('status-trilha-json');
-      try {
-        const casas = GRAFO_PADRAO.casas;
-        const casasMap = new Map(casas.map(c => [c.id, c]));
-
-        // 1. Fonte Única centroCasa: todas as 66 casas possuem centro alinhado à grade 80x80
-        let desviosCentro = 0;
-        for (const c of casas) {
-          const pt = centroCasa(c);
-          const expX = c.col * 80 + 40;
-          const expY = c.row * 80 + 40;
-          if (pt.x !== expX || pt.y !== expY) {
-            desviosCentro++;
-          }
-        }
-
-        registrar(testesTrilha,
-          "1. Fonte Única centroCasa(casa): centro geométrico na grade 80x80 para todas as 66 casas",
-          desviosCentro === 0,
-          `66/66 casas verificadas com centro exato (col*80+40, row*80+40). Desvios: ${desviosCentro}`
-        );
-
-        // 2. Correspondência 1:1 entre arestas do grafo e segmentos
-        let totalArestas = 0;
-        let arestasComSegmento = 0;
-        const segmentosCriados = [];
-
-        for (const c of casas) {
-          if (!c.proximos || c.proximos.length === 0) continue;
-          const pa = centroCasa(c);
-          for (const proxId of c.proximos) {
-            totalArestas++;
-            const p = casasMap.get(proxId);
-            if (p) {
-              const pb = centroCasa(p);
-              segmentosCriados.push({ de: c.id, para: proxId, dePt: pa, paraPt: pb });
-              arestasComSegmento++;
-            }
-          }
-        }
-
-        registrar(testesTrilha,
-          "2. Correspondência 1:1: Toda aresta tem um segmento desenhado e todo segmento corresponde a uma aresta",
-          totalArestas === 68 && arestasComSegmento === totalArestas,
-          `Total de arestas do grafo: ${totalArestas}. Segmentos gerados: ${segmentosCriados.length}.`
-        );
-
-        // 3. Distância centroCasa x Origem do Segmento = 0 px no plano
-        let desvioMaximoPx = 0;
-        for (const seg of segmentosCriados) {
-          const casaOrigem = casasMap.get(seg.de);
-          const centroReal = centroCasa(casaOrigem);
-          const dist = Math.hypot(seg.dePt.x - centroReal.x, seg.dePt.y - centroReal.y);
-          if (dist > desvioMaximoPx) desvioMaximoPx = dist;
-        }
-
-        registrar(testesTrilha,
-          "3. Alinhamento Perfeito: Distância entre o centro de cada disco e o segmento da sua aresta = 0 px no plano",
-          desvioMaximoPx === 0,
-          `Desvio geométrico no plano: ${desvioMaximoPx} px (coincidência matemática exata).`
-        );
-
-        // 4. Conectividade: Toda casa tem ao menos uma aresta (exceto o portal 60 que é terminal)
-        const entradas = new Map(casas.map(c => [c.id, 0]));
-        const saidas = new Map(casas.map(c => [c.id, (c.proximos || []).length]));
-
-        for (const seg of segmentosCriados) {
-          entradas.set(seg.para, (entradas.get(seg.para) || 0) + 1);
-        }
-
-        let casasOrfas = [];
-        for (const c of casas) {
-          if (c.id !== 0 && entradas.get(c.id) === 0) casasOrfas.push(c.id);
-          if (c.id !== 60 && saidas.get(c.id) === 0) casasOrfas.push(c.id);
-        }
-
-        registrar(testesTrilha,
-          "4. Conectividade do Grafo: Nenhuma casa órfã (todas as casas 0..66 alcançam o portal final 60)",
-          casasOrfas.length === 0,
-          `Casas órfãs encontradas: ${casasOrfas.length === 0 ? 'Nenhuma (grafo totalmente conexo)' : casasOrfas.join(', ')}`
-        );
-
-        // 5. Contagem de Discos na Cena: nº de casas no JSON = nº de discos renderizados
-        const totalCasasJson = casas.length;
-        const totalDiscosEsperados = 66;
-
-        registrar(testesTrilha,
-          "5. Contagem de Casas: nº de casas no JSON = nº de discos na cena (66 casas = 66 discos)",
-          totalCasasJson === totalDiscosEsperados,
-          `Casas no JSON: ${totalCasasJson} | Discos esperados: ${totalDiscosEsperados}`
-        );
-
-        // 6. Todas as casas são discos visíveis, inclusive Armadilhas e Checkpoints
-        const temIconeArmadilha = typeof ICONES_SVG?.armadilha === 'string' && ICONES_SVG.armadilha.includes('polygon');
-        const temCheckpoints = casas.some(c => c.tipo_fixo === 'checkpoint' && (c.id === 20 || c.id === 40 || c.id === 60));
-
-        registrar(testesTrilha,
-          "6. Integridade Visual: Todas as casas são discos, armadilhas possuem ícone de raio e checkpoints são destacados",
-          temIconeArmadilha && temCheckpoints,
-          `Ícone de raio presente e checkpoints 20, 40 e 60 configurados sobre a trilha.`
-        );
-
-        if (statusTrilha) statusTrilha.textContent = `Concluído (${testesTrilha.filter(t => t.sucesso).length}/${testesTrilha.length})`;
-      } catch (e) {
-        if (statusTrilha) statusTrilha.textContent = "Erro!";
-        registrar(testesTrilha, "Exceção na suíte de alinhamento de trilha", false, e.stack || e.message);
-      }
-    }
-
-    function renderizarResultados() {
-      const todos = [...testesLogica, ...testesCasos, ...testesAvatar, ...testesTrilha];
-      const totalSucessos = todos.filter(t => t.sucesso).length;
-      const totalFalhas = todos.filter(t => !t.sucesso).length;
-
-      const placar = document.getElementById('placar');
-      placar.innerHTML = `
-        <span class="pass-total">✅ ${totalSucessos} TESTES PASSARAM</span>
-        ${totalFalhas > 0 ? `<span class="fail-total">❌ ${totalFalhas} FALHARAM</span>` : '<span style="color:#06D6A0; font-weight: bold;">| 100% DE APROVAÇÃO</span>'}
-        <span style="color: #94A3B8; font-size: 0.85rem;">(Total: ${todos.length})</span>
-      `;
-
-      const renderLista = (items) => items.map(t => `
-        <div class="test-item ${t.sucesso ? 'pass' : 'fail'}">
-          <span class="badge ${t.sucesso ? 'pass' : 'fail'}">${t.sucesso ? 'PASS' : 'FAIL'}</span>
-          <div>
-            <div style="font-weight: 600;">${t.nome}</div>
-            ${t.detalhe ? `<div class="detalhe">${t.detalhe}</div>` : ''}
-          </div>
-        </div>
-      `).join('');
-
-      document.getElementById('lista-testes-logica').innerHTML = renderLista(testesLogica);
-      document.getElementById('lista-testes-casos').innerHTML = renderLista(testesCasos);
-      const listaAvatarEl = document.getElementById('lista-testes-avatar');
-      if (listaAvatarEl) listaAvatarEl.innerHTML = renderLista(testesAvatar);
-      const listaTrilhaEl = document.getElementById('lista-testes-trilha');
-      if (listaTrilhaEl) listaTrilhaEl.innerHTML = renderLista(testesTrilha);
-    }
-
-    // ==========================================
-    // BOTÃO: TESTAR SERVIDOR (DRY RUN)
-    // ==========================================
-    const btnTestarServidor = document.getElementById('btn-testar-servidor');
-    const statusServidor = document.getElementById('status-teste-servidor');
-    const containerTabela = document.getElementById('resultado-tabela-servidor');
-
-    btnTestarServidor.addEventListener('click', async () => {
-      btnTestarServidor.disabled = true;
-      statusServidor.textContent = "Iniciando verificação remota com dry_run: true...";
-      containerTabela.innerHTML = "";
-
-      if (casosData.length === 0) {
-        statusServidor.textContent = "Erro: casos de pontuação ainda não foram carregados.";
-        btnTestarServidor.disabled = false;
-        return;
-      }
-
-      // Verifica configuração da API
-      if (api.modoMock || !api.client) {
-        statusServidor.innerHTML = `
-          <div style="color: #FFD166; padding: 10px; background: rgba(255, 209, 102, 0.1); border-radius: 6px;">
-            ℹ️ <strong>Modo Mock ativo ou Supabase real não configurado:</strong><br>
-            A auditoria local em JavaScript já validou 100% dos 10 casos idênticos à Edge Function.<br>
-            Para disparar a requisição HTTP real contra o Supabase:<br>
-            1. Preencha <code>SUPABASE_URL</code> e <code>SUPABASE_ANON_KEY</code> em <code>js/config.js</code>.<br>
-            2. Faça login com um e-mail institucional na aplicação para obter uma sessão JWT autenticada.<br>
-            3. A Edge Function <code>registrar-partida</code> aceitará <code>{ "dry_run": true }</code> devolvendo o cálculo sem persistência no banco.
-          </div>
-        `;
-        btnTestarServidor.disabled = false;
-        return;
-      }
-
-      try {
-        const sessao = await api.client.auth.getSession();
-        if (!sessao?.data?.session) {
-          statusServidor.innerHTML = `
-            <div style="color: #EF476F; padding: 10px; background: rgba(239, 71, 111, 0.1); border-radius: 6px;">
-              ⚠️ <strong>Sessão de usuário não encontrada:</strong><br>
-              A Edge Function exige autenticação (Authorization Bearer). Faça login no jogo primeiro e retorne a esta página de testes para testar o servidor real.
-            </div>
-          `;
-          btnTestarServidor.disabled = false;
-          return;
-        }
-
-        statusServidor.textContent = "Executando 10 requisições com { dry_run: true } na Edge Function...";
-        const linhasTabela = [];
-
-        for (const caso of casosData) {
-          const resCliente = auditarHistorico(caso.historico, cartasFallbackMap);
-          let resServidor = null;
-          let httpStatus = 200;
-          let erroServidor = null;
-
-          try {
-            const { data, error } = await api.client.functions.invoke('registrar-partida', {
-              body: {
-                historico: caso.historico,
-                semana: caso.semana,
-                versao_cartas: "1.0",
-                dry_run: true
-              }
-            });
-
-            if (error) {
-              httpStatus = error.status || 400;
-              erroServidor = error.message;
-            } else {
-              resServidor = data;
-            }
-          } catch (e) {
-            httpStatus = 500;
-            erroServidor = e.message;
-          }
-
-          const esperado = caso.resultado_esperado;
-          let confere = false;
-
-          if (esperado.status === 200) {
-            const ptsServidor = resServidor?.pontos_oficiais ?? resServidor?.pontos;
-            confere = (httpStatus === 200 && ptsServidor === esperado.pontos);
-            linhasTabela.push(`
-              <tr class="${confere ? 'match' : 'diverge'}">
-                <td><strong>${caso.id}</strong></td>
-                <td>${esperado.pontos} pts</td>
-                <td>${resCliente.pontos} pts</td>
-                <td>${ptsServidor !== undefined ? ptsServidor + ' pts' : 'Erro (' + erroServidor + ')'}</td>
-                <td>${confere ? '✅ IGUAL' : '❌ DIVERGE'}</td>
-              </tr>
-            `);
-          } else {
-            confere = (httpStatus === esperado.status);
-            linhasTabela.push(`
-              <tr class="${confere ? 'match' : 'diverge'}">
-                <td><strong>${caso.id}</strong></td>
-                <td>Rejeição (${esperado.status})</td>
-                <td>Rejeição (${resCliente.status})</td>
-                <td>Rejeição (${httpStatus})</td>
-                <td>${confere ? '✅ IGUAL' : '❌ DIVERGE'}</td>
-              </tr>
-            `);
-          }
-        }
-
-        statusServidor.innerHTML = "<strong>✅ Testes remotos concluídos! Comparativo cliente x servidor:</strong>";
-        containerTabela.innerHTML = `
-          <table class="tabela-comparacao">
-            <thead>
-              <tr>
-                <th>Caso</th>
-                <th>Esperado</th>
-                <th>Auditoria Cliente</th>
-                <th>Edge Function (Dry Run)</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${linhasTabela.join('')}
-            </tbody>
-          </table>
-        `;
-
-      } catch (err) {
-        statusServidor.innerHTML = `<span style="color:#EF476F;">Erro ao invocar Edge Function: ${err.message}</span>`;
-      } finally {
-        btnTestarServidor.disabled = false;
-      }
+    const dados = await (await fetch('data/perguntas.json')).json();
+    const perguntas = dados.perguntas || [];
+    const idsCat = CATEGORIAS.map(c => c.id);
+
+    // 1. IDs únicos
+    const ids = perguntas.map(p => p.id);
+    const repetidos = ids.filter((id, i) => ids.indexOf(id) !== i);
+    registrar('IDs de perguntas únicos', repetidos.length === 0, repetidos.join(', ') || `${ids.length} perguntas`);
+
+    // 2. Categoria válida
+    const catInvalida = perguntas.filter(p => !idsCat.includes(p.categoria));
+    registrar('Todas as perguntas têm categoria válida', catInvalida.length === 0, catInvalida.map(p => p.id).join(', '));
+
+    // 3. Alternativas e gabarito
+    const estrutura = perguntas.filter(p => !Array.isArray(p.alternativas) || p.alternativas.length < 2 || p.alternativas.length > 4
+      || p.alternativas.some(a => !String(a).trim()) || !(p.correta >= 0 && p.correta < p.alternativas.length));
+    registrar('Alternativas (2 a 4) e gabarito dentro do intervalo', estrutura.length === 0, estrutura.map(p => p.id).join(', '));
+
+    // 4. Alternativas sem duplicata
+    const dup = perguntas.filter(p => new Set(p.alternativas.map(a => a.trim().toLowerCase())).size !== p.alternativas.length);
+    registrar('Nenhuma pergunta com alternativas repetidas', dup.length === 0, dup.map(p => p.id).join(', '));
+
+    // 5. Explicação presente
+    const semExp = perguntas.filter(p => !String(p.explicacao || '').trim());
+    registrar('Toda pergunta tem explicação', semExp.length === 0, semExp.map(p => p.id).join(', '));
+
+    // 6. Mínimo por categoria (para uma partida não repetir demais)
+    const banco = await carregarBanco();
+    CATEGORIAS.forEach(c => {
+      const n = banco.porCategoria[c.id].length;
+      registrar(`Categoria ${c.nomeLongo}: pelo menos 8 perguntas`, n >= 8, `${n} perguntas`);
     });
 
-    // Início sequencial das suítes de teste
-    async function iniciarSuites() {
-      await rodarSuiteLogica();
-      await rodarSuiteCasosPontuacao();
-      await rodarSuiteAvatar();
-      await rodarSuiteAlinhamentoTrilha();
-      renderizarResultados();
-    }
+    // 7. Perguntas difíceis disponíveis para disputa de selo
+    CATEGORIAS.forEach(c => {
+      const n = banco.porCategoria[c.id].filter(p => (p.nivel || 1) >= 2).length;
+      registrar(`Categoria ${c.nomeLongo}: tem pergunta nível 2+ para o selo`, n >= 1, `${n} perguntas`);
+    });
 
-    iniciarSuites();
+    // 8. Personagem: todas as opções desenham sem erro nos 3 modos e 4 reações
+    let erros = [];
+    const props = ['corpo', 'expressao', 'roupa', 'cabelo', 'barba', 'rosto', 'cabeca', 'item', 'mobilidade'];
+    for (const prop of props) {
+      for (const valor of AVATAR_OPCOES[prop]) {
+        for (const modo of ['completo', 'busto', 'peao']) {
+          try {
+            const svg = renderAvatarSVG({ ...AVATAR_PADRAO, [prop]: valor }, { modo });
+            if (!svg.startsWith('<svg') || svg.includes('undefined') || svg.includes('NaN')) erros.push(`${prop}=${valor}/${modo}`);
+          } catch (e) { erros.push(`${prop}=${valor}/${modo}: ${e.message}`); }
+        }
+      }
+    }
+    for (const reacao of ['neutro', 'pulando', 'comemorando', 'assustado']) {
+      const svg = renderAvatarSVG(AVATAR_PADRAO, { reacao });
+      if (svg.includes('undefined') || svg.includes('NaN')) erros.push(`reacao=${reacao}`);
+    }
+    registrar('Personagem: todas as opções desenham sem erro', erros.length === 0, erros.slice(0, 5).join(' | ') || 'ok');
+
+    // 9. Avatares aleatórios sempre válidos
+    const invalidos = Array.from({ length: 200 }, () => gerarAvatarAleatorio()).filter(a => !validarAvatar(a).valido);
+    registrar('200 avatares aleatórios são válidos', invalidos.length === 0, `${invalidos.length} inválidos`);
+
+    // 10. Mascotes
+    const mascErr = [...idsCat, 'coroa'].filter(id => ['feliz', 'triste', 'surpreso', 'piscando'].some(h => {
+      const s = mascote(id, { humor: h }); return !s.includes('<svg') || s.includes('undefined');
+    }));
+    registrar('Mascotes de todas as categorias e humores', mascErr.length === 0, mascErr.join(', ') || 'ok');
+
+    document.getElementById('placar').innerHTML = falhas === 0
+      ? `<span class="pass">✅ ${ok} TESTES PASSARAM</span> · 100% de aprovação`
+      : `<span class="pass">✅ ${ok} passaram</span> · <span class="fail">❌ ${falhas} falharam</span>`;
   </script>
 </body>
 </html>

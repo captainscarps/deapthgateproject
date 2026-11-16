@@ -342,3 +342,17 @@ html:has(body.pagina-roleta) { background: #071426; }
 .inicio-cat { min-width: 0; }
 .inicio-cat .inicio-cat-nome { white-space: normal; overflow: visible; text-overflow: clip; font-size: 0.86rem; min-width: 0; overflow-wrap: anywhere; }
 .inicio-cat .inicio-cat-nome { flex: 1 1 auto; flex-shrink: 1; }
+.inicio-avatar { position: relative; cursor: pointer; padding: 0; width: 72px; height: 72px; overflow: visible; }
+.inicio-avatar svg { border-radius: 50%; overflow: hidden; }
+.inicio-avatar-editar { position: absolute; right: -4px; bottom: -4px; width: 26px; height: 26px; border-radius: 50%; background: var(--gold); color: #05101F; border: 2px solid #05101F; display: grid; place-items: center; }
+.inicio-avatar-editar .ico { width: 14px; height: 14px; }
+.inicio-btn-personalizar { margin-top: 6px; display: inline-flex; align-items: center; gap: 6px; padding: 6px 10px; border-radius: 10px; cursor: pointer; background: transparent; color: var(--cyan); border: 2px solid var(--cyan); font-family: var(--font-main); font-weight: 800; font-size: 0.85rem; text-transform: uppercase; }
+/* Criador de personagem no celular: uma coluna */
+@media (max-width: 700px) {
+  .criador-avatar-dialog { max-height: 100dvh; height: 100dvh; border-radius: 0; }
+  .criador-avatar-body { grid-template-columns: 1fr !important; max-height: none; flex: 1; padding: 12px; gap: 12px; }
+  .avatar-podio-box { min-height: 180px !important; }
+  .avatar-previa-wrapper { width: 150px !important; height: 165px !important; }
+  .avatar-aba-painel { max-height: none; }
+  .criador-botoes-rapidos { justify-content: center; }
+}

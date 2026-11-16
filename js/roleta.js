@@ -14,6 +14,7 @@ import { ico } from './icones.js';
 import { confete, flash, tremer, seloCentral } from './fx.js';
 import { Audio } from './audio.js';
 import { mascote, nomeMascote } from './mascotes.js';
+import { abrirCriadorAvatar } from './ui/avatar_criador.js';
 
 const REGRAS = {
   VIDAS: 3,
@@ -53,8 +54,17 @@ function lerSalvo() {
 function salvar(dados) {
   try { localStorage.setItem(STORAGE, JSON.stringify({ ...lerSalvo(), ...dados })); } catch (_) {}
 }
+const CHAVE_AVATAR = 'roleta_avatar';
+
+function salvarAvatar(cfg) {
+  try { localStorage.setItem(CHAVE_AVATAR, JSON.stringify(cfg)); } catch (_) {}
+}
+
 function avatarJogador() {
   try {
+    const proprio = JSON.parse(localStorage.getItem(CHAVE_AVATAR) || 'null');
+    if (proprio) return proprio;
+    // Compatibilidade: personagem criado na antiga Trilha Inteligente
     const conv = JSON.parse(localStorage.getItem('trilha_avatar_convidado') || 'null');
     if (conv) return conv;
     const jog = JSON.parse(localStorage.getItem('trilha_jogador') || 'null');
@@ -164,7 +174,6 @@ function telaInicio() {
   const avatar = avatarJogador();
   app.innerHTML = `
     <div class="roleta-tela tela-inicio-roleta">
-      <a class="roleta-link-trilha" href="index.html">${ico('voltar')} Trilha Inteligente</a>
       <div class="inicio-marca">
         <div class="inicio-roleta-mini">${svgRoleta()}</div>
         <h1>Roleta da<br><span>Governança</span></h1>
@@ -172,11 +181,15 @@ function telaInicio() {
       </div>
 
       <div class="inicio-jogador">
-        <div class="inicio-avatar">${renderAvatarSVG(avatar, { modo: 'busto' })}</div>
-        <div>
+        <button type="button" class="inicio-avatar" id="btn-personalizar" aria-label="Personalizar personagem">
+          ${renderAvatarSVG(avatar, { modo: 'busto' })}
+          <span class="inicio-avatar-editar">${ico('usuarios')}</span>
+        </button>
+        <div style="flex: 1;">
           <div class="inicio-recorde-rotulo">Seu recorde</div>
           <div class="inicio-recorde">${salvo.recorde || 0} <small>pts</small></div>
           <div class="inicio-partidas">${salvo.partidas || 0} partida${(salvo.partidas || 0) === 1 ? '' : 's'} · ${salvo.vitorias || 0} vitória${(salvo.vitorias || 0) === 1 ? '' : 's'}</div>
+          <button type="button" class="inicio-btn-personalizar" id="btn-personalizar-txt">${ico('usuarios')} Personalizar personagem</button>
         </div>
       </div>
 
@@ -199,6 +212,16 @@ function telaInicio() {
       <p class="inicio-nota">Protótipo: a categoria Políticas SEST SENAT usa perguntas de exemplo até recebermos as políticas oficiais.</p>
     </div>`;
   app.querySelector('#btn-jogar').onclick = novoJogo;
+  const personalizar = async () => {
+    const novo = await abrirCriadorAvatar({
+      avatarInicial: avatarJogador(),
+      titulo: 'Crie seu personagem',
+      rotuloBotaoSalvar: 'Salvar personagem'
+    });
+    if (novo) { salvarAvatar(novo); telaInicio(); }
+  };
+  app.querySelector('#btn-personalizar').onclick = personalizar;
+  app.querySelector('#btn-personalizar-txt').onclick = personalizar;
 }
 
 // ---------------------------------------------------------------------------

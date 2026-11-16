@@ -1,0 +1,374 @@
+/* ==============================================================================
+   css/comum.css • Ícones, efeitos e personalização do personagem
+   (extraído dos estilos da antiga Trilha Inteligente)
+   ============================================================================== */
+
+/* Ícones SVG da interface */
+.ico { width: 1.05em; height: 1.05em; flex-shrink: 0; vertical-align: -0.15em; display: inline-block; }
+.btn .ico, button .ico { width: 1.15em; height: 1.15em; }
+
+/* ------------------------------------------------------------------------------
+   5. EFEITOS (fx.js)
+   ------------------------------------------------------------------------------ */
+.fx-confete-canvas { position: fixed; inset: 0; pointer-events: none; z-index: 100000; }
+.fx-tremer { animation: fx-tremer 0.4s ease; }
+.fx-tremer-forte { animation: fx-tremer-forte 0.5s ease; }
+@keyframes fx-tremer { 0%, 100% { translate: 0 0; } 20% { translate: -6px 0; } 40% { translate: 5px 0; } 60% { translate: -4px 0; } 80% { translate: 3px 0; } }
+@keyframes fx-tremer-forte { 0%, 100% { translate: 0 0; } 15% { translate: -10px 2px; } 30% { translate: 9px -2px; } 45% { translate: -7px 1px; } 60% { translate: 6px 0; } 80% { translate: -3px 0; } }
+.fx-flash { position: fixed; inset: 0; pointer-events: none; z-index: 99990; animation: fx-flash 0.7s ease-out forwards; }
+.fx-flash-sucesso { box-shadow: inset 0 0 120px rgba(60, 203, 127, 0.75); }
+.fx-flash-perigo { box-shadow: inset 0 0 140px rgba(232, 72, 79, 0.85); }
+@keyframes fx-flash { from { opacity: 1; } to { opacity: 0; } }
+.fx-moeda {
+  position: fixed; left: 0; top: 0; width: 18px; height: 18px; z-index: 100001; pointer-events: none;
+  border-radius: 50%; background: radial-gradient(circle at 35% 30%, #FFF3C4, #FFC93C 45%, #C99616);
+  border: 2px solid #05101F; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+}
+.fx-moeda-perda { filter: grayscale(0.6) brightness(0.8); }
+.fx-pulsar { animation: fx-pulsar 0.45s ease-out; }
+@keyframes fx-pulsar { 0% { transform: scale(1); } 40% { transform: scale(1.08); box-shadow: 0 0 18px rgba(255, 201, 60, 0.8); } 100% { transform: scale(1); } }
+.fx-selo-central {
+  position: fixed; left: 50%; top: 22%; z-index: 100002; pointer-events: none;
+  font-family: var(--font-pixel); font-size: 1.6rem; color: #FFF; white-space: nowrap;
+  padding: 10px 22px; border-radius: 12px; border: 3px solid #05101F;
+  background: linear-gradient(135deg, #FF7A3D, #E8484F); box-shadow: 0 6px 0 #05101F, 0 0 30px rgba(255, 122, 61, 0.6);
+  animation: fx-selo 1.5s cubic-bezier(.2,1.4,.4,1) forwards;
+}
+@keyframes fx-selo { 0% { opacity: 0; transform: translate(-50%, 20px) scale(0.6); } 18% { opacity: 1; transform: translate(-50%, 0) scale(1.08); } 30% { transform: translate(-50%, 0) scale(1); } 80% { opacity: 1; } 100% { opacity: 0; transform: translate(-50%, -30px) scale(1); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .dadinho-fala, .dadinho-rosto, .fx-selo-central, .hud-tokens-destaque.tokens-criticos { animation: none !important; }
+}
+
+/* ---------------- Personalização do personagem (base) ---------------- */
+.modal-avatar-backdrop {
+  z-index: 1500;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(3, 10, 20, 0.88);
+  backdrop-filter: blur(8px);
+}
+
+.modal-avatar-backdrop.ativo {
+  display: flex !important;
+}
+
+.criador-avatar-dialog {
+  max-width: 920px;
+  width: 100%;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--navy-panel);
+  border: 3px solid var(--navy-darkest);
+  border-radius: 16px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.9), 0 0 24px rgba(0, 180, 216, 0.25);
+  overflow: hidden;
+}
+
+.criador-avatar-header {
+  background: #061528;
+  border-bottom: 2px solid var(--navy-darkest);
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.criador-avatar-body {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 20px;
+  padding: 20px;
+  overflow-y: auto;
+  max-height: calc(90vh - 140px);
+}
+
+@media (max-width: 768px) {
+  .criador-avatar-body {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 14px;
+  }
+}
+
+/* Coluna de Prévia do Avatar */
+.criador-previa-coluna {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.avatar-podio-box {
+  width: 100%;
+  height: 250px;
+  background: radial-gradient(circle at 50% 45%, #103254 0%, #061528 85%);
+  border: 2px solid var(--navy-darkest);
+  border-radius: 14px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.8);
+}
+
+.avatar-podio-luz {
+  position: absolute;
+  top: 10px;
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(0, 180, 216, 0.28) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.avatar-previa-wrapper {
+  width: 170px;
+  height: 190px;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: avatar-podio-bounce 2.6s infinite ease-in-out;
+}
+
+@keyframes avatar-podio-bounce {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-7px) rotate(0.6deg); }
+}
+
+.avatar-chibi-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.7));
+}
+
+.criador-botoes-rapidos {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+}
+
+.criador-botoes-rapidos .btn {
+  flex: 1;
+}
+
+.avatar-selo-marca-info {
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Coluna de Opções e Abas */
+.criador-opcoes-coluna {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-width: 0;
+}
+
+.avatar-abas-nav {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  padding-bottom: 6px;
+  border-bottom: 2px solid var(--navy-darkest);
+}
+
+.avatar-aba-btn {
+  background: #081B30;
+  color: var(--text-muted);
+  border: 1.5px solid var(--border-arcade);
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-family: var(--font-title);
+  font-size: 0.95rem;
+  font-weight: 800;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.avatar-aba-btn:hover {
+  border-color: var(--cyan);
+  color: var(--text-white);
+  background: #0E2C4D;
+}
+
+.avatar-aba-btn.ativa {
+  background: var(--cyan);
+  color: var(--navy-darkest);
+  border-color: var(--cyan);
+  box-shadow: 0 0 12px rgba(0, 180, 216, 0.4);
+}
+
+.avatar-aba-painel {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  overflow-y: auto;
+  max-height: 380px;
+  padding-right: 4px;
+}
+
+.avatar-secao-grupo {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.avatar-grupo-rotulo {
+  font-family: var(--font-title);
+  font-size: 0.85rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--gold);
+}
+
+/* Grade de Botões Cards */
+.avatar-grade-opcoes {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  gap: 8px;
+}
+
+.avatar-botoes-corpo-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.btn-opcao-card {
+  background: var(--navy-card);
+  border: 2px solid var(--navy-darkest);
+  border-radius: 10px;
+  padding: 10px 8px;
+  color: var(--text-white);
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  text-align: center;
+  transition: all 0.2s ease;
+}
+
+.btn-opcao-card:hover {
+  border-color: var(--cyan);
+  background: #11335A;
+  transform: translateY(-2px);
+}
+
+.btn-opcao-card.selecionado {
+  border-color: var(--gold);
+  background: rgba(255, 201, 60, 0.15);
+  color: var(--gold);
+  box-shadow: 0 0 10px rgba(255, 201, 60, 0.3);
+}
+
+/* Swatches de Pele e Cores */
+.avatar-paleta-pele-grid,
+.avatar-paleta-cores-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(42px, 1fr));
+  gap: 8px;
+}
+
+.avatar-swatch-pele,
+.avatar-swatch-cor {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 3px solid var(--navy-darkest);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 3px 0 var(--navy-darkest);
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.avatar-swatch-pele:hover,
+.avatar-swatch-cor:hover {
+  transform: scale(1.1);
+  border-color: var(--cyan);
+}
+
+.avatar-swatch-pele.selecionado,
+.avatar-swatch-cor.selecionado {
+  transform: scale(1.15);
+  border-color: var(--gold);
+  box-shadow: 0 0 12px rgba(255, 201, 60, 0.6);
+}
+
+.swatch-check {
+  font-family: var(--font-pixel);
+  font-size: 0.8rem;
+  font-weight: 900;
+  color: #05101F;
+  text-shadow: 0 0 3px #FFFFFF;
+}
+
+/* Rodapé do Modal */
+.criador-avatar-footer {
+  background: #061528;
+  border-top: 2px solid var(--navy-darkest);
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+/* ------------------------------------------------------------------------------
+   7. PERSONALIZAÇÃO DO PERSONAGEM (miniaturas reais em cada opção)
+   ------------------------------------------------------------------------------ */
+.criador-avatar-dialog { max-width: 1000px; }
+.criador-avatar-body { grid-template-columns: 300px 1fr; align-items: start; }
+.criador-titulo-ico { width: 26px; height: 26px; color: var(--gold); display: inline-flex; }
+.criador-titulo-ico .ico { width: 100%; height: 100%; }
+.avatar-previa-wrapper svg { width: 100%; height: 100%; }
+
+.avatar-abas-nav { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; overflow: visible; }
+.avatar-aba-btn { justify-content: center; text-transform: uppercase; padding: 9px 8px; min-width: 0; }
+.avatar-aba-btn span { overflow: hidden; text-overflow: ellipsis; }
+.avatar-aba-painel { max-height: 430px; }
+
+.avatar-grade-mini { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 8px; }
+.avatar-grade-mini.grade-2 { grid-template-columns: repeat(2, minmax(0, 150px)); }
+.avatar-grade-mini.grade-3 { grid-template-columns: repeat(3, minmax(0, 150px)); }
+.avatar-opcao-mini {
+  display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer;
+  padding: 6px 4px 8px; border-radius: 12px;
+  background: linear-gradient(180deg, #123257, #0A1F38); border: 2px solid #05101F;
+  box-shadow: 0 3px 0 #05101F; color: var(--text-muted);
+  font-family: var(--font-main); text-transform: none; letter-spacing: 0;
+  transition: transform 0.12s ease, border-color 0.12s ease;
+}
+.avatar-opcao-mini:hover { transform: translateY(-2px); border-color: var(--cyan); color: var(--text-white); }
+.avatar-opcao-mini.selecionado { border-color: var(--gold); background: linear-gradient(180deg, #2A3E5C, #142843); color: var(--text-white); box-shadow: 0 3px 0 #05101F, 0 0 0 2px rgba(255, 201, 60, 0.35); }
+.avatar-opcao-previa { width: 72px; height: 72px; display: block; border-radius: 50%; overflow: hidden; background: radial-gradient(circle at 50% 40%, #1E4E80, #0B2440); }
+.mini-completo .avatar-opcao-previa { width: 78px; height: 86px; border-radius: 10px; }
+.avatar-opcao-previa svg { width: 100%; height: 100%; display: block; }
+.avatar-opcao-nome { font-weight: 700; font-size: 0.85rem; line-height: 1.1; text-align: center; }
+
+.avatar-swatch-cor { position: relative; }
+.avatar-previa-wrapper { width: 230px !important; height: 250px !important; }
+.avatar-podio-box { height: auto !important; min-height: 270px; display: flex; align-items: center; justify-content: center; }

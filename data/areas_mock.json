@@ -1,9 +1,0 @@
-[
-  { "id": 1, "sigla": "TI", "nome": "Tecnologia da Informação & BI" },
-  { "id": 2, "sigla": "JUR", "nome": "Jurídico, Compliance & LGPD" },
-  { "id": 3, "sigla": "RH", "nome": "Gestão de Pessoas" },
-  { "id": 4, "sigla": "OPE", "nome": "Operações & Transporte" },
-  { "id": 5, "sigla": "SAU", "nome": "Saúde & Odontologia" },
-  { "id": 6, "sigla": "EDU", "nome": "Educação & Formação Profissional" },
-  { "id": 7, "sigla": "ADM", "nome": "Administrativo & Financeiro" }
-]

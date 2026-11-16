@@ -199,3 +199,13 @@ Cada tarefa: implementar → prints antes/depois → `tests.html` e `smoke.html`
 - **Banco de perguntas compartilhado** (`data/perguntas.json` + `js/perguntas.js`): 56 perguntas novas + as 40 cartas de múltipla escolha da Trilha, em 6 categorias (LGPD, IA Responsável, Segurança, Governança de Dados, Políticas SEST SENAT, Pense Antes).
 - A categoria **Políticas SEST SENAT** usa perguntas marcadas como `exemplo` até recebermos as políticas oficiais (aparece a etiqueta "exemplo" na pergunta).
 - Próximos passos: duelos e liga migram da Trilha para a Roleta; meta de ~50 perguntas por categoria; ranking por área somando os dois jogos.
+
+## 12. Roleta como único jogo — 16/11/2026
+- A Trilha Inteligente (tabuleiro) foi aposentada. `index.html` agora abre a Roleta; `roleta.html` redireciona.
+- As 40 perguntas das cartas da Trilha foram incorporadas a `data/perguntas.json` (96 perguntas no total).
+- Personalização do personagem levada para a Roleta (botão na tela inicial, salvo em `roleta_avatar`).
+- Removidos: tabuleiro, cartas, Liga/Duelo do protótipo, scripts Python, páginas de debug, testes antigos e backend Supabase da Trilha. Tudo recuperável pelo histórico do Git (commit `65beedf`).
+- Nova página `tests.html` valida o banco de perguntas, personagens e mascotes.
+- Próximos passos sugeridos: duelos e liga semanal na Roleta; login institucional e ranking por área; perguntas reais de Políticas SEST SENAT; meta de ~50 perguntas por categoria.
+
+> As seções 1 a 11 acima descrevem a fase da Trilha e ficam como registro histórico.

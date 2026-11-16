@@ -2,108 +2,21 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Trilha Inteligente • Governança de IA | SEST SENAT</title>
-  
-  <!-- Favicon -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#071426">
+  <title>Roleta da Governança | SEST SENAT</title>
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
-  
-  <!-- Google Fonts: Barlow Condensed, Barlow e Silkscreen (Pixel Arcade) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800;900&family=Barlow:wght@400;500;600;700&family=Silkscreen:wght@400;700&display=swap" rel="stylesheet">
-
-  <!-- Estilos -->
   <link rel="stylesheet" href="css/style.css">
-  <link rel="stylesheet" href="css/telas.css">
-  <link rel="stylesheet" href="css/melhorias.css">
-  <link rel="stylesheet" href="css/liga.css">
-
-  <!-- Proteção Global contra Tela em Branco (window.onerror & unhandledrejection) -->
-  <script>
-    window.mostrarErroGlobal = function(msg, detalhes, fonte) {
-      console.error('[ERRO GLOBAL CAPTURADO]', msg, detalhes, fonte);
-      const boxId = 'box-erro-global-trilha';
-      let box = document.getElementById(boxId);
-      if (!box) {
-        box = document.createElement('div');
-        box.id = boxId;
-        box.style.cssText = 'position:fixed;inset:0;z-index:999999;background:rgba(5,16,31,0.96);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:20px;font-family:var(--font-body, -apple-system, sans-serif);color:#E2E8F0;';
-        document.body.appendChild(box);
-      }
-      function escapeHtml(str) {
-        return String(str || '').replace(/[&<>'"]/g, function(tag) {
-          return { '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag;
-        });
-      }
-      box.innerHTML = `
-        <div style="max-width:580px;width:100%;background:#0A223E;border:3px solid #E8484F;border-radius:12px;padding:24px;box-shadow:0 12px 40px rgba(0,0,0,0.8);text-align:left;">
-          <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
-            <span style="font-size:2rem;line-height:1;">⚠️</span>
-            <div>
-              <h2 style="font-family:var(--font-title, sans-serif);font-size:1.4rem;color:#FF7A3D;margin:0;text-transform:uppercase;font-weight:800;">
-                Aviso de Inicialização
-              </h2>
-              <div style="font-size:0.8rem;color:#94A3B8;">Falha detectada durante a execução da aplicação</div>
-            </div>
-          </div>
-          <p style="color:#CBD5E1;font-size:0.92rem;margin-bottom:12px;line-height:1.4;">
-            Ocorreu um erro que impediu o carregamento completo da tela:
-          </p>
-          <div style="background:#05101F;border:1px solid rgba(232,72,79,0.4);border-radius:6px;padding:12px;margin-bottom:16px;font-family:monospace;font-size:0.84rem;color:#FFC93C;word-break:break-all;line-height:1.45;">
-            <div><strong>Mensagem:</strong> ${escapeHtml(msg || 'Erro inesperado')}</div>
-            ${fonte ? `<div><strong>Arquivo / Origem:</strong> ${escapeHtml(fonte)}</div>` : ''}
-            ${detalhes ? `<div style="margin-top:8px;font-size:0.75rem;color:#94A3B8;max-height:130px;overflow-y:auto;border-top:1px dashed #334155;padding-top:6px;white-space:pre-wrap;">${escapeHtml(detalhes)}</div>` : ''}
-          </div>
-          <div style="display:flex;gap:10px;flex-wrap:wrap;">
-            <button onclick="window.location.reload()" style="background:#00B4D8;color:#05101F;font-weight:700;border:none;padding:10px 18px;border-radius:6px;cursor:pointer;text-transform:uppercase;font-size:0.85rem;">
-              🔄 Recarregar Jogo
-            </button>
-            <button onclick="try{localStorage.clear();}catch(e){};window.location.reload();" style="background:transparent;color:#CBD5E1;border:1px solid #475569;padding:10px 16px;border-radius:6px;cursor:pointer;font-size:0.85rem;">
-              🧹 Limpar Cache Local &amp; Reiniciar
-            </button>
-          </div>
-        </div>
-      `;
-    };
-
-    window.onerror = function(msg, url, line, col, err) {
-      const fonte = (url ? url.split('/').pop() : 'desconhecido') + (line ? (':' + line) : '') + (col ? (':' + col) : '');
-      const stack = (err && err.stack) ? err.stack : '';
-      window.mostrarErroGlobal(msg, stack, fonte);
-      return false;
-    };
-
-    window.addEventListener('unhandledrejection', function(event) {
-      const motivo = event.reason;
-      const msg = (motivo && motivo.message) ? motivo.message : String(motivo);
-      const stack = (motivo && motivo.stack) ? motivo.stack : '';
-      window.mostrarErroGlobal(msg, stack, 'Promessa não tratada (unhandledrejection)');
-    });
-  </script>
-
-  <!-- Bibliotecas CDN (somente CDN, sem npm/build) -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+  <link rel="stylesheet" href="css/comum.css">
+  <link rel="stylesheet" href="css/roleta.css">
 </head>
-<body>
-  <div id="app">
-    <header class="app-header">
-      <div class="header-conteudo">
-        <div class="header-titulos">
-          <h1>Trilha Inteligente</h1>
-          <p class="subtitulo">Governança de IA • SEST SENAT</p>
-        </div>
-        <button id="btn-toggle-audio" class="btn-audio-mute" aria-label="Desativar som" title="Desativar som">🔊</button>
-      </div>
-    </header>
-
-    <main id="tela-container">
-      <!-- Telas renderizadas dinamicamente via JS -->
-    </main>
+<body class="pagina-roleta">
+  <div id="roleta-app" class="roleta-app" aria-live="polite">
+    <div class="roleta-carregando">Carregando...</div>
   </div>
-
-  <!-- Ponto de entrada modular ES Modules -->
-  <script type="module" src="js/main.js"></script>
+  <script type="module" src="js/roleta.js"></script>
 </body>
 </html>

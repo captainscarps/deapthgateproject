@@ -1,8 +1,6 @@
-// js/perguntas.js - Banco de perguntas compartilhado entre os jogos
-// Junta data/perguntas.json com as cartas de múltipla escolha da Trilha (cartas_fallback.json),
-// convertendo tudo para o mesmo formato:
+// js/perguntas.js - Banco de perguntas da Roleta da Governança (data/perguntas.json)
+// Formato de cada pergunta:
 //   { id, categoria, nivel, pergunta, alternativas: string[], correta: number, explicacao, status? }
-import { macroTema } from './temas.js';
 
 export const CATEGORIAS = [
   { id: 'lgpd', nome: 'LGPD', nomeLongo: 'LGPD e Privacidade', cor: '#3CCB7F', escura: '#1F8A52', icone: 'escudo' },
@@ -27,29 +25,12 @@ async function lerJson(url) {
   return null;
 }
 
-function converterCarta(c) {
-  const correta = c.opcoes.findIndex(o => o.correta);
-  if (correta < 0) return null;
-  return {
-    id: `carta_${c.id}`,
-    categoria: c.categoria === 'pense_antes' ? 'pense_antes' : macroTema(c.tema),
-    nivel: c.nivel || 1,
-    pergunta: c.texto,
-    alternativas: c.opcoes.map(o => o.texto),
-    correta,
-    explicacao: c.opcoes[correta].feedback || '',
-    origem: 'trilha'
-  };
-}
-
 /** Carrega (uma vez) o banco completo, agrupado por categoria. */
 export async function carregarBanco() {
   if (cache) return cache;
-  const [proprio, cartas] = await Promise.all([lerJson('data/perguntas.json'), lerJson('data/cartas_fallback.json')]);
-  const lista = [...((proprio && proprio.perguntas) || [])];
-  (Array.isArray(cartas) ? cartas : [])
-    .filter(c => Array.isArray(c.opcoes) && c.opcoes.length >= 2)
-    .forEach(c => { const p = converterCarta(c); if (p) lista.push(p); });
+  const dados = await lerJson('data/perguntas.json');
+  const lista = ((dados && dados.perguntas) || []).filter(p =>
+    Array.isArray(p.alternativas) && p.alternativas.length >= 2 && p.correta >= 0 && p.correta < p.alternativas.length);
 
   const porCategoria = Object.fromEntries(CATEGORIAS.map(c => [c.id, []]));
   lista.forEach(p => { if (porCategoria[p.categoria]) porCategoria[p.categoria].push(p); });
