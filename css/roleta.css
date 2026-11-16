@@ -87,11 +87,7 @@ body.pagina-roleta {
 .roleta-wrap { position: relative; width: min(88vw, 360px); aspect-ratio: 1; filter: drop-shadow(0 10px 0 #05101F) drop-shadow(0 18px 24px rgba(0, 0, 0, 0.5)); }
 .roleta-svg { width: 100%; height: 100%; display: block; }
 .roleta-disco { transform-origin: 160px 160px; transform-box: view-box; }
-.roleta-ponteiro {
-  position: absolute; top: -10px; left: 50%; transform: translateX(-50%); z-index: 2;
-  width: 0; height: 0; border-left: 18px solid transparent; border-right: 18px solid transparent; border-top: 34px solid #FFF3C4;
-  filter: drop-shadow(0 3px 0 #05101F) drop-shadow(0 -2px 0 #05101F);
-}
+
 .roleta-botao-girar {
   position: absolute; inset: 0; margin: auto; transform: none !important;
   width: 28%; height: 28%; border-radius: 50%; cursor: pointer; z-index: 2; padding: 0;
@@ -214,3 +210,135 @@ body.pagina-roleta {
 /* Neutraliza o efeito de hover global dos botões (translateY) dentro da Roleta */
 .pagina-roleta button:hover { transform: none; }
 .pagina-roleta .alternativa:hover:not([disabled]) { border-color: var(--escura); }
+
+
+/* ==============================================================================
+   ACABAMENTO v2 — mascotes, luzes, raios e revelação
+   ============================================================================== */
+body.pagina-roleta {
+  background:
+    radial-gradient(circle at 20% 15%, rgba(255, 93, 143, 0.16), transparent 35%),
+    radial-gradient(circle at 85% 30%, rgba(0, 180, 216, 0.18), transparent 38%),
+    radial-gradient(circle at 50% 100%, rgba(185, 140, 255, 0.22), transparent 45%),
+    radial-gradient(circle, rgba(255, 255, 255, 0.05) 1.2px, transparent 1.3px) 0 0 / 22px 22px,
+    linear-gradient(180deg, #0A1E3D 0%, #071426 100%);
+  background-attachment: fixed;
+}
+
+/* Mascotes */
+.mascote { width: 100%; height: 100%; display: block; overflow: visible; }
+
+/* ---------- Roleta ---------- */
+.roleta-wrap { filter: drop-shadow(0 10px 0 #05101F) drop-shadow(0 20px 30px rgba(0, 0, 0, 0.55)); }
+.roleta-raios {
+  position: absolute; inset: -22%; z-index: -1; border-radius: 50%;
+  background: repeating-conic-gradient(from 0deg, rgba(255, 233, 160, 0.16) 0deg 10deg, transparent 10deg 20deg);
+  -webkit-mask: radial-gradient(circle, #000 35%, transparent 70%); mask: radial-gradient(circle, #000 35%, transparent 70%);
+  animation: girar-lento 40s linear infinite;
+}
+.roleta-svg { overflow: visible; }
+.roleta-luz { fill: #FFF3C4; stroke: #05101F; stroke-width: 1.4; }
+.roleta-luz.a { animation: piscar 0.9s infinite alternate; }
+.roleta-luz.b { animation: piscar 0.9s infinite alternate-reverse; }
+@keyframes piscar { from { fill: #FFF3C4; filter: drop-shadow(0 0 3px #FFE38F); } to { fill: #8A6A1E; filter: none; } }
+.roleta-wrap.parou .roleta-luz { animation-duration: 0.18s; }
+.roleta-ponteiro { position: absolute; top: -6%; left: 50%; width: 15%; transform: translateX(-50%); z-index: 3; filter: drop-shadow(0 4px 0 #05101F); transform-origin: 50% 30%; }
+.roleta-wrap.girando .roleta-ponteiro { animation: ponteiro-tic 0.12s infinite alternate; }
+@keyframes ponteiro-tic { to { transform: translateX(-50%) rotate(-12deg); } }
+.roleta-wrap.parou .roleta-ponteiro { animation: ponteiro-para 0.5s cubic-bezier(.2, 1.8, .4, 1); }
+@keyframes ponteiro-para { 0% { transform: translateX(-50%) rotate(-18deg); } 100% { transform: translateX(-50%) rotate(0); } }
+.roleta-botao-girar {
+  background: radial-gradient(circle at 38% 30%, #FFFFFF 0%, #F1F5F9 45%, #B8C4D4 100%);
+  border: 5px solid #05101F; box-shadow: 0 0 0 5px #F2B21C, 0 0 0 8px #05101F, 0 6px 0 8px #05101F;
+  font-size: clamp(1.05rem, 4.8vw, 1.45rem); color: #0B2545; text-shadow: 0 1px 0 #FFF;
+}
+.roleta-botao-girar:active:not([disabled]) { box-shadow: 0 0 0 5px #F2B21C, 0 0 0 8px #05101F, 0 2px 0 8px #05101F; }
+.roleta-botao-girar[disabled] { opacity: 1; filter: saturate(0.6); }
+.coroa-pronta .roleta-botao-girar { background: radial-gradient(circle at 38% 30%, #FFF6D0, #FFC93C 70%, #D99A12); }
+
+/* ---------- Revelação da categoria ---------- */
+.revelacao-cat {
+  position: fixed; inset: 0; z-index: 50; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
+  background: radial-gradient(circle, color-mix(in srgb, var(--cor) 55%, #071426) 0%, rgba(7, 20, 38, 0.94) 65%);
+  animation: rev-fundo 0.25s ease-out; overflow: hidden;
+}
+@keyframes rev-fundo { from { opacity: 0; } to { opacity: 1; } }
+.revelacao-raios {
+  position: absolute; width: 160vmax; height: 160vmax; left: 50%; top: 50%; translate: -50% -50%;
+  background: repeating-conic-gradient(from 0deg, rgba(255, 255, 255, 0.12) 0deg 9deg, transparent 9deg 18deg);
+  animation: girar-lento 14s linear infinite;
+}
+.revelacao-mascote { position: relative; width: 180px; height: 200px; animation: rev-pop 0.6s cubic-bezier(.2, 1.7, .4, 1) both; }
+@keyframes rev-pop { 0% { transform: scale(0) rotate(-20deg); } 70% { transform: scale(1.12) rotate(4deg); } 100% { transform: scale(1) rotate(0); } }
+.revelacao-nome {
+  position: relative; font-family: var(--font-title); font-weight: 900; font-size: 2.3rem; text-transform: uppercase; line-height: 1; text-align: center;
+  color: #FFFFFF; -webkit-text-stroke: 2px #05101F; paint-order: stroke fill; text-shadow: 0 5px 0 #05101F;
+  animation: rev-texto 0.5s 0.15s cubic-bezier(.2, 1.6, .4, 1) both; padding: 0 16px;
+}
+.revelacao-sub { position: relative; color: #FFF3C4; font-weight: 700; animation: rev-texto 0.5s 0.25s ease-out both; }
+@keyframes rev-texto { from { opacity: 0; transform: translateY(16px) scale(0.9); } to { opacity: 1; transform: none; } }
+
+/* ---------- Início ---------- */
+.inicio-marca h1 { -webkit-text-stroke: 2px #05101F; paint-order: stroke fill; text-shadow: 0 5px 0 #05101F; font-size: 2.9rem; }
+.inicio-roleta-mini { width: 190px; height: 190px; }
+.inicio-cat { padding: 6px 10px 6px 6px; gap: 6px; min-height: 58px; background: linear-gradient(135deg, color-mix(in srgb, var(--cor) 30%, #0B1F3A), #0B1F3A); box-shadow: 0 3px 0 #05101F; }
+.inicio-cat-mascote { width: 46px; height: 50px; flex-shrink: 0; animation: mascote-flutua 2.4s ease-in-out infinite; animation-delay: var(--atraso, 0s); }
+.inicio-cat-nome { line-height: 1.1; }
+@keyframes mascote-flutua { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+.roleta-btn-principal { background: linear-gradient(180deg, #5BE3FF 0%, #00B4D8 55%, #0096BD 100%); box-shadow: 0 6px 0 #05101F, inset 0 2px 0 rgba(255, 255, 255, 0.5); font-size: 1.55rem; }
+
+/* ---------- Escolher selo ---------- */
+.escolher-coroa { width: 110px; height: 120px; }
+.escolher-cat { padding: 10px 6px 12px; min-height: 140px; background: linear-gradient(180deg, color-mix(in srgb, var(--cor) 75%, #FFFFFF) 0%, var(--cor) 45%); }
+.escolher-mascote { width: 70px !important; height: 76px !important; }
+
+/* ---------- Pergunta ---------- */
+.pergunta-cartao { padding: 0 14px 14px; overflow: hidden; gap: 12px; }
+.pergunta-cabecalho {
+  display: grid; grid-template-columns: 64px 1fr auto; align-items: center; gap: 10px;
+  margin: 0 -14px; padding: 10px 14px 8px;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--cor) 85%, #FFFFFF), var(--cor));
+  border-bottom: 3px solid #05101F;
+}
+.pergunta-mascote { width: 64px; height: 70px; margin-top: -2px; }
+.pergunta-mascote.pula { animation: mascote-pula 0.6s ease-out 2; }
+.pergunta-mascote.treme { animation: fx-tremer 0.4s ease 2; }
+@keyframes mascote-pula { 0%, 100% { transform: translateY(0); } 40% { transform: translateY(-12px) scale(1.05); } }
+.pergunta-titulos { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.pergunta-cat { background: none; border: 0; padding: 0; font-size: 1.35rem; line-height: 1; color: #05101F; }
+.pergunta-tags { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+.pergunta-num { font-size: 0.75rem; font-weight: 800; text-transform: uppercase; color: rgba(5, 16, 31, 0.7); }
+.pergunta-exemplo { margin-left: 0; background: rgba(255, 255, 255, 0.6); }
+.pergunta-relogio { position: relative; width: 52px; height: 52px; }
+.pergunta-relogio svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+.relogio-fundo { fill: #FFFFFF; stroke: #05101F; stroke-width: 7; }
+.relogio-arco { fill: none; stroke: #0B2545; stroke-width: 4.5; stroke-dasharray: 100; stroke-dashoffset: 0; stroke-linecap: round; }
+.relogio-arco.urgente { stroke: #E8484F; }
+.pergunta-relogio span { position: absolute; inset: 0; display: grid; place-items: center; font-family: var(--font-pixel); font-size: 0.95rem; color: #05101F; }
+.pergunta-relogio.urgente { animation: relogio-pulsa 0.5s infinite alternate; }
+@keyframes relogio-pulsa { to { transform: scale(1.1); } }
+.pergunta-texto { font-size: 1.22rem; padding-top: 2px; }
+.alternativa { background: linear-gradient(180deg, #FFFFFF, #F4F7FB); }
+.alternativa:hover:not([disabled]) { background: #FFFFFF; }
+.alternativa.certa { animation: certa-pulsa 0.5s ease-out 2; }
+@keyframes certa-pulsa { 50% { transform: scale(1.03); } }
+
+/* ---------- HUD ---------- */
+.roleta-hud { background: linear-gradient(180deg, #17406E, #0F2B4F); box-shadow: 0 4px 0 #05101F, inset 0 1px 0 rgba(255, 255, 255, 0.15); }
+
+/* ---------- Fim ---------- */
+.fim-cat-ico { width: 40px; height: 44px; background: none; border: 0; grid-row: span 2; }
+.fim-cat-ico.sem-selo { filter: grayscale(0.7) brightness(0.8); }
+.fim-cat { grid-template-columns: 40px 1fr auto; }
+.fim-titulo { -webkit-text-stroke: 1.5px #05101F; paint-order: stroke fill; text-shadow: 0 4px 0 #05101F; }
+
+@media (prefers-reduced-motion: reduce) {
+  .roleta-raios, .revelacao-raios, .roleta-luz, .inicio-cat-mascote { animation: none !important; }
+}
+html:has(body.pagina-roleta) { background: #071426; }
+.inicio-cat .inicio-cat-mascote { width: 46px; height: 50px; background: none; border: 0; border-radius: 0; display: block; }
+.inicio-cat .inicio-cat-nome { width: auto; height: auto; background: none; border: 0; border-radius: 0; display: block; color: var(--text-white); }
+.escolher-cat .escolher-mascote { background: none; border: 0; }
+.inicio-cat { min-width: 0; }
+.inicio-cat .inicio-cat-nome { white-space: normal; overflow: visible; text-overflow: clip; font-size: 0.86rem; min-width: 0; overflow-wrap: anywhere; }
+.inicio-cat .inicio-cat-nome { flex: 1 1 auto; flex-shrink: 1; }

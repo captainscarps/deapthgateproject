@@ -13,6 +13,7 @@ import { renderAvatarSVG, AVATAR_PADRAO } from './avatar.js';
 import { ico } from './icones.js';
 import { confete, flash, tremer, seloCentral } from './fx.js';
 import { Audio } from './audio.js';
+import { mascote, nomeMascote } from './mascotes.js';
 
 const REGRAS = {
   VIDAS: 3,
@@ -74,39 +75,61 @@ function icoEm(nome, x, y, tam) {
 }
 
 function svgRoleta() {
-  const R = 150, cx = 160, cy = 160;
+  const R = 146, cx = 160, cy = 160;
   const fatias = SETORES.map((s, i) => {
     const a0 = (i * ANG - 90) * Math.PI / 180;
     const a1 = ((i + 1) * ANG - 90) * Math.PI / 180;
     const x0 = cx + R * Math.cos(a0), y0 = cy + R * Math.sin(a0);
     const x1 = cx + R * Math.cos(a1), y1 = cy + R * Math.sin(a1);
     const meio = ((i + 0.5) * ANG - 90) * Math.PI / 180;
-    const ix = cx + R * 0.66 * Math.cos(meio), iy = cy + R * 0.66 * Math.sin(meio);
-    const tx = cx + R * 0.88 * Math.cos(meio), ty = cy + R * 0.88 * Math.sin(meio);
-    const corIcone = s.tipo === 'coroa' ? '#C99616' : '#FFFFFF';
+    const ix = cx + R * 0.64 * Math.cos(meio), iy = cy + R * 0.64 * Math.sin(meio);
+    const rot = (i + 0.5) * ANG;
+    const corIcone = s.tipo === 'coroa' ? '#C99616' : s.escura;
+    const d = `M${cx} ${cy} L${x0.toFixed(2)} ${y0.toFixed(2)} A${R} ${R} 0 0 1 ${x1.toFixed(2)} ${y1.toFixed(2)} Z`;
     return `
-      <path d="M${cx} ${cy} L${x0.toFixed(2)} ${y0.toFixed(2)} A${R} ${R} 0 0 1 ${x1.toFixed(2)} ${y1.toFixed(2)} Z" fill="${s.cor}" stroke="#05101F" stroke-width="3"/>
-      <path d="M${cx} ${cy} L${x0.toFixed(2)} ${y0.toFixed(2)} A${R} ${R} 0 0 1 ${x1.toFixed(2)} ${y1.toFixed(2)} Z" fill="url(#roleta-brilho)"/>
-      <g color="${corIcone}" transform="rotate(${(i + 0.5) * ANG} ${ix.toFixed(2)} ${iy.toFixed(2)})">${icoEm(s.icone, (ix - 17).toFixed(2), (iy - 17).toFixed(2), 34)}</g>
-      <text x="${tx.toFixed(2)}" y="${ty.toFixed(2)}" transform="rotate(${(i + 0.5) * ANG} ${tx.toFixed(2)} ${ty.toFixed(2)})" text-anchor="middle" dominant-baseline="middle"
-        font-family="'Barlow Condensed', sans-serif" font-weight="900" font-size="12.5" fill="${s.tipo === 'coroa' ? '#05101F' : '#05101F'}" opacity="0.75">${s.nome.toUpperCase()}</text>`;
+      <path d="${d}" fill="${s.cor}"/>
+      <path d="${d}" fill="url(#roleta-luz)"/>
+      <path d="${d}" fill="none" stroke="#05101F" stroke-width="2.5" stroke-linejoin="round"/>
+      <g transform="rotate(${rot} ${ix.toFixed(2)} ${iy.toFixed(2)})">
+        <circle cx="${ix.toFixed(2)}" cy="${iy.toFixed(2)}" r="21" fill="#FFFFFF" stroke="#05101F" stroke-width="2.5"/>
+        <circle cx="${ix.toFixed(2)}" cy="${(iy + 2).toFixed(2)}" r="18" fill="none" stroke="#000" stroke-opacity="0.08" stroke-width="3"/>
+        <g color="${corIcone}">${icoEm(s.icone, (ix - 12).toFixed(2), (iy - 12).toFixed(2), 24)}</g>
+      </g>`;
   }).join('');
-  const pinos = SETORES.map((_, i) => {
-    const a = (i * ANG - 90) * Math.PI / 180;
-    return `<circle cx="${(cx + (R + 5) * Math.cos(a)).toFixed(2)}" cy="${(cy + (R + 5) * Math.sin(a)).toFixed(2)}" r="4.5" fill="#FFF3C4" stroke="#05101F" stroke-width="2"/>`;
+  const nLuzes = 28;
+  const luzes = Array.from({ length: nLuzes }, (_, i) => {
+    const a = (i / nLuzes) * Math.PI * 2;
+    return `<circle class="roleta-luz ${i % 2 ? 'b' : 'a'}" cx="${(cx + 155 * Math.cos(a)).toFixed(2)}" cy="${(cy + 155 * Math.sin(a)).toFixed(2)}" r="3.6"/>`;
   }).join('');
   return `
     <svg viewBox="0 0 320 320" class="roleta-svg" aria-hidden="true">
       <defs>
-        <radialGradient id="roleta-brilho" cx="50%" cy="50%" r="50%">
-          <stop offset="0.55" stop-color="#FFFFFF" stop-opacity="0"/>
-          <stop offset="1" stop-color="#FFFFFF" stop-opacity="0.18"/>
+        <radialGradient id="roleta-luz" cx="50%" cy="50%" r="50%">
+          <stop offset="0.25" stop-color="#FFFFFF" stop-opacity="0.32"/>
+          <stop offset="0.7" stop-color="#FFFFFF" stop-opacity="0"/>
+          <stop offset="1" stop-color="#000000" stop-opacity="0.18"/>
         </radialGradient>
+        <linearGradient id="roleta-aro" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#FFE38F"/>
+          <stop offset="0.5" stop-color="#F2B21C"/>
+          <stop offset="1" stop-color="#B07A10"/>
+        </linearGradient>
       </defs>
-      <circle cx="160" cy="160" r="158" fill="#0B2545" stroke="#05101F" stroke-width="4"/>
+      <circle cx="160" cy="160" r="159" fill="#05101F"/>
+      <circle cx="160" cy="160" r="156" fill="url(#roleta-aro)" stroke="#05101F" stroke-width="3"/>
+      <circle cx="160" cy="160" r="148" fill="#0B2545" stroke="#05101F" stroke-width="3"/>
+      ${luzes}
       <g class="roleta-disco" id="roleta-disco" style="transform: rotate(${rotacaoAtual}deg)">${fatias}</g>
-      ${pinos}
     </svg>`;
+}
+
+function ponteiro() {
+  return `<svg class="roleta-ponteiro" viewBox="0 0 60 70" aria-hidden="true">
+    <path d="M30 66 L8 24 A24 24 0 1 1 52 24 Z" fill="url(#pin-grad)" stroke="#05101F" stroke-width="4" stroke-linejoin="round"/>
+    <defs><linearGradient id="pin-grad" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FF8FA3"/><stop offset="1" stop-color="#E8484F"/></linearGradient></defs>
+    <circle cx="30" cy="22" r="9" fill="#FFF3C4" stroke="#05101F" stroke-width="3"/>
+    <circle cx="27" cy="19" r="3" fill="#FFFFFF"/>
+  </svg>`;
 }
 
 function hud() {
@@ -160,7 +183,7 @@ function telaInicio() {
       <button type="button" class="roleta-btn-principal" id="btn-jogar">${ico('dado')} Jogar</button>
 
       <div class="inicio-categorias">
-        ${CATEGORIAS.map(c => `<div class="inicio-cat" style="--cor: ${c.cor};"><span>${ico(c.icone)}</span>${c.nomeLongo}</div>`).join('')}
+        ${CATEGORIAS.map((c, i) => `<div class="inicio-cat" style="--cor: ${c.cor}; --atraso: ${i * 0.15}s;"><span class="inicio-cat-mascote">${mascote(c.id)}</span><span class="inicio-cat-nome">${c.nomeLongo}</span></div>`).join('')}
       </div>
 
       <details class="inicio-regras">
@@ -211,7 +234,8 @@ function telaRoleta() {
       <div class="roleta-centro">
         <div class="roleta-rodada">Rodada ${jogo.rodada + 1}</div>
         <div class="roleta-wrap ${coroaPronta ? 'coroa-pronta' : ''}">
-          <div class="roleta-ponteiro" aria-hidden="true"></div>
+          <div class="roleta-raios" aria-hidden="true"></div>
+          ${ponteiro()}
           ${svgRoleta()}
           <button type="button" class="roleta-botao-girar" id="btn-girar">${coroaPronta ? ico('coroa') : 'GIRAR'}</button>
         </div>
@@ -236,35 +260,46 @@ function girar() {
   const base = rotacaoAtual - (rotacaoAtual % 360);
   rotacaoAtual = base + voltas * 360 + (360 - centro) + variacao;
   som('tocarDado');
+  app.querySelector('.roleta-wrap')?.classList.add('girando');
   const dur = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 3200;
   disco.style.transition = dur ? `transform ${dur}ms cubic-bezier(0.12, 0.6, 0.12, 1)` : 'none';
   requestAnimationFrame(() => { disco.style.transform = `rotate(${rotacaoAtual}deg)`; });
   setTimeout(() => {
     const setor = SETORES[i];
-    const dica = app.querySelector('#roleta-dica');
-    if (dica) dica.innerHTML = `<span class="dica-resultado" style="--cor: ${setor.cor};">${ico(setor.icone)} ${setor.tipo === 'coroa' ? 'Coroa!' : setor.nomeLongo}</span>`;
+    const wrap = app.querySelector('.roleta-wrap');
+    wrap?.classList.remove('girando');
+    wrap?.classList.add('parou');
     som('tocarPasso');
+    const rev = document.createElement('div');
+    rev.className = 'revelacao-cat';
+    rev.style.setProperty('--cor', setor.cor);
+    rev.innerHTML = `
+      <div class="revelacao-raios"></div>
+      <div class="revelacao-mascote">${mascote(setor.id, { humor: 'feliz' })}</div>
+      <div class="revelacao-nome">${setor.tipo === 'coroa' ? 'Coroa!' : setor.nomeLongo}</div>
+      <div class="revelacao-sub">${setor.tipo === 'coroa' ? 'Escolha um selo para disputar' : nomeMascote(setor.id)}</div>`;
+    app.appendChild(rev);
     setTimeout(() => {
+      rev.remove();
       if (setor.tipo === 'coroa') telaEscolherSelo();
       else telaPergunta(setor.id, false);
-    }, 900);
+    }, 1500);
   }, dur + 80);
 }
 
 function telaEscolherSelo() {
   pararTimer();
   const faltam = CATEGORIAS.filter(c => !jogo.selos.has(c.id));
-  seloCentral('COROA!', 'combo');
   som('tocarCheckpoint');
   app.innerHTML = `
     <div class="roleta-tela tela-jogo">
       ${hud()}
       <div class="escolher-selo">
-        <div class="escolher-coroa">${ico('coroa')}</div>
+        <div class="escolher-coroa">${mascote('coroa', { humor: 'piscando' })}</div>
         <h2>Escolha um selo para disputar</h2>
         <p>A pergunta vale o <strong>dobro</strong>. Acertou, o selo é seu.</p>
         <div class="escolher-grade">
-          ${faltam.map(c => `<button type="button" class="escolher-cat" data-cat="${c.id}" style="--cor: ${c.cor}; --escura: ${c.escura};"><span>${ico(c.icone)}</span>${c.nomeLongo}</button>`).join('')}
+          ${faltam.map(c => `<button type="button" class="escolher-cat" data-cat="${c.id}" style="--cor: ${c.cor}; --escura: ${c.escura};"><span class="escolher-mascote">${mascote(c.id)}</span>${c.nomeLongo}</button>`).join('')}
         </div>
       </div>
     </div>`;
@@ -301,12 +336,20 @@ function telaPergunta(cat, valendoSelo) {
     <div class="roleta-tela tela-jogo tela-pergunta" style="--cor: ${c.cor}; --escura: ${c.escura};">
       ${hud()}
       <div class="pergunta-cartao">
-        <div class="pergunta-topo">
-          <span class="pergunta-cat">${ico(c.icone)} ${c.nomeLongo}</span>
-          ${valendoSelo ? `<span class="pergunta-selo">${ico('coroa')} Valendo selo · ×2</span>` : ''}
-          ${p.status === 'exemplo' ? '<span class="pergunta-exemplo">exemplo</span>' : ''}
+        <div class="pergunta-cabecalho">
+          <div class="pergunta-mascote" id="pergunta-mascote">${mascote(cat, { humor: 'feliz' })}</div>
+          <div class="pergunta-titulos">
+            <span class="pergunta-cat">${c.nomeLongo}</span>
+            <div class="pergunta-tags">
+              ${valendoSelo ? `<span class="pergunta-selo">${ico('coroa')} Valendo selo · ×2</span>` : `<span class="pergunta-num">Rodada ${jogo.rodada + 1}</span>`}
+              ${p.status === 'exemplo' ? '<span class="pergunta-exemplo">exemplo</span>' : ''}
+            </div>
+          </div>
+          <div class="pergunta-relogio" aria-label="Tempo restante">
+            <svg viewBox="0 0 44 44"><circle cx="22" cy="22" r="18" class="relogio-fundo"/><circle cx="22" cy="22" r="18" class="relogio-arco" id="timer-barra" pathLength="100"/></svg>
+            <span id="timer-num">${REGRAS.TEMPO_MS / 1000}</span>
+          </div>
         </div>
-        <div class="pergunta-timer"><div class="pergunta-timer-barra" id="timer-barra"></div><span id="timer-num">${REGRAS.TEMPO_MS / 1000}</span></div>
         <p class="pergunta-texto">${p.pergunta}</p>
         <div class="pergunta-alternativas">
           ${p.ordem.map((o, k) => `<button type="button" class="alternativa" data-k="${k}"><span class="alt-letra">${'ABCD'[k]}</span><span class="alt-texto">${o.t}</span></button>`).join('')}
@@ -332,8 +375,9 @@ function iniciarTimer() {
     const e = jogo && jogo.perguntaAtual;
     if (!e || e.respondida) return;
     const resta = Math.max(0, e.limite - (t - e.inicio));
-    barra.style.transform = `scaleX(${Math.min(1, resta / REGRAS.TEMPO_MS)})`;
+    barra.style.strokeDashoffset = `${100 - Math.min(1, resta / REGRAS.TEMPO_MS) * 100}`;
     barra.classList.toggle('urgente', resta < 6000);
+    app.querySelector('.pergunta-relogio')?.classList.toggle('urgente', resta < 6000);
     num.textContent = Math.ceil(resta / 1000);
     if (resta <= 0) { responder(null); return; }
     timer = requestAnimationFrame(tick);
@@ -447,6 +491,8 @@ function responder(k) {
     tremer(app.querySelector('.pergunta-cartao'));
   }
   atualizarHud();
+  const masc = app.querySelector('#pergunta-mascote');
+  if (masc) { masc.innerHTML = mascote(e.cat, { humor: correta ? 'feliz' : (k == null ? 'surpreso' : 'triste') }); masc.classList.add(correta ? 'pula' : 'treme'); }
 
   const venceu = jogo.selos.size === CATEGORIAS.length;
   const acabou = jogo.vidas <= 0;
@@ -484,7 +530,7 @@ function telaFim(venceu) {
     const s = jogo.porCategoria[c.id];
     const pct = s.total ? Math.round((s.acertos / s.total) * 100) : 0;
     return `<div class="fim-cat">
-      <span class="fim-cat-ico" style="--cor: ${c.cor};">${ico(c.icone)}</span>
+      <span class="fim-cat-ico ${jogo.selos.has(c.id) ? '' : 'sem-selo'}">${mascote(c.id, { humor: jogo.selos.has(c.id) ? 'feliz' : 'triste' })}</span>
       <span class="fim-cat-nome">${c.nomeLongo} ${jogo.selos.has(c.id) ? `<span class="fim-selo-tag">${ico('coroa')} selo</span>` : ''}</span>
       <span class="fim-cat-num">${s.acertos}/${s.total}</span>
       <span class="fim-cat-barra"><span style="width: ${pct}%; background: ${c.cor};"></span></span>
