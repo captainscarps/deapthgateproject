@@ -302,3 +302,6 @@
 .peao-avatar-wrapper .peao-corpo-wrapper { transform-origin: center 74px; }
 .peao-avatar-wrapper .peao-corpo-wrapper svg { width: 100%; height: 100%; display: block; filter: drop-shadow(0 3px 2px rgba(11, 37, 69, 0.5)); }
 .peao-sombra { width: 46px !important; height: 14px !important; }
+.btn-roleta-entrada { text-decoration: none; border-color: var(--gold); background: linear-gradient(135deg, rgba(255, 201, 60, 0.22), rgba(255, 93, 143, 0.12)); }
+.btn-roleta-entrada .ico { color: var(--gold); }
+.btn-roleta-entrada .badge-novo { background: var(--gold); }

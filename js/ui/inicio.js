@@ -90,8 +90,19 @@ export function render(currentState) {
           </div>
         </section>
 
-        <!-- LIGA & DUELOS -->
+        <!-- OUTRO JOGO DA PLATAFORMA -->
         <section style="margin-top: 14px;">
+          <a href="roleta.html" class="btn-liga-entrada btn-roleta-entrada" id="link-roleta">
+            ${ico('dado')}
+            <span style="flex: 1;">
+              <span class="btn-liga-entrada-titulo">Roleta da Governança <span class="badge-novo">NOVO JOGO</span></span>
+              <span class="btn-liga-entrada-sub">Perguntas rápidas de LGPD, IA, segurança e políticas. Ótimo no celular.</span>
+            </span>
+          </a>
+        </section>
+
+        <!-- LIGA & DUELOS -->
+        <section style="margin-top: 10px;">
           <button type="button" id="btn-abrir-liga" class="btn-liga-entrada">
             ${ico('espadas')}
             <span style="flex: 1;">

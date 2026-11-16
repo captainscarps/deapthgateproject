@@ -191,3 +191,11 @@ Cada tarefa: implementar → prints antes/depois → `tests.html` e `smoke.html`
 - **Personalização**: abas em grade (sem cortes), cada opção mostra o próprio avatar com aquela escolha, nomes em português, prévia maior.
 - **Tabuleiro físico**: mesa de madeira, tabuleiro como cartão impresso com moldura navy/dourada e bairros coloridos, trilha impressa em creme, casas como espaços impressos, peão maior.
 - **Bug corrigido**: cartas "avança/volta N casas" somavam o número direto na posição (nos atalhos 61–65 o peão ia para a casa 60 e ganhava checkpoints indevidos) e o peão não se movia na tela. Agora o movimento segue o grafo e é animado (`StateManager.moverPorCarta`).
+
+## 11. Roleta da Governança (segundo jogo da plataforma) — 16/11/2026
+- Página própria `roleta.html` (mobile-first), mesmo repositório e mesmo site da Trilha; acesso pelo cartão "Roleta da Governança" na tela inicial.
+- Regras: roleta com 6 categorias + Coroa; 4 alternativas e 20 s por pergunta; 3 vidas; 100 + até 50 pontos por acerto e +1 moeda; 3 acertos seguidos (ou Coroa) liberam a disputa de um selo valendo o dobro; 6 selos = vitória (+500 e +100 por vida).
+- Ajudas com moedas: Consultar o DPO (−2 alternativas), +10 s, Pular, Segunda chance.
+- **Banco de perguntas compartilhado** (`data/perguntas.json` + `js/perguntas.js`): 56 perguntas novas + as 40 cartas de múltipla escolha da Trilha, em 6 categorias (LGPD, IA Responsável, Segurança, Governança de Dados, Políticas SEST SENAT, Pense Antes).
+- A categoria **Políticas SEST SENAT** usa perguntas marcadas como `exemplo` até recebermos as políticas oficiais (aparece a etiqueta "exemplo" na pergunta).
+- Próximos passos: duelos e liga migram da Trilha para a Roleta; meta de ~50 perguntas por categoria; ranking por área somando os dois jogos.
