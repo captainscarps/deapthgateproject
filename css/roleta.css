@@ -358,3 +358,158 @@ html:has(body.pagina-roleta) { background: #071426; }
 }
 .aviso-banco-local { background: rgba(255, 183, 3, 0.12); border: 2px dashed #FFB703; color: #FFE7A3; border-radius: 12px; padding: 8px 12px; font-size: 0.88rem; display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
 .aviso-banco-local a { color: #FFF; font-weight: 800; }
+
+/* ==============================================================================
+   DUELOS COM APOSTA
+   ============================================================================== */
+.fichas { display: inline-flex; align-items: center; gap: 3px; font-family: var(--font-pixel); font-size: 0.85em; color: #FFE7A3; white-space: nowrap; }
+.fichas .ico { color: var(--gold); width: 1.05em; height: 1.05em; }
+.inicio-botoes { display: grid; grid-template-columns: 1.4fr 1fr; gap: 10px; }
+.roleta-btn-duelo {
+  display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; min-height: 56px; border-radius: 16px; cursor: pointer; position: relative;
+  background: linear-gradient(180deg, #D7B8FF 0%, #B98CFF 55%, #9A6BEB 100%); color: #05101F; border: 3px solid #05101F;
+  box-shadow: 0 6px 0 #05101F, inset 0 2px 0 rgba(255, 255, 255, 0.5);
+  font-family: var(--font-title); font-weight: 900; font-size: 1.3rem; text-transform: uppercase;
+}
+.roleta-btn-duelo .ico { width: 1.2em; height: 1.2em; }
+.roleta-btn-duelo .badge-pendente { position: absolute; top: -8px; right: -6px; font-size: 0.8rem; border: 2px solid #05101F; }
+.inicio-carteira { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; background: rgba(255, 201, 60, 0.1); border: 2px solid rgba(255, 201, 60, 0.5); border-radius: 14px; padding: 8px 12px; color: #FFE7A3; }
+.inicio-carteira > .ico { width: 22px; height: 22px; color: var(--gold); }
+.inicio-carteira strong { font-family: var(--font-pixel); color: var(--gold); }
+.inicio-carteira small { color: var(--text-muted); }
+.inicio-carteira-dica { margin-left: auto; font-size: 0.78rem; color: var(--text-muted); }
+.fim-tokens { display: inline-flex; align-items: center; gap: 6px; background: rgba(255, 201, 60, 0.12); border: 2px solid var(--gold); border-radius: 999px; padding: 6px 14px; color: #FFE7A3; font-weight: 800; }
+.fim-tokens .ico { color: var(--gold); }
+.fim-tokens small { color: var(--text-muted); font-weight: 600; }
+
+.duelo-topo { display: flex; align-items: center; gap: 10px; background: linear-gradient(180deg, #17406E, #0F2B4F); border: 2px solid #05101F; border-radius: 16px; padding: 8px 10px; box-shadow: 0 4px 0 #05101F; }
+.duelo-topo h1 { font-family: var(--font-title); font-weight: 900; font-size: 1.6rem; text-transform: uppercase; flex: 1; }
+.carteira { display: flex; align-items: center; gap: 5px; background: #05101F; border-radius: 999px; padding: 5px 12px; color: #FFE7A3; }
+.carteira .ico { color: var(--gold); width: 20px; height: 20px; }
+.carteira strong { font-family: var(--font-pixel); font-size: 1.05rem; }
+.carteira small { color: var(--text-muted); font-size: 0.72rem; }
+.duelo-busto { display: inline-block; border-radius: 50%; overflow: hidden; background: #0A1C30; border: 2px solid #05101F; flex-shrink: 0; }
+.duelo-busto svg { width: 100%; height: 100%; display: block; }
+.duelo-regras-box { display: flex; gap: 10px; align-items: center; background: linear-gradient(135deg, rgba(185, 140, 255, 0.25), rgba(255, 201, 60, 0.12)); border: 2px solid #B98CFF; border-radius: 16px; padding: 10px 12px; }
+.duelo-regras-mascote { width: 64px; height: 70px; flex-shrink: 0; }
+.duelo-regras-box strong { display: block; font-family: var(--font-title); font-size: 1.25rem; text-transform: uppercase; color: var(--gold); }
+.duelo-regras-box span { font-size: 0.9rem; color: #E2E8F0; font-family: var(--font-body); }
+.duelo-aviso { font-size: 0.8rem; color: #FFD98A; display: flex; gap: 6px; align-items: center; }
+.duelo-secao { display: flex; flex-direction: column; gap: 8px; }
+.duelo-secao h2 { font-family: var(--font-title); font-weight: 800; font-size: 1.1rem; text-transform: uppercase; color: var(--text-muted); display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.duelo-secao h2 > span:not(.duelo-min) { background: #05101F; color: #fff; border-radius: 999px; padding: 0 8px; font-size: 0.8rem; }
+.duelo-min { margin-left: auto; font-size: 0.85rem; text-transform: none; color: var(--text-muted); font-family: var(--font-body); font-weight: 600; }
+.duelo-cartao { display: grid; grid-template-columns: auto 1fr; gap: 6px 10px; align-items: center; background: var(--navy-panel); border: 2px solid #05101F; border-radius: 14px; padding: 10px; }
+.duelo-cartao.st-convite, .duelo-cartao.st-aguardando_voce { border-color: var(--cyan); }
+.duelo-cartao.st-resultado { border-color: var(--gold); background: linear-gradient(90deg, rgba(255, 201, 60, 0.14), var(--navy-panel)); }
+.duelo-cartao-nome { font-size: 0.98rem; }
+.duelo-cartao-txt { font-size: 0.85rem; color: var(--text-muted); margin-top: 2px; }
+.duelo-cartao-acoes { grid-column: 1 / -1; display: flex; gap: 6px; justify-content: flex-end; }
+.duelo-cartao-acoes:empty { display: none; }
+.duelo-espera { color: var(--cyan); font-family: var(--font-pixel); font-size: 0.72rem; }
+.res-vitoria { color: var(--green); font-weight: 800; } .res-derrota { color: #FF6B7D; font-weight: 800; } .res-empate { color: var(--gold); font-weight: 800; }
+.duelo-btn { display: inline-flex; align-items: center; gap: 5px; cursor: pointer; padding: 8px 12px; border-radius: 10px; border: 2px solid #05101F; font-family: var(--font-main); font-weight: 900; font-size: 0.9rem; text-transform: uppercase; box-shadow: 0 3px 0 #05101F; white-space: nowrap; }
+.duelo-btn[disabled] { opacity: 0.5; cursor: not-allowed; }
+.duelo-btn-ok { background: var(--cyan); color: #05101F; }
+.duelo-btn-ouro { background: var(--gold); color: #05101F; animation: pulso-coroa 0.9s infinite alternate; }
+.duelo-btn-sec { background: #15345F; color: var(--text-white); }
+.duelo-colegas { display: flex; flex-direction: column; gap: 6px; }
+.duelo-colega { display: flex; align-items: center; gap: 10px; background: var(--navy-panel); border: 2px solid #05101F; border-radius: 14px; padding: 8px 10px; }
+.duelo-colega.bloqueado { opacity: 0.6; }
+.duelo-colega-info { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+.duelo-colega-info strong { font-size: 1rem; }
+.duelo-colega-info span { font-size: 0.82rem; color: var(--text-muted); display: flex; gap: 6px; align-items: center; }
+.duelo-motivo { font-size: 0.75rem; color: var(--text-muted); max-width: 140px; text-align: right; line-height: 1.2; }
+.duelo-extrato { background: var(--navy-panel); border: 2px solid #05101F; border-radius: 14px; padding: 10px 12px; }
+.duelo-extrato summary { cursor: pointer; font-family: var(--font-title); font-weight: 800; text-transform: uppercase; color: var(--gold); display: flex; gap: 6px; align-items: center; }
+.duelo-extrato ul { list-style: none; margin: 10px 0; display: flex; flex-direction: column; gap: 6px; font-size: 0.85rem; }
+.duelo-extrato li { display: grid; grid-template-columns: 82px 1fr auto; gap: 8px; align-items: center; border-bottom: 1px solid #1E447B; padding-bottom: 5px; }
+.duelo-extrato li span:first-child { color: var(--text-dim); font-size: 0.75rem; }
+.duelo-extrato .mais { color: var(--green); font-family: var(--font-pixel); } .duelo-extrato .menos { color: #FF6B7D; font-family: var(--font-pixel); }
+
+/* Aposta */
+.aposta-vs { display: flex; align-items: center; justify-content: center; gap: 18px; padding-top: 6px; }
+.aposta-lado { display: flex; flex-direction: column; align-items: center; gap: 4px; text-align: center; }
+.aposta-lado strong { font-size: 1rem; }
+.aposta-x { font-family: var(--font-pixel); font-size: 1.8rem; color: var(--gold); text-shadow: 0 3px 0 #05101F; }
+.aposta-caixa { background: #FFFDF6; color: #0B2545; border: 3px solid #05101F; border-radius: 20px; padding: 16px; box-shadow: 0 6px 0 #B98CFF, 0 6px 0 3px #05101F; display: flex; flex-direction: column; gap: 10px; align-items: center; text-align: center; }
+.aposta-rotulo { font-family: var(--font-title); font-weight: 900; text-transform: uppercase; color: #7B4FCF; font-size: 1.1rem; }
+.aposta-valor { display: flex; align-items: center; gap: 14px; }
+.aposta-valor span { font-family: var(--font-pixel); font-size: 2.8rem; color: #0B2545; min-width: 110px; }
+.aposta-valor button { width: 46px; height: 46px; border-radius: 50%; border: 3px solid #05101F; background: var(--gold); font-size: 1.6rem; font-weight: 900; cursor: pointer; color: #05101F; box-shadow: 0 3px 0 #05101F; }
+#aposta-range { width: 100%; accent-color: #7B4FCF; height: 28px; }
+.aposta-limites { width: 100%; display: flex; justify-content: space-between; font-size: 0.8rem; color: #64748B; font-weight: 700; }
+.aposta-atalhos { display: flex; gap: 6px; }
+.aposta-atalhos .duelo-btn { background: #EDE4FF; color: #0B2545; }
+.aposta-premio { font-weight: 800; }
+.aposta-premio .fichas { color: #B07A10; font-size: 1.1rem; }
+.aposta-premio .fichas .ico { color: #D99A12; }
+.aposta-regra { font-size: 0.82rem; color: #475569; }
+
+/* Pré-bateria, bateria e envio */
+.pre-pote { align-self: center; display: flex; align-items: center; gap: 8px; background: #05101F; border: 2px solid var(--gold); border-radius: 999px; padding: 8px 18px; font-family: var(--font-pixel); font-size: 1.4rem; color: var(--gold); }
+.pre-pote small { font-family: var(--font-body); font-size: 0.8rem; color: var(--text-muted); }
+.pre-regras { list-style: none; display: flex; flex-direction: column; gap: 8px; background: var(--navy-panel); border: 2px solid #05101F; border-radius: 16px; padding: 12px 14px; }
+.pre-regras li { display: flex; gap: 10px; align-items: center; }
+.pre-regras .ico { color: var(--gold); width: 22px; height: 22px; }
+.pre-nota { font-size: 0.8rem; color: var(--text-dim); text-align: center; }
+.duelo-contagem { display: grid; place-items: center; min-height: 60dvh; }
+.duelo-contagem span { font-family: var(--font-pixel); font-size: 7rem; color: var(--gold); text-shadow: 0 8px 0 #05101F; animation: rev-pop 0.5s cubic-bezier(.2, 1.7, .4, 1); }
+.bateria-progresso { display: flex; gap: 6px; justify-content: center; }
+.bp { width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; background: #0A1C30; border: 2px solid #1E447B; color: var(--text-muted); font-family: var(--font-pixel); font-size: 0.75rem; }
+.bp.feito { border-color: var(--cyan); color: var(--cyan); }
+.bp.atual { background: var(--cyan); color: #05101F; border-color: #05101F; transform: scale(1.1); }
+.bp.final { border-color: var(--gold); color: var(--gold); }
+.bp.final.atual { background: var(--gold); color: #05101F; }
+.bp .ico { width: 15px; height: 15px; }
+.alternativa.registrada { border-color: #0077B6; background: #DDF4FF; box-shadow: 0 4px 0 #0077B6; }
+.tela-enviado { align-items: center; text-align: center; padding-top: 30px; }
+.enviado-mascote { width: 140px; height: 150px; }
+.tela-enviado h2 { font-family: var(--font-title); font-weight: 900; font-size: 2rem; text-transform: uppercase; color: var(--cyan); }
+.tela-enviado p { color: #D7DEEA; }
+
+/* Revelação */
+.rv-placar { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 6px; background: linear-gradient(180deg, #17406E, #0F2B4F); border: 2px solid #05101F; border-radius: 18px; padding: 10px; box-shadow: 0 4px 0 #05101F; }
+.rv-lado { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 6px; border-radius: 12px; border: 2px solid transparent; transition: all 0.25s; text-align: center; }
+.rv-lado span { font-weight: 800; font-size: 0.9rem; }
+.rv-lado b { font-family: var(--font-pixel); font-size: 1.7rem; color: var(--gold); }
+.rv-lado.lider { border-color: var(--gold); background: rgba(255, 201, 60, 0.12); }
+.rv-pote { display: flex; flex-direction: column; align-items: center; color: var(--gold); }
+.rv-pote .ico { width: 26px; height: 26px; }
+.rv-pote b { font-family: var(--font-pixel); font-size: 1.2rem; }
+.rv-pote small { font-size: 0.7rem; color: var(--text-muted); }
+.rv-linhas { display: flex; flex-direction: column; gap: 6px; }
+.rv-linha { display: grid; grid-template-columns: 74px 1fr 74px; gap: 6px; align-items: center; opacity: 0; transform: translateY(8px); transition: all 0.35s; }
+.rv-linha.visivel { opacity: 1; transform: none; }
+.rv-linha.final .rv-q { border-color: var(--gold); }
+.rv-cel { display: flex; flex-direction: column; align-items: center; justify-content: center; border-radius: 10px; border: 2px solid #05101F; padding: 4px; min-height: 52px; }
+.rv-cel.ok { background: rgba(60, 203, 127, 0.2); border-color: var(--green); color: var(--green); }
+.rv-cel.erro { background: rgba(232, 72, 79, 0.14); border-color: rgba(232, 72, 79, 0.6); color: #FF6B7D; }
+.rv-cel .ico { width: 16px; height: 16px; }
+.rv-cel b { font-family: var(--font-pixel); font-size: 0.8rem; color: var(--text-white); }
+.rv-cel small { font-size: 0.65rem; color: var(--text-muted); }
+.rv-q { display: flex; align-items: center; gap: 6px; background: var(--navy-panel); border: 2px solid #05101F; border-left: 4px solid var(--cor); border-radius: 10px; padding: 4px 8px; min-height: 52px; }
+.rv-q-m { width: 30px; height: 32px; flex-shrink: 0; }
+.rv-q-t { font-size: 0.78rem; line-height: 1.25; color: #D7DEEA; }
+.rv-final { text-align: center; padding: 14px; border-radius: 18px; border: 3px solid; opacity: 0; transform: scale(0.9); transition: all 0.45s cubic-bezier(.2, 1.4, .4, 1); }
+.rv-final.visivel { opacity: 1; transform: none; }
+.rv-vitoria { border-color: var(--green); background: linear-gradient(135deg, rgba(60, 203, 127, 0.28), #0F2B4F); }
+.rv-derrota { border-color: #E8484F; background: linear-gradient(135deg, rgba(232, 72, 79, 0.24), #0F2B4F); }
+.rv-empate { border-color: var(--gold); background: linear-gradient(135deg, rgba(255, 201, 60, 0.22), #0F2B4F); }
+.rv-final-t { font-family: var(--font-title); font-weight: 900; font-size: 2.4rem; text-transform: uppercase; line-height: 1; -webkit-text-stroke: 1.5px #05101F; paint-order: stroke fill; }
+.rv-vitoria .rv-final-t { color: var(--green); } .rv-derrota .rv-final-t { color: #FF6B7D; } .rv-empate .rv-final-t { color: var(--gold); }
+.rv-final-s { margin-top: 4px; }
+.rv-final-d { margin-top: 6px; font-family: var(--font-pixel); font-size: 0.85rem; color: var(--gold); display: inline-flex; gap: 6px; align-items: center; flex-wrap: wrap; justify-content: center; }
+.rv-acoes { display: flex; flex-direction: column; gap: 10px; opacity: 0; pointer-events: none; transition: opacity 0.3s 0.2s; }
+.rv-acoes.visivel { opacity: 1; pointer-events: auto; }
+.rv-exp { background: var(--navy-panel); border: 2px solid #05101F; border-radius: 14px; padding: 10px 12px; }
+.rv-exp summary { cursor: pointer; font-weight: 800; color: var(--gold); display: flex; gap: 6px; align-items: center; }
+.rv-exp-item { display: flex; flex-direction: column; gap: 4px; border-left: 4px solid var(--green); padding: 6px 10px; margin-top: 8px; font-size: 0.88rem; }
+.rv-exp-item.erro { border-left-color: #E8484F; }
+.rv-certa { color: var(--green); font-weight: 700; display: flex; gap: 4px; }
+.rv-sua { color: #FF9AA5; display: flex; gap: 4px; }
+.rv-exp-item small { color: var(--text-muted); }
+.rv-pular { align-self: center; background: none; border: 0; color: var(--text-muted); cursor: pointer; display: inline-flex; gap: 4px; align-items: center; font-family: var(--font-main); font-size: 0.95rem; }
+.roleta-toast { position: fixed; left: 50%; bottom: 20px; transform: translateX(-50%); z-index: 9999; width: max-content; max-width: 92vw; background: #0F2B4F; border: 2px solid var(--gold); color: var(--text-white); border-radius: 14px; padding: 10px 14px; box-shadow: 0 6px 0 #05101F; display: flex; gap: 6px; align-items: center; animation: tela-entra 0.3s ease-out; }
+.roleta-toast .ico { color: var(--gold); }
+.roleta-toast.saindo { opacity: 0; transition: opacity 0.4s; }

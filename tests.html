@@ -21,6 +21,7 @@
     import { carregarBanco, CATEGORIAS } from './js/perguntas.js';
     import { AVATAR_OPCOES, AVATAR_PADRAO, renderAvatarSVG, validarAvatar, gerarAvatarAleatorio } from './js/avatar.js';
     import { mascote } from './js/mascotes.js';
+    import { apostaMinima, validarAposta, liquidar, tokensDaPartida, pontuarResposta } from './js/duelos.js';
 
     const lista = document.getElementById('lista');
     let ok = 0, falhas = 0;
@@ -113,6 +114,26 @@
       const s = mascote(id, { humor: h }); return !s.includes('<svg') || s.includes('undefined');
     }));
     registrar('Mascotes de todas as categorias e humores', mascErr.length === 0, mascErr.join(', ') || 'ok');
+
+    // 11. Duelos com aposta
+    registrar('Aposta mínima = 20% do saldo (arredonda para cima)', apostaMinima(100) === 20 && apostaMinima(37) === 8 && apostaMinima(1) === 1 && apostaMinima(0) === 1,
+      `100→${apostaMinima(100)}, 37→${apostaMinima(37)}, 1→${apostaMinima(1)}`);
+    const casos = [
+      [{ saldoDesafiante: 100, saldoDesafiado: 50, aposta: 20 }, true, 'aposta mínima válida'],
+      [{ saldoDesafiante: 100, saldoDesafiado: 50, aposta: 19 }, false, 'abaixo de 20%'],
+      [{ saldoDesafiante: 100, saldoDesafiado: 15, aposta: 20 }, false, 'adversário sem saldo para a mínima'],
+      [{ saldoDesafiante: 100, saldoDesafiado: 50, aposta: 60 }, false, 'acima do saldo do adversário'],
+      [{ saldoDesafiante: 100, saldoDesafiado: 500, aposta: 120 }, false, 'acima do próprio saldo'],
+      [{ saldoDesafiante: 100, saldoDesafiado: 500, aposta: 100 }, true, 'apostar tudo'],
+      [{ saldoDesafiante: 0, saldoDesafiado: 50, aposta: 1 }, false, 'sem tokens']
+    ];
+    const falhosAposta = casos.filter(([c, esperado]) => validarAposta(c).ok !== esperado).map(x => x[2]);
+    registrar('Validação de apostas (7 cenários)', falhosAposta.length === 0, falhosAposta.join(', ') || 'ok');
+    const v = liquidar(500, 300, 20), dr = liquidar(300, 500, 20), e = liquidar(400, 400, 20);
+    registrar('Vencedor leva o pote; empate devolve', v.recebeEu === 40 && v.recebeAdv === 0 && dr.recebeEu === 0 && dr.recebeAdv === 40 && e.recebeEu === 20 && e.recebeAdv === 20,
+      `vitória +${v.saldoLiquidoEu}, derrota ${dr.saldoLiquidoEu}, empate ${e.saldoLiquidoEu}`);
+    registrar('Tokens da partida solo (1 a cada 100 pontos, mínimo 1)', tokensDaPartida(2450) === 24 && tokensDaPartida(50) === 1, `2450→${tokensDaPartida(2450)}`);
+    registrar('Pontuação do duelo (rapidez e última ×2)', pontuarResposta({ correta: true, tempoMs: 0, indice: 0 }) === 150 && pontuarResposta({ correta: true, tempoMs: 15000, indice: 6 }) === 200 && pontuarResposta({ correta: false, tempoMs: 0, indice: 0 }) === 0, 'ok');
 
     document.getElementById('placar').innerHTML = falhas === 0
       ? `<span class="pass">✅ ${ok} TESTES PASSARAM</span> · 100% de aprovação`

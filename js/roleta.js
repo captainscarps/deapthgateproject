@@ -15,6 +15,8 @@ import { confete, flash, tremer, seloCentral } from './fx.js';
 import { Audio } from './audio.js';
 import { mascote, nomeMascote } from './mascotes.js';
 import { abrirCriadorAvatar } from './ui/avatar_criador.js';
+import { abrirDuelos } from './duelos_ui.js';
+import { saldo as saldoTokens, pendencias as pendenciasDuelo, creditarPartida, atualizarDuelos, tokensRetidos } from './duelos.js';
 
 const REGRAS = {
   VIDAS: 3,
@@ -193,7 +195,11 @@ function telaInicio() {
         </div>
       </div>
 
-      <button type="button" class="roleta-btn-principal" id="btn-jogar">${ico('dado')} Jogar</button>
+      <div class="inicio-botoes">
+        <button type="button" class="roleta-btn-principal" id="btn-jogar">${ico('dado')} Jogar</button>
+        <button type="button" class="roleta-btn-duelo" id="btn-duelos">${ico('espadas')} Duelos <span id="badge-duelos"></span></button>
+      </div>
+      <div class="inicio-carteira">${ico('token')} <span>Carteira: <strong>${saldoTokens()}</strong> tokens${tokensRetidos() ? ` <small>(+${tokensRetidos()} em duelos)</small>` : ''}</span><span class="inicio-carteira-dica">Ganhe jogando · aposte nos duelos</span></div>
 
       <div class="inicio-categorias">
         ${CATEGORIAS.map((c, i) => `<div class="inicio-cat" style="--cor: ${c.cor}; --atraso: ${i * 0.15}s;"><span class="inicio-cat-mascote">${mascote(c.id)}</span><span class="inicio-cat-nome">${c.nomeLongo}</span></div>`).join('')}
@@ -207,12 +213,19 @@ function telaInicio() {
           <li><strong>3 acertos seguidos</strong> (ou cair na Coroa) liberam a disputa de um <strong>selo</strong>, valendo o dobro.</li>
           <li>Cada erro custa <strong>1 vida</strong>. Você tem 3.</li>
           <li>Junte os <strong>6 selos</strong> para vencer. Use moedas para pedir ajuda.</li>
+          <li>Cada 100 pontos viram <strong>1 token</strong> na sua carteira. Use os tokens para <strong>apostar em duelos</strong>: no mínimo 20% do saldo, e quem vencer leva os tokens do outro.</li>
         </ul>
       </details>
       ${usandoBancoLocal() ? `<div class="aviso-banco-local">${ico('alerta')} Modo teste: usando o banco de perguntas da área do admin (não publicado). <a href="index.html">Sair do modo teste</a></div>` : ''}
       <p class="inicio-nota">Protótipo: a categoria Políticas SEST SENAT usa perguntas de exemplo até recebermos as políticas oficiais.</p>
     </div>`;
   app.querySelector('#btn-jogar').onclick = novoJogo;
+  app.querySelector('#btn-duelos').onclick = () => abrirDuelos({ app, voltar: telaInicio, avatar: avatarJogador });
+  atualizarDuelos().then(() => {
+    const pend = pendenciasDuelo();
+    const b = app.querySelector('#badge-duelos');
+    if (b && pend.total) b.innerHTML = `<span class="badge-pendente">${pend.total}</span>`;
+  }).catch(() => {});
   const personalizar = async () => {
     const novo = await abrirCriadorAvatar({
       avatarInicial: avatarJogador(),
@@ -549,6 +562,7 @@ function telaFim(venceu) {
     vitorias: (salvo.vitorias || 0) + (venceu ? 1 : 0)
   });
   if (venceu || novoRecorde) confete({ quantidade: 180 });
+  const tokensGanhos = creditarPartida(jogo.pontos, venceu);
 
   const linhas = CATEGORIAS.map(c => {
     const s = jogo.porCategoria[c.id];
@@ -571,6 +585,7 @@ function telaFim(venceu) {
       <h2 class="fim-titulo ${venceu ? 'vitoria' : ''}">${venceu ? 'Você conquistou os 6 selos!' : 'Fim de jogo'}</h2>
       <div class="fim-pontos">${jogo.pontos} <small>pts</small></div>
       ${novoRecorde ? `<div class="fim-recorde">${ico('trofeu')} Novo recorde!</div>` : `<div class="fim-recorde-antigo">Recorde: ${Math.max(salvo.recorde || 0, jogo.pontos)} pts</div>`}
+      <div class="fim-tokens">${ico('token')} +${tokensGanhos} tokens na carteira <small>saldo: ${saldoTokens()}</small></div>
       <div class="fim-resumo">
         <div><strong>${jogo.acertos}</strong><span>acertos</span></div>
         <div><strong>${jogo.selos.size}/6</strong><span>selos</span></div>
@@ -580,10 +595,12 @@ function telaFim(venceu) {
       ${pior && respondidas.length > 1 && jogo.porCategoria[pior.id].acertos < jogo.porCategoria[pior.id].total
         ? `<div class="fim-dica">${ico('lampada')} Vale reforçar: <strong>${pior.nomeLongo}</strong></div>` : ''}
       <button type="button" class="roleta-btn-principal" id="btn-de-novo">${ico('repetir')} Jogar de novo</button>
+      <button type="button" class="roleta-btn-duelo" id="btn-fim-duelos">${ico('espadas')} Apostar num duelo</button>
       <button type="button" class="roleta-btn-secundario" id="btn-inicio">Início</button>
     </div>`;
   app.querySelector('#btn-de-novo').onclick = novoJogo;
   app.querySelector('#btn-inicio').onclick = telaInicio;
+  app.querySelector('#btn-fim-duelos').onclick = () => abrirDuelos({ app, voltar: telaInicio, avatar: avatarJogador });
 }
 
 // ---------------------------------------------------------------------------

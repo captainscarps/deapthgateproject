@@ -10,6 +10,16 @@ Jogo de perguntas estilo *Perguntados* para colaboradores do **SEST SENAT** apre
 - Cada erro custa **1 vida** (3 no total). Junte os **6 selos** para vencer.
 - Ajudas compradas com moedas: **Consultar o DPO** (elimina 2 alternativas), **+10 s**, **Pular** e **Segunda chance**.
 
+## Carteira de tokens e duelos
+- Cada jogador tem uma **carteira de tokens**: começa com **100** e ganha **1 token a cada 100 pontos** nas partidas solo.
+- **Duelo com aposta:** quem desafia aposta **no mínimo 20% do próprio saldo**. O desafiado precisa ter **pelo menos o mesmo valor**.
+- Os tokens apostados ficam **retidos dos dois lados** até o resultado.
+- Bateria de **7 perguntas × 15 s** (mistura de categorias); acerto = 100 + até 50 pela rapidez; a última vale o dobro.
+- **Quem vencer leva o pote** (a própria aposta de volta + a do adversário). **Empate, recusa ou prazo expirado** devolvem as apostas.
+- Convites recebidos podem ser aceitos (se você tiver saldo para cobrir) ou recusados sem perda.
+- Extrato de tokens disponível na tela de duelos.
+- Protótipo: os colegas são simulados e a carteira fica no navegador. Com o login institucional, carteira e liquidação vão para o servidor.
+
 ## Categorias e mascotes
 | Categoria | Mascote |
 |---|---|
@@ -30,6 +40,8 @@ css/style.css           Base (cores, botões, modais)
 css/comum.css           Ícones, efeitos e criador de personagem
 css/roleta.css          Visual do jogo
 js/roleta.js            Regras e telas do jogo
+js/duelos.js            Carteira de tokens e regras dos duelos com aposta
+js/duelos_ui.js         Telas dos duelos
 js/admin.js             Área do admin
 js/perguntas.js         Categorias e carregamento do banco
 js/mascotes.js          Mascotes das categorias (SVG)

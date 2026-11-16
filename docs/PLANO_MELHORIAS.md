@@ -218,3 +218,11 @@ Cada tarefa: implementar → prints antes/depois → `tests.html` e `smoke.html`
 - Teste seguro: `index.html?banco=local` usa o banco do admin só naquele navegador.
 - Publicação por exportação de `perguntas.json` e `fontes.json` (texto integral dos documentos nunca sai do navegador).
 - Próximo passo natural: com Supabase + login institucional, salvar fontes/perguntas no banco e publicar direto, com perfis de acesso (admin, revisor DPO).
+
+## 14. Duelos com aposta de tokens — 16/11/2026
+- Carteira persistente: 100 tokens iniciais; +1 token a cada 100 pontos em partida solo.
+- Regra definida pelo Rafael: desafiante aposta no mínimo 20% do saldo; desafiado precisa ter o mesmo valor; vencedor fica com os tokens do outro.
+- Implementação: apostas retidas dos dois lados; empate/recusa/prazo devolvem; extrato de transações; limite de 5 desafios por dia; prazo de 48 h.
+- Bateria de 7 perguntas × 15 s com categorias misturadas, placar selado e revelação animada.
+- Testes: aposta mínima, 7 cenários de validação, liquidação, tokens por partida e pontuação (tests.html: 30 testes).
+- Para produção: carteira e liquidação no servidor (Supabase), para que ninguém altere o saldo pelo navegador.
