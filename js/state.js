@@ -516,14 +516,46 @@ class StateManager {
    * @param {Object} efeito
    */
   aplicarEfeito(efeito) {
-    const novoEstado = aplicarEfeito(this.state, efeito);
+    // O movimento de cartas ("avança/volta N casas") segue o GRAFO do tabuleiro.
+    // Antes era somado direto ao número da casa, o que levava o peão dos atalhos
+    // (casas 61–65) para a casa 60 e concedia checkpoints indevidos.
+    const deltaMover = Number(efeito?.mover || 0);
+    const novoEstado = aplicarEfeito(this.state, { ...efeito, mover: 0 });
     this.state = novoEstado;
+    this.ultimoMovimentoCarta = null;
+    if (deltaMover !== 0 && this.state.grafoTabuleiro?.casas?.length) {
+      this.ultimoMovimentoCarta = this.moverPorCarta(deltaMover);
+    }
 
     if (isFimDePartida({ posicao: this.state.posicao, tokens: this.state.tokens, rodada: this.state.rodada })) {
       this.finalizarPartida();
     } else {
       this.emit('change', this.state);
     }
+  }
+
+  /**
+   * Move o peão N casas por efeito de carta, seguindo o grafo.
+   * Em bifurcações, segue a rota principal (primeiro "proximos"), sem abrir escolha.
+   * @param {number} n
+   * @returns {{ caminho: number[], bonusTokens: number, voltaCompletada: boolean }}
+   */
+  moverPorCarta(n) {
+    let res = this.mover(n);
+    const caminho = [...(res.caminhoPercorrido || [])];
+    let bonusTokens = res.bonusTokens || 0;
+    let voltaCompletada = !!res.voltaCompletada;
+    let guarda = 0;
+    while (res.parouEmBifurcacao && res.bifurcacaoPendente && guarda++ < 3) {
+      const origem = res.bifurcacaoPendente.noOrigem;
+      const nodo = this.state.grafoTabuleiro.casas.find(c => c.id === origem);
+      const principal = nodo?.proximos?.[0];
+      res = this.escolherCaminhoBifurcacao(origem, principal, 'Rota principal (efeito de carta)');
+      caminho.push(...(res.caminhoPercorrido || []).slice(1));
+      bonusTokens += res.bonusTokens || 0;
+      voltaCompletada = voltaCompletada || !!res.voltaCompletada;
+    }
+    return { caminho, bonusTokens, voltaCompletada };
   }
 
   /**

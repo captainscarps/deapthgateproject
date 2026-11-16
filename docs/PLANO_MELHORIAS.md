@@ -185,3 +185,9 @@ Cada tarefa: implementar → prints antes/depois → `tests.html` e `smoke.html`
 - O cliente conta `acertos_desafio` para qualquer opção correta (inclusive Pense Antes), mas o servidor conta só categoria `desafio`. Alinhar.
 - A Edge Function ainda não aplica o bônus de sequência nos tokens (não afeta pontos).
 - O validador do grafo registra avisos de arestas diagonais/longas no console (já existiam).
+
+## 10. Rodada 2 — visual de tabuleiro e personagem (16/11/2026)
+- **Personagem redesenhado** (`js/avatar_render.js`): miniatura chibi com base redonda; cabelo em duas camadas (atrás da cabeça + franja recortada pelo crânio), rosto sempre visível, barbas que não cobrem a boca, 8 trajes, acessórios, cadeira de rodas/bengala e reações (pulando, comemorando, assustado). Mesmo esquema de configuração v1 — avatares salvos continuam válidos.
+- **Personalização**: abas em grade (sem cortes), cada opção mostra o próprio avatar com aquela escolha, nomes em português, prévia maior.
+- **Tabuleiro físico**: mesa de madeira, tabuleiro como cartão impresso com moldura navy/dourada e bairros coloridos, trilha impressa em creme, casas como espaços impressos, peão maior.
+- **Bug corrigido**: cartas "avança/volta N casas" somavam o número direto na posição (nos atalhos 61–65 o peão ia para a casa 60 e ganhava checkpoints indevidos) e o peão não se movia na tela. Agora o movimento segue o grafo e é animado (`StateManager.moverPorCarta`).

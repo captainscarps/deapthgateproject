@@ -109,9 +109,9 @@ function gerarTrilhosSVG(casas) {
       const d = `M ${pontoA.x} ${pontoA.y} L ${pontoB.x} ${pontoB.y}`;
 
       paths += `
-        <path d="${d}" stroke="#05101F" stroke-width="32" stroke-linecap="round"/>
-        <path d="${d}" stroke="#00B4D8" stroke-width="18" stroke-linecap="round"/>
-        <path d="${d}" stroke="#0A1C30" stroke-width="10" stroke-linecap="round"/>
+        <path d="${d}" stroke="#0B2545" stroke-width="34" stroke-linecap="round"/>
+        <path d="${d}" stroke="#FFF6DF" stroke-width="27" stroke-linecap="round"/>
+        <path d="${d}" stroke="#E8D7AE" stroke-width="27" stroke-linecap="butt" stroke-dasharray="2 14" opacity="0.7"/>
       `;
 
       // Setas direcionais no centro do percurso
@@ -121,7 +121,7 @@ function gerarTrilhosSVG(casas) {
 
       chevrons += `
         <g transform="translate(${mx}, ${my}) rotate(${ang})">
-          <polygon points="-7,-7 5,0 -7,7" fill="#FFFFFF" opacity="0.9" filter="drop-shadow(0 2px 2px rgba(0,0,0,0.8))"/>
+          <polygon points="-6,-6 5,0 -6,6" fill="#0B2545" opacity="0.85"/>
         </g>
       `;
     }
@@ -417,7 +417,7 @@ export function render(currentState) {
 
                   <!-- PEÃO BILLBOARD COM ÂNCORA NOS PÉS E CENTRO EXATO NA CASA -->
                   <div id="peao-jogador" class="peao-container-layer" style="position: absolute; left: ${posInicial.x}px; top: ${posInicial.y}px; z-index: 60; pointer-events: none; transform-style: preserve-3d;">
-                    <div class="peao-avatar-wrapper" style="position: absolute; left: 0; top: 0; width: 52px; height: 70px; transform: translate3d(calc(-50% - 0.5px), calc(-100% + ${(posAtual === 20 || posAtual === 40 || posAtual === 60) ? 0 : 2.5}px), ${(posAtual === 20 || posAtual === 40 || posAtual === 60) ? 32 : 16}px); transform-origin: 50% 100%;">
+                    <div class="peao-avatar-wrapper" style="position: absolute; left: 0; top: 0; width: 72px; height: 78px; transform: translate3d(calc(-50% - 0.5px), calc(-100% + ${(posAtual === 20 || posAtual === 40 || posAtual === 60) ? 0 : 2.5}px), ${(posAtual === 20 || posAtual === 40 || posAtual === 60) ? 32 : 16}px); transform-origin: 50% 100%;">
                       <div class="peao-sombra" style="position: absolute; bottom: 0px; left: 50%; transform: translate(-50%, 50%); width: 32px; height: 12px;"></div>
                       <div id="peao-corpo" class="peao-corpo-wrapper peao-avatar-wrapper peao-reacao-neutro dadinho-neutro" style="transform: rotateX(calc(-1 * var(--incl))); transform-origin: 50% 100%;">
                         ${renderAvatarSVG(currentState.avatar || AVATAR_PADRAO, { modo: 'peao', reacao: 'neutro' })}
@@ -853,6 +853,23 @@ export function montar(container, currentState, navigate) {
 
           if (resCarta && resCarta.deltaTokens !== 0) {
             mostrarTokensFlutuantes(resCarta.deltaTokens);
+            atualizarHUD(state.get());
+            atualizarPilhaTokens(state.get().tokens);
+          }
+
+          // Movimento por efeito de carta: anima o peão pelo caminho real do grafo
+          const movCarta = state.ultimoMovimentoCarta;
+          state.ultimoMovimentoCarta = null;
+          if (movCarta && movCarta.caminho && movCarta.caminho.length > 1) {
+            for (let i = 1; i < movCarta.caminho.length; i++) {
+              await animarPassoGrafo(movCarta.caminho[i - 1], movCarta.caminho[i]);
+            }
+            if (movCarta.bonusTokens > 0) {
+              Audio.tocarCheckpoint();
+              mostrarTokensFlutuantes(movCarta.bonusTokens);
+              const cp = [...movCarta.caminho].reverse().find(c => c === 20 || c === 40 || c === 60) ?? 60;
+              await exibirModalCheckpoint(cp, movCarta.bonusTokens);
+            }
             atualizarHUD(state.get());
             atualizarPilhaTokens(state.get().tokens);
           }

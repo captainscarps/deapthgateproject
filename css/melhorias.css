@@ -17,49 +17,97 @@
 .btn .ico, button .ico { width: 1.15em; height: 1.15em; }
 
 /* ------------------------------------------------------------------------------
-   1. CENA: "Cidade dos Dados" no lugar da mesa de madeira
+   1. CENA: tabuleiro físico sobre a mesa de madeira
    ------------------------------------------------------------------------------ */
 .cena-viewport,
 .trilha-wrapper {
   background:
-    radial-gradient(ellipse 70% 55% at 50% 45%, rgba(0, 180, 216, 0.20) 0%, rgba(0, 180, 216, 0) 70%),
-    radial-gradient(ellipse 40% 30% at 85% 15%, rgba(185, 140, 255, 0.14) 0%, transparent 70%),
-    radial-gradient(ellipse 40% 30% at 12% 88%, rgba(60, 203, 127, 0.10) 0%, transparent 70%),
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1200' height='160' viewBox='0 0 1200 160'%3E%3Cg fill='%23081A30'%3E%3Crect x='0' y='90' width='60' height='70'/%3E%3Crect x='70' y='50' width='40' height='110'/%3E%3Crect x='120' y='75' width='70' height='85'/%3E%3Crect x='200' y='30' width='36' height='130'/%3E%3Crect x='246' y='95' width='80' height='65'/%3E%3Crect x='336' y='60' width='50' height='100'/%3E%3Crect x='396' y='20' width='30' height='140'/%3E%3Crect x='436' y='85' width='90' height='75'/%3E%3Crect x='536' y='45' width='44' height='115'/%3E%3Crect x='590' y='100' width='70' height='60'/%3E%3Crect x='670' y='35' width='38' height='125'/%3E%3Crect x='718' y='70' width='64' height='90'/%3E%3Crect x='792' y='15' width='34' height='145'/%3E%3Crect x='836' y='90' width='80' height='70'/%3E%3Crect x='926' y='55' width='46' height='105'/%3E%3Crect x='982' y='80' width='60' height='80'/%3E%3Crect x='1052' y='40' width='40' height='120'/%3E%3Crect x='1102' y='95' width='98' height='65'/%3E%3C/g%3E%3Cg fill='%2300B4D8' opacity='.35'%3E%3Crect x='78' y='60' width='6' height='5'/%3E%3Crect x='96' y='80' width='6' height='5'/%3E%3Crect x='208' y='44' width='6' height='5'/%3E%3Crect x='220' y='70' width='6' height='5'/%3E%3Crect x='404' y='34' width='6' height='5'/%3E%3Crect x='546' y='60' width='6' height='5'/%3E%3Crect x='680' y='50' width='6' height='5'/%3E%3Crect x='800' y='30' width='6' height='5'/%3E%3Crect x='812' y='64' width='6' height='5'/%3E%3Crect x='936' y='70' width='6' height='5'/%3E%3Crect x='1060' y='56' width='6' height='5'/%3E%3C/g%3E%3C/svg%3E") bottom center / 1200px 160px repeat-x,
-    linear-gradient(rgba(0, 180, 216, 0.06) 1px, transparent 1px) 0 0 / 40px 40px,
-    linear-gradient(90deg, rgba(0, 180, 216, 0.06) 1px, transparent 1px) 0 0 / 40px 40px,
-    linear-gradient(180deg, #04101F 0%, #071C33 60%, #0A2442 100%) !important;
-  box-shadow: inset 0 0 90px rgba(0, 0, 0, 0.75), 0 6px 0 var(--navy-darkest);
+    radial-gradient(ellipse 75% 65% at 50% 45%, rgba(255, 214, 150, 0.16) 0%, rgba(0, 0, 0, 0) 60%, rgba(0, 0, 0, 0.55) 100%),
+    repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.18) 0 2px, transparent 2px 180px),
+    repeating-linear-gradient(90deg, rgba(255, 220, 170, 0.05) 0 1px, transparent 1px 7px),
+    repeating-linear-gradient(0deg, rgba(60, 30, 10, 0.25) 0 1px, transparent 1px 23px),
+    linear-gradient(90deg, #6B3E22 0%, #7C4A2A 18%, #6A3C20 36%, #81502E 54%, #6E4024 72%, #7A4828 90%, #6B3E22 100%) !important;
+  box-shadow: inset 0 0 110px rgba(0, 0, 0, 0.7), 0 6px 0 var(--navy-darkest);
 }
 
-/* Placa do diorama com bairros de cor sutil */
+/* O tabuleiro: cartão impresso com moldura, espessura e bairros coloridos */
 .diorama-placa {
-  background-color: #0F3054;
+  border-radius: 22px;
+  border: 0;
+  background-color: #CFE7DD;
   background-image:
-    radial-gradient(circle at 18% 78%, rgba(60, 203, 127, 0.16) 0, transparent 30%),
-    radial-gradient(circle at 50% 46%, rgba(255, 201, 60, 0.12) 0, transparent 26%),
-    radial-gradient(circle at 82% 26%, rgba(0, 180, 216, 0.16) 0, transparent 30%),
-    repeating-linear-gradient(0deg, transparent 0, transparent 97px, rgba(0, 180, 216, 0.20) 97px, rgba(5, 16, 31, 0.7) 100px),
-    repeating-linear-gradient(90deg, transparent 0, transparent 97px, rgba(0, 180, 216, 0.20) 97px, rgba(5, 16, 31, 0.7) 100px);
+    /* bairros (manchas impressas) */
+    radial-gradient(ellipse 22% 26% at 16% 76%, #B7DDC0 0 98%, transparent 100%),
+    radial-gradient(ellipse 18% 20% at 50% 48%, #F6E3B4 0 98%, transparent 100%),
+    radial-gradient(ellipse 22% 24% at 84% 24%, #C7DDF4 0 98%, transparent 100%),
+    radial-gradient(ellipse 20% 22% at 20% 20%, #E8D5F2 0 98%, transparent 100%),
+    radial-gradient(ellipse 18% 20% at 82% 80%, #F7D2C4 0 98%, transparent 100%),
+    /* textura de papel */
+    repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.12) 0 2px, transparent 2px 6px),
+    repeating-linear-gradient(-45deg, rgba(0, 60, 50, 0.04) 0 1px, transparent 1px 5px);
+  box-shadow:
+    inset 0 0 0 14px #0B2545,          /* moldura impressa */
+    inset 0 0 0 17px #FFC93C,          /* filete dourado */
+    inset 0 0 0 20px #0B2545,
+    inset 0 0 40px 20px rgba(11, 37, 69, 0.18),
+    0 10px 0 #0A1D36,                  /* espessura do cartão */
+    0 18px 0 #06142A,
+    0 30px 40px rgba(0, 0, 0, 0.75);
 }
+
+/* Cantoneiras douradas e selo do jogo impressos na moldura */
+.diorama-placa::before,
+.diorama-placa::after {
+  content: '';
+  position: absolute;
+  pointer-events: none;
+  z-index: 1;
+}
+.diorama-placa::before {
+  inset: 5px;
+  border-radius: 18px;
+  background:
+    radial-gradient(circle at 0 0, #FFC93C 0 16px, transparent 17px),
+    radial-gradient(circle at 100% 0, #FFC93C 0 16px, transparent 17px),
+    radial-gradient(circle at 0 100%, #FFC93C 0 16px, transparent 17px),
+    radial-gradient(circle at 100% 100%, #FFC93C 0 16px, transparent 17px);
+}
+.diorama-placa::after {
+  content: 'TRILHA INTELIGENTE · SEST SENAT';
+  left: 50%; bottom: 1px; transform: translateX(-50%);
+  font-family: var(--font-title); font-weight: 900; font-size: 11px; letter-spacing: 4px;
+  color: #FFC93C; white-space: nowrap;
+}
+
+/* Objetos de cenário com sombra mais curta (luz de mesa) */
+.cenario-prop { filter: drop-shadow(0 3px 2px rgba(20, 40, 50, 0.55)); }
 
 /* ------------------------------------------------------------------------------
    2. CASAS maiores e mais legíveis
    ------------------------------------------------------------------------------ */
 .casa-tile { min-height: 62px; }
-.casa-disco-base { width: 60px; height: 60px; }
+.casa-disco-base {
+  width: 60px; height: 60px;
+  background: #FFFDF6; border: 2px solid #0B2545;
+  box-shadow: 0 3px 0 #0B2545, 0 6px 6px rgba(11, 37, 69, 0.35);
+  transform: translateZ(4px);
+}
+.casa-disco-topo { width: 84%; height: 84%; border: 2px solid rgba(11, 37, 69, 0.55); box-shadow: inset 0 3px 0 rgba(255, 255, 255, 0.35), inset 0 -3px 0 rgba(0, 0, 0, 0.18); }
+.casa-num { color: #FFFFFF; text-shadow: 0 1px 0 #0B2545, 0 0 3px rgba(11, 37, 69, 0.9); }
+.casa-tile.casa-checkpoint .casa-disco-base { transform: translateZ(10px); box-shadow: 0 4px 0 #B08215, 0 8px 0 #8A630B, 0 12px 10px rgba(11, 37, 69, 0.45); }
+.casa-tile.casa-armadilha .casa-disco-base { transform: translateZ(3px); background: #FFE3E8; border-color: #8A1A34; }
+.casa-tile.visitada .casa-disco-base { opacity: 1; filter: saturate(0.55) brightness(0.95); }
+.casa-tile.ativa .casa-disco-base { border-color: #00B4D8 !important; box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.9), 0 0 18px rgba(0, 180, 216, 0.9), 0 3px 0 #0B2545 !important; }
 .casa-tile.casa-checkpoint .casa-disco-base { width: 66px; height: 66px; }
 .casa-icone { height: 28px; }
 .casa-icone svg { width: 26px; height: 26px; }
 .casa-num { font-size: 11px; color: #E2E8F0; }
 
 /* Armadilha com brilho vermelho, desafio com halo laranja: leitura sem legenda */
-.casa-tile.casa-armadilha .casa-disco-base { box-shadow: 0 3px 0 #590D22, 0 0 14px rgba(239, 71, 111, 0.55), 0 6px 10px rgba(0, 0, 0, 0.7); }
+.casa-tile.casa-armadilha .casa-disco-base { box-shadow: 0 3px 0 #590D22, 0 0 12px rgba(239, 71, 111, 0.6), 0 6px 6px rgba(11, 37, 69, 0.35); }
 .casa-tile.casa-desafio .casa-disco-base,
 .casa-tile.casa-pense_antes .casa-disco-base { border: 2px solid #FFE3C2; }
 
-/* Casas já visitadas um pouco menos apagadas (o tabuleiro é um loop) */
-.casa-tile.visitada .casa-disco-base { opacity: 0.8; filter: saturate(0.8) brightness(0.9); }
 
 /* ------------------------------------------------------------------------------
    3. HUD lateral enxuto
@@ -211,3 +259,46 @@
 .btn-liga-entrada-titulo, .btn-liga-entrada-sub { display: flex; }
 .btn-liga-entrada-sub { text-transform: none; font-weight: 500; font-family: var(--font-body); font-size: 0.92rem; letter-spacing: 0; margin-top: 2px; }
 .card-caminho-icone .ico { width: 34px; height: 34px; color: var(--cyan); }
+
+/* ------------------------------------------------------------------------------
+   7. PERSONALIZAÇÃO DO PERSONAGEM (miniaturas reais em cada opção)
+   ------------------------------------------------------------------------------ */
+.criador-avatar-dialog { max-width: 1000px; }
+.criador-avatar-body { grid-template-columns: 300px 1fr; align-items: start; }
+.criador-titulo-ico { width: 26px; height: 26px; color: var(--gold); display: inline-flex; }
+.criador-titulo-ico .ico { width: 100%; height: 100%; }
+.avatar-previa-wrapper svg { width: 100%; height: 100%; }
+
+.avatar-abas-nav { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; overflow: visible; }
+.avatar-aba-btn { justify-content: center; text-transform: uppercase; padding: 9px 8px; min-width: 0; }
+.avatar-aba-btn span { overflow: hidden; text-overflow: ellipsis; }
+.avatar-aba-painel { max-height: 430px; }
+
+.avatar-grade-mini { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 8px; }
+.avatar-grade-mini.grade-2 { grid-template-columns: repeat(2, minmax(0, 150px)); }
+.avatar-grade-mini.grade-3 { grid-template-columns: repeat(3, minmax(0, 150px)); }
+.avatar-opcao-mini {
+  display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer;
+  padding: 6px 4px 8px; border-radius: 12px;
+  background: linear-gradient(180deg, #123257, #0A1F38); border: 2px solid #05101F;
+  box-shadow: 0 3px 0 #05101F; color: var(--text-muted);
+  font-family: var(--font-main); text-transform: none; letter-spacing: 0;
+  transition: transform 0.12s ease, border-color 0.12s ease;
+}
+.avatar-opcao-mini:hover { transform: translateY(-2px); border-color: var(--cyan); color: var(--text-white); }
+.avatar-opcao-mini.selecionado { border-color: var(--gold); background: linear-gradient(180deg, #2A3E5C, #142843); color: var(--text-white); box-shadow: 0 3px 0 #05101F, 0 0 0 2px rgba(255, 201, 60, 0.35); }
+.avatar-opcao-previa { width: 72px; height: 72px; display: block; border-radius: 50%; overflow: hidden; background: radial-gradient(circle at 50% 40%, #1E4E80, #0B2440); }
+.mini-completo .avatar-opcao-previa { width: 78px; height: 86px; border-radius: 10px; }
+.avatar-opcao-previa svg { width: 100%; height: 100%; display: block; }
+.avatar-opcao-nome { font-weight: 700; font-size: 0.85rem; line-height: 1.1; text-align: center; }
+
+.avatar-swatch-cor { position: relative; }
+.avatar-previa-wrapper { width: 230px !important; height: 250px !important; }
+.avatar-podio-box { height: auto !important; min-height: 270px; display: flex; align-items: center; justify-content: center; }
+
+/* Peão maior (miniatura v2): caixa na proporção do desenho 120×130 */
+.peao-avatar-wrapper,
+.peao-avatar-wrapper .peao-corpo-wrapper { width: 72px; height: 78px; }
+.peao-avatar-wrapper .peao-corpo-wrapper { transform-origin: center 74px; }
+.peao-avatar-wrapper .peao-corpo-wrapper svg { width: 100%; height: 100%; display: block; filter: drop-shadow(0 3px 2px rgba(11, 37, 69, 0.5)); }
+.peao-sombra { width: 46px !important; height: 14px !important; }
